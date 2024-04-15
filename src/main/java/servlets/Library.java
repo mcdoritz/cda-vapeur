@@ -7,18 +7,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/")
-public class Landing extends HttpServlet {
+@WebServlet("/library")
+public class Library extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public Landing() {
+    public Library() {
         super();
         // TODO Auto-generated constructor stub
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		request.getRequestDispatcher("WEB-INF/app/landing.jsp").forward(request, response);
+		request.getRequestDispatcher("WEB-INF/app/library.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
