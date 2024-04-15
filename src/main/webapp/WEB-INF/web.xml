@@ -10,14 +10,30 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   
-  <jsp-config>
-  	<jsp-property-group>
-		<url-pattern>/WEB-INF/app/*</url-pattern>
-		<include-prelude>/WEB-INF/jstl.jsp</include-prelude>
-		<include-prelude>/WEB-INF/layout/head.jsp</include-prelude>
-		<include-prelude>/WEB-INF/layout/header.jsp</include-prelude>
-		<include-coda>/WEB-INF/layout/footer.jsp</include-coda>
-		<include-coda>/WEB-INF/layout/foot.jsp</include-coda>
-	</jsp-property-group>
-  </jsp-config>
+		 <jsp-config>
+		 	<jsp-property-group>
+			<url-pattern>/WEB-INF/app/*</url-pattern>
+			<include-prelude>/WEB-INF/jstl.jsp</include-prelude>
+			<include-prelude>/WEB-INF/layout/head.jsp</include-prelude>
+			<include-prelude>/WEB-INF/layout/header.jsp</include-prelude>
+			<include-coda>/WEB-INF/layout/footer.jsp</include-coda>
+			<include-coda>/WEB-INF/layout/foot.jsp</include-coda>
+		</jsp-property-group>
+	</jsp-config>
+  
+  	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/app/404.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/WEB-INF/app/403.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/app/500.jsp</location>
+	</error-page>
+	
 </web-app>
