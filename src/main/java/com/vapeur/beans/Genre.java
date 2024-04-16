@@ -7,19 +7,15 @@ public class Genre implements Serializable {
     
     private int id;
     private String name;
-    private int gameId;
 
-    // Constructeurs
     public Genre() {
     }
 
-    public Genre(int id, String name, int gameId) {
+    public Genre(int id, String name) {
         setId(id);
         setName(name);
-        setGameId(gameId);
     }
 
-    // Getters et setters
     public int getId() {
         return id;
     }
@@ -36,21 +32,11 @@ public class Genre implements Serializable {
         this.name = name;
     }
 
-    public int getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    }
-
-    // Méthode toString pour l'affichage
     @Override
     public String toString() {
         return "Genre{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", gameId=" + gameId +
                 '}';
     }
 }

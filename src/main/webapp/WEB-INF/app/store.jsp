@@ -23,7 +23,7 @@
 							</div>
 							<div class="media-body">
 								<span class="game-rating"><i class="fas fa-star"></i><c:out value=" ${game.usersAvgScore }"/></span>
-								<span class="review-count">(<c:out value="${game.totalReviews }"/> éval.)</span>
+								<span class="review-count">(<c:out value="${game.totalReviews }"/> &#233;val.)</span>
 							</div>
 						</div>
 					</div>

@@ -2,6 +2,7 @@ package com.vapeur.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class Game implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -19,12 +20,36 @@ public class Game implements Serializable {
     private int stock;
     private String tags;
     private int developerId;
+    private Developer developer;
+    private ArrayList<Genre> genres;
+    private ArrayList<Mode> modes;
+    private ArrayList<Platform> platforms;
+    private ArrayList<Video> videos;
 
     // Constructeurs
     public Game() {
     }
-
-    public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, String tags, int developerId) {
+    
+    //Light pour liste des jeux
+    public Game(int id, String title,  float price, Date releaseDate, float usersAvgScore, 
+    		int totalReviews, int stock, String tags, ArrayList<Platform> platforms) {
+    	
+        setId(id);
+        setTitle(title);
+        setPrice(price);
+        setReleaseDate(releaseDate);
+        setUsersAvgScore(usersAvgScore);
+        setTotalReviews(totalReviews);
+        setStock(stock);
+        setTags(tags);
+        setPlatforms(platforms);
+    }
+    
+    //Complet pour page détail
+    public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, 
+    		int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, String tags, int developerId, Developer developer,
+    		ArrayList<Genre> genres, ArrayList<Mode> modes, ArrayList<Platform> platforms, ArrayList<Video> videos) {
+    	
         setId(id);
         setTitle(title);
         setDescription(description);
@@ -37,7 +62,12 @@ public class Game implements Serializable {
         setRequires3rdPartyAccount(requires3rdPartyAccount);
         setStock(stock);
         setTags(tags);
-        setDeveloperId(developerId);
+        setDeveloperId(id);
+        setDeveloper(developer);
+        setGenres(genres);
+        setModes(modes);
+        setPlatforms(platforms);
+        setVideos(videos);
     }
 
     // Getters et setters
@@ -137,18 +167,75 @@ public class Game implements Serializable {
     public void setTags(String tags) {
         this.tags = tags;
     }
+   
 
     public int getDeveloperId() {
-        return developerId;
+		return developerId;
+	}
+
+	public void setDeveloperId(int developerId) {
+		this.developerId = developerId;
+	}
+
+	public Developer getDeveloper() {
+        return developer;
     }
 
-    public void setDeveloperId(int developerId) {
-        this.developerId = developerId;
+    public void setDeveloper(Developer developer) {
+        this.developer = developer;
     }
 
-    // Méthode toString pour l'affichage
+    public ArrayList<Genre> getGenres() {
+		return genres;
+	}
+
+	public void setGenres(ArrayList<Genre> genres) {
+		this.genres = genres;
+	}
+
+	public ArrayList<Mode> getModes() {
+		return modes;
+	}
+
+	public void setModes(ArrayList<Mode> modes) {
+		this.modes = modes;
+	}
+
+	public ArrayList<Platform> getPlatforms() {
+		return platforms;
+	}
+
+	public void setPlatforms(ArrayList<Platform> platforms) {
+		this.platforms = platforms;
+	}
+
+	public ArrayList<Video> getVideos() {
+		return videos;
+	}
+
+	public void setVideos(ArrayList<Video> videos) {
+		this.videos = videos;
+	}
+
+	// Méthode toString pour l'affichage
     @Override
     public String toString() {
+    	String allGenres = "";
+    	String allModes = "";
+    	String allPlatforms = "";
+    	
+    	for(Genre g:genres) {
+    		allGenres+= g.getName() + " ";
+    	}
+    	
+    	for(Mode m:modes) {
+    		allModes+= m.getName() + " ";
+    	}
+    	
+    	for(Platform p:platforms) {
+    		allPlatforms+= p.getName() + " ";
+    	}
+    	
         return "Game{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
@@ -161,8 +248,11 @@ public class Game implements Serializable {
                 ", controllerSupport=" + controllerSupport +
                 ", requires3rdPartyAccount=" + requires3rdPartyAccount +
                 ", stock=" + stock +
-                ", tags='" + tags + '\'' +
-                ", developerId=" + developerId +
+                ", tags= " + tags + '\'' +
+                ", developer= " + developer.getName() +
+                ", genres= " + allGenres +
+                ", modes= " + allModes +
+                ", platforms= " + allPlatforms +
                 '}';
     }
 }

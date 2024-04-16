@@ -30,7 +30,7 @@ public class Store extends HttpServlet {
 		Database.connect();
 		GameDAO gamedao = new GameDAO();
 		
-		List<Game> gamesList = gamedao.readAll("all");
+		List<Game> gamesList = gamedao.readAll();
 		
 		prln("nb : " + gamesList.size());
 		request.setCharacterEncoding("UTF-8");

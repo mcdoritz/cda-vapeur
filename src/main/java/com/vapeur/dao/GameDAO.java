@@ -2,6 +2,7 @@ package com.vapeur.dao;
 
 import static com.vapeur.config.Debug.*;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vapeur.beans.Game;
+import com.vapeur.beans.Platform;
 import com.vapeur.config.Database;
 import com.vapeur.dao.GameDAO;
 
@@ -70,10 +72,10 @@ public class GameDAO {
         }
     }
 
-    
+    //Tout prendre
     public Game getById(int game_id) {
         try {
-            PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM games WHERE id = ?");
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM games WHERE games.id = ?");
             ps.setInt(1, game_id);
             ResultSet resultat = ps.executeQuery();
             Game object = new Game();
@@ -90,7 +92,7 @@ public class GameDAO {
                 object.setRequires3rdPartyAccount(resultat.getBoolean("requires_3rd_party_account"));
                 object.setStock(resultat.getInt("stock"));
                 object.setTags(resultat.getString("tags"));
-                object.setDeveloperId(resultat.getInt("developer_id"));
+                
             }
             String objectInfos = object.getTitle();
             bddSays("read", true, object.getId(), objectInfos);
@@ -102,31 +104,33 @@ public class GameDAO {
         }
     }
     
-    // AJOUTER LA NOTION DE STATUS
-    
-    public List<Game> readAll(String status) {
+    //Sers à lister les jeux, inutile de tout prendre donc.
+    public List<Game> readAll() {
         ArrayList<Game> gamesList = new ArrayList<>();
-        String query = "SELECT * FROM games";
+        String query = "SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id FROM games JOIN games_platforms ON games.id = games_platforms.game_id JOIN platforms ON games_platforms.platform_id = platforms.id ORDER BY games.id ASC";
+
         try {
             PreparedStatement ps = Database.connexion.prepareStatement(query);
             ResultSet resultat = ps.executeQuery();
+            
+            PlatformDAO platformdao = new PlatformDAO();
+            
             while (resultat.next()) {
                 Game object = new Game();
+                
                 object.setId(resultat.getInt("id"));
                 object.setTitle(resultat.getString("title"));
-                object.setDescription(resultat.getString("description"));
-                object.setClassification(resultat.getInt("classification"));
                 object.setPrice(resultat.getFloat("price"));
                 object.setReleaseDate(resultat.getDate("release_date"));
                 object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
                 object.setTotalReviews(resultat.getInt("total_reviews"));
-                object.setControllerSupport(resultat.getBoolean("controller_support"));
-                object.setRequires3rdPartyAccount(resultat.getBoolean("requires_3rd_party_account"));
                 object.setStock(resultat.getInt("stock"));
-                object.setTags(resultat.getString("tags"));
-                object.setDeveloperId(resultat.getInt("developer_id"));
+                ArrayList<Platform> platforms = new ArrayList<>(); //Il y en aura forcément qu'une.
+                platforms.add(platformdao.getById(resultat.getInt("platform_id"), true));
+                object.setPlatforms(platforms);
                 gamesList.add(object);
             }
+            
             bddSays("readAll", true, gamesList.size(), null);
             return gamesList;
         } catch (Exception ex) {

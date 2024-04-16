@@ -16,12 +16,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:if test="${sessionScope.cart.size() == null }">
+					<c:if test="${NbGamesInCart < 1 }">
 						<tr class="cart_item">
 							<td colspan=6 >Panier vide... tristesse</td>
 						</tr>
 					</c:if>
-					<c:if test="${sessionScope.cart.size() > 0}">
+					<c:if test="${NbGamesInCart > 0}">
 						<c:forEach var="game" items="${sessionScope.cart }">
 							<tr class="cart_item">
 								<td data-title="Product"><a class="cart-productimage"

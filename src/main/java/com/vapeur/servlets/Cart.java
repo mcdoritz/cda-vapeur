@@ -34,21 +34,22 @@ public class Cart extends HttpServlet {
 		// ajouter au cart :
 		HttpSession session = request.getSession(false);
 		prln("Servlet Cart");
-
+		Map<Game, Integer> gamesAndQuantityInCart = new HashMap<>();
+		
 		// Si add différent de null, alors c'est qu'on ajoute un jeu au panier
 		if (request.getParameter("add") != null) {
 			int id = Integer.parseInt(request.getParameter("add"));
 			if (id > 0) {
 
-				Map<Game, Integer> gamesAndQuantityInCart = new HashMap<>();
 				
+
 				if (session != null) {
 					if (session.getAttribute("cart") == null) {
 						prln("cart/del : Panier non créé");
 						session.setAttribute("cart", gamesAndQuantityInCart);
 					} else {
 						gamesAndQuantityInCart = (Map<Game, Integer>) session.getAttribute("cart");
-						
+
 						if (gamesAndQuantityInCart.size() > 0) {
 							prln("Servlet cart/add : le panier contient " + gamesAndQuantityInCart.size() + " games.");
 						} else {
@@ -61,27 +62,28 @@ public class Cart extends HttpServlet {
 					prln("Servlet cart : Erreur de session");
 				}
 				// Ajout d'un game au panier
-				
+
 				// Vérifier que le jeu n'est pas déjà présent dans le panier
 				Boolean gameInCart = false;
 				Iterator<Map.Entry<Game, Integer>> iterator = gamesAndQuantityInCart.entrySet().iterator();
 				while (iterator.hasNext()) {
-				    Map.Entry<Game, Integer> entry = iterator.next();
-				    int game_id = entry.getKey().getId();
-				    int quantity = entry.getValue();
-				    //System.out.println("Game: " + game_id + ", quantity: " + quantity);
-				    if(game_id == id) {
-				    	//Jeu présent ! Donc ajouter 1 à la quantity
-				    	gameInCart = true;
-				    	prln("Servlet Cart/add : game déjà dans panier; + 1 quantity");
-				    	entry.setValue(quantity + 1);
-				    	break;
-				    }
+					Map.Entry<Game, Integer> entry = iterator.next();
+					int game_id = entry.getKey().getId();
+					int quantity = entry.getValue();
+					// System.out.println("Game: " + game_id + ", quantity: " + quantity);
+					if (game_id == id) {
+						// Jeu présent ! Donc ajouter 1 à la quantity
+						gameInCart = true;
+						prln("Servlet Cart/add : game déjà dans panier; + 1 quantity");
+						entry.setValue(quantity + 1);
+						break;
+					}
 				}
-				
-				//Si jeu pas présent dans le panier, on va le chercher dans la bdd s'il est toujours là bas.
-				if(!gameInCart) {
-					
+
+				// Si jeu pas présent dans le panier, on va le chercher dans la bdd s'il est
+				// toujours là bas.
+				if (!gameInCart) {
+
 					GameDAO gamedao = new GameDAO();
 					Game gameToAdd = gamedao.getById(id);
 					if (gameToAdd.getTitle() != null) {
@@ -92,7 +94,7 @@ public class Cart extends HttpServlet {
 						prln("Servlet Cart/add : erreur dans la récupération du game");
 					}
 				}
-			
+
 			}
 			// Si del différent de null, alors c'est qu'on supprime un jeu au panier
 		} else if (request.getParameter("del") != null) {
@@ -100,31 +102,28 @@ public class Cart extends HttpServlet {
 				int id = Integer.parseInt(request.getParameter("del"));
 				if (id > 0) {
 
-					List<Game> gamesInCart = new ArrayList<>();
 					if (session != null) {
 						if (session.getAttribute("cart") == null) {
 							prln("Cart/delete : Panier non créé");
-							session.setAttribute("cart", gamesInCart);
+							session.setAttribute("cart", gamesAndQuantityInCart);
 						} else {
-							gamesInCart = (ArrayList<Game>) session.getAttribute("cart");
+							gamesAndQuantityInCart = (Map<Game, Integer>) session.getAttribute("cart");
 							int i = 0;
-							
-							//Parcourir le tableau et checker tous les id;
-							while(i < gamesInCart.size()) {
-								
-								
-								if(gamesInCart.get(i).getId() == id) {
-									gamesInCart.remove(i);
-									//Arrêter la boucle
-									i = gamesInCart.size();
+
+							// Parcourir le tableau et checker tous les id;
+							Iterator<Map.Entry<Game, Integer>> iterator = gamesAndQuantityInCart.entrySet().iterator();
+							while (iterator.hasNext()) {
+								Map.Entry<Game, Integer> entry = iterator.next();
+								int game_id = entry.getKey().getId();
+								int quantity = entry.getValue();
+								// System.out.println("Game: " + game_id + ", quantity: " + quantity);
+								if (game_id == id) {
+									// Jeu présent ! Donc on suppr
+									gamesAndQuantityInCart.remove(entry.getKey());
+									prln("Servlet Cart/del : game dans panier; supprimé");
+									prln("Reste " + gamesAndQuantityInCart.size() + " game(s) dans le panier");
+									break;
 								}
-								
-								i++;
-							}
-							if (gamesInCart.size() > 0) {
-								prln("Servlet cart/del : le panier contient " + gamesInCart.size() + " games.");
-							} else {
-								prln("Servlet cart/del : le panier est vide");
 							}
 
 						}
@@ -134,6 +133,7 @@ public class Cart extends HttpServlet {
 			}
 
 		}
+		request.setAttribute("NbGamesInCart", Integer.toString(gamesAndQuantityInCart.size()));
 		request.setAttribute("pageTitle", "Panier");
 		request.setAttribute("euro", "€");
 		request.getRequestDispatcher("WEB-INF/app/cart.jsp").forward(request, response);

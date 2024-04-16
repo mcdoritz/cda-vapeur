@@ -35,27 +35,6 @@ public class Landing extends HttpServlet {
 			return;
 		}
 		
-		if (session != null) {
-			if (session.getAttribute("cart") == null) {
-				prln("Panier non créé");
-				/*List<Game> gamesInCart = new ArrayList<>();
-				session.setAttribute("cart", gamesInCart);*/
-			}else {
-				List<Game> gamesInCart = (ArrayList<Game>)session.getAttribute("cart");
-				if(gamesInCart.size() > 0) {
-					prln("Le panier n'est po vide");
-					for(Game g:gamesInCart) {
-						prln(g.getTitle());
-					}
-				}else {
-					prln("Le panier est vide");
-				}
-				
-			}
-
-		} else {
-			prln("Erreur de session");
-		}
 
 		// ----------------------
 		request.getRequestDispatcher("WEB-INF/app/landing.jsp").forward(request, response);

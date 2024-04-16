@@ -7,6 +7,7 @@ public class Platform implements Serializable {
     
     private int id;
     private String name;
+    private String acronym;
 
     // Constructeurs
     public Platform() {
@@ -15,6 +16,7 @@ public class Platform implements Serializable {
     public Platform(int id, String name) {
         setId(id);
         setName(name);
+        setAcronym(acronym);
     }
 
     // Getters et setters
@@ -33,13 +35,20 @@ public class Platform implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    
+    
 
-    // Méthode toString pour l'affichage
-    @Override
-    public String toString() {
-        return "Platform{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    public String getAcronym() {
+		return acronym;
+	}
+
+	public void setAcronym(String acronym) {
+		this.acronym = acronym;
+	}
+
+	@Override
+	public String toString() {
+		return "Platform [id=" + id + ", name=" + name + ", acronym=" + acronym + "]";
+	}
+
 }

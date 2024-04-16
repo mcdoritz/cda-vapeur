@@ -12,7 +12,6 @@ public class Comment implements Serializable {
     private float score;
     private int userId;
 
-    // Constructeurs
     public Comment() {
     }
 
@@ -24,7 +23,6 @@ public class Comment implements Serializable {
         setUserId(userId);
     }
 
-    // Getters et setters
     public int getId() {
         return id;
     }
@@ -65,7 +63,6 @@ public class Comment implements Serializable {
         this.userId = userId;
     }
 
-    // Méthode toString pour l'affichage
     @Override
     public String toString() {
         return "Comment{" +

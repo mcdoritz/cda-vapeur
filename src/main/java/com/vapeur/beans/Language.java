@@ -7,18 +7,22 @@ public class Language implements Serializable {
     
     private int id;
     private String localeCode;
+    private String language;
 
     // Constructeurs
     public Language() {
     }
 
-    public Language(int id, String localeCode) {
-        setId(id);
-        setLocaleCode(localeCode);
-    }
+    
 
-    // Getters et setters
-    public int getId() {
+    public Language(int id, String localeCode, String language) {
+		super();
+		setId(id);
+		setLocaleCode(localeCode);
+		setLanguage(language);
+	}
+
+	public int getId() {
         return id;
     }
 
@@ -34,12 +38,18 @@ public class Language implements Serializable {
         this.localeCode = localeCode;
     }
 
-    // Méthode toString pour l'affichage
-    @Override
-    public String toString() {
-        return "Language{" +
-                "id=" + id +
-                ", localeCode='" + localeCode + '\'' +
-                '}';
-    }
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	@Override
+	public String toString() {
+		return "Language [id=" + id + ", localeCode=" + localeCode + ", language=" + language + "]";
+	}
+    
+    
 }
