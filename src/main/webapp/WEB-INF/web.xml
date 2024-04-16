@@ -20,6 +20,11 @@
 			<include-coda>/WEB-INF/layout/foot.jsp</include-coda>
 		</jsp-property-group>
 	</jsp-config>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/assets/*</url-pattern>
+	</servlet-mapping>
   
   	<error-page>
 		<error-code>404</error-code>

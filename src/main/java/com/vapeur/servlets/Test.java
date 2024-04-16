@@ -24,9 +24,7 @@ public class Test extends HttpServlet {
 		
 		// ----------------------
 		Database.connect();
-		UserDAO userdao = null;
-		
-		request.setAttribute("usersList", userdao.readAll("all"));
+
 		request.getRequestDispatcher("WEB-INF/app/test.jsp").forward(request, response);
 	}
 
