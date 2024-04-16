@@ -19,7 +19,7 @@ public class GameDAO {
     public void save(Game object) {
         try {
             if (object.getId() != 0) {
-                String query = "UPDATE games SET title = ?, description = ?, classification = ?, price = ?, release_date = ?, users_avg_score = ?, controller_support = ?, requires_3rd_party_account = ?, stock = ?, tags = ?, developer_id = ? WHERE id = ?";
+                String query = "UPDATE games SET title = ?, description = ?, classification = ?, price = ?, release_date = ?, users_avg_score = ?, total_reviews = ?, controller_support = ?, requires_3rd_party_account = ?, stock = ?, tags = ?, developer_id = ? WHERE id = ?";
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
                     ps.setString(1, object.getTitle());
                     ps.setString(2, object.getDescription());
@@ -27,18 +27,19 @@ public class GameDAO {
                     ps.setFloat(4, object.getPrice());
                     ps.setDate(5, new java.sql.Date(object.getReleaseDate().getTime()));
                     ps.setFloat(6, object.getUsersAvgScore());
-                    ps.setBoolean(7, object.isControllerSupport());
-                    ps.setBoolean(8, object.isRequires3rdPartyAccount());
-                    ps.setInt(9, object.getStock());
-                    ps.setString(10, object.getTags());
-                    ps.setInt(11, object.getDeveloperId());
-                    ps.setInt(12, object.getId());
+                    ps.setInt(7, object.getTotalReviews());
+                    ps.setBoolean(8, object.isControllerSupport());
+                    ps.setBoolean(9, object.isRequires3rdPartyAccount());
+                    ps.setInt(10, object.getStock());
+                    ps.setString(11, object.getTags());
+                    ps.setInt(12, object.getDeveloperId());
+                    ps.setInt(13, object.getId());
                     ps.executeUpdate();
                 }
                 String objectInfos = object.getTitle();
                 bddSays("update", true, object.getId(), objectInfos);
             } else {
-                String query = "INSERT INTO games (title, description, classification, price, release_date, users_avg_score, controller_support, requires_3rd_party_account, stock, tags, developer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String query = "INSERT INTO games (title, description, classification, price, release_date, users_avg_score, total_reviews, controller_support, requires_3rd_party_account, stock, tags, developer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, object.getTitle());
                     ps.setString(2, object.getDescription());
@@ -46,11 +47,12 @@ public class GameDAO {
                     ps.setFloat(4, object.getPrice());
                     ps.setDate(5, new java.sql.Date(object.getReleaseDate().getTime()));
                     ps.setFloat(6, object.getUsersAvgScore());
-                    ps.setBoolean(7, object.isControllerSupport());
-                    ps.setBoolean(8, object.isRequires3rdPartyAccount());
-                    ps.setInt(9, object.getStock());
-                    ps.setString(10, object.getTags());
-                    ps.setInt(11, object.getDeveloperId());
+                    ps.setInt(7, object.getTotalReviews());
+                    ps.setBoolean(8, object.isControllerSupport());
+                    ps.setBoolean(9, object.isRequires3rdPartyAccount());
+                    ps.setInt(10, object.getStock());
+                    ps.setString(110, object.getTags());
+                    ps.setInt(12, object.getDeveloperId());
                     ps.executeUpdate();
                     try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
@@ -69,7 +71,7 @@ public class GameDAO {
     }
 
     
-    public Game read(int game_id) {
+    public Game getById(int game_id) {
         try {
             PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM games WHERE id = ?");
             ps.setInt(1, game_id);
@@ -83,6 +85,7 @@ public class GameDAO {
                 object.setPrice(resultat.getFloat("price"));
                 object.setReleaseDate(resultat.getDate("release_date"));
                 object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
+                object.setTotalReviews(resultat.getInt("total_reviews"));
                 object.setControllerSupport(resultat.getBoolean("controller_support"));
                 object.setRequires3rdPartyAccount(resultat.getBoolean("requires_3rd_party_account"));
                 object.setStock(resultat.getInt("stock"));
@@ -116,6 +119,7 @@ public class GameDAO {
                 object.setPrice(resultat.getFloat("price"));
                 object.setReleaseDate(resultat.getDate("release_date"));
                 object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
+                object.setTotalReviews(resultat.getInt("total_reviews"));
                 object.setControllerSupport(resultat.getBoolean("controller_support"));
                 object.setRequires3rdPartyAccount(resultat.getBoolean("requires_3rd_party_account"));
                 object.setStock(resultat.getInt("stock"));

@@ -13,6 +13,7 @@ public class Game implements Serializable {
     private float price;
     private Date releaseDate;
     private float usersAvgScore;
+    private int totalReviews;
     private boolean controllerSupport;
     private boolean requires3rdPartyAccount;
     private int stock;
@@ -23,7 +24,7 @@ public class Game implements Serializable {
     public Game() {
     }
 
-    public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, String tags, int developerId) {
+    public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, String tags, int developerId) {
         setId(id);
         setTitle(title);
         setDescription(description);
@@ -31,6 +32,7 @@ public class Game implements Serializable {
         setPrice(price);
         setReleaseDate(releaseDate);
         setUsersAvgScore(usersAvgScore);
+        setTotalReviews(totalReviews);
         setControllerSupport(controllerSupport);
         setRequires3rdPartyAccount(requires3rdPartyAccount);
         setStock(stock);
@@ -94,8 +96,17 @@ public class Game implements Serializable {
     public void setUsersAvgScore(float usersAvgScore) {
         this.usersAvgScore = usersAvgScore;
     }
+    
 
-    public boolean isControllerSupport() {
+    public int getTotalReviews() {
+		return totalReviews;
+	}
+
+	public void setTotalReviews(int totalReviews) {
+		this.totalReviews = totalReviews;
+	}
+
+	public boolean isControllerSupport() {
         return controllerSupport;
     }
 
@@ -146,6 +157,7 @@ public class Game implements Serializable {
                 ", price=" + price +
                 ", releaseDate=" + releaseDate +
                 ", usersAvgScore=" + usersAvgScore +
+                ", totalreviews=" + totalReviews +
                 ", controllerSupport=" + controllerSupport +
                 ", requires3rdPartyAccount=" + requires3rdPartyAccount +
                 ", stock=" + stock +

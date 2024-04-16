@@ -29,6 +29,7 @@ public class Login extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
@@ -36,7 +37,7 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-
+		
 		// Vérification que les champs sont pas null AJOUTER VERIFICATION VALIDATION
 		if (request.getParameter("email") != null && request.getParameter("password") != null) {
 			Database.connect();
