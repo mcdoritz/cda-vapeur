@@ -1,12 +1,13 @@
 package com.vapeur.dao;
 
-import static com.vapeur.config.Debug.bddSays;
+import static com.vapeur.config.Debug.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.vapeur.beans.Game;
@@ -20,8 +21,23 @@ public class GameDAO {
     
     public void save(Game object) {
         try {
+        	//Préparer les tags array->string
+            String tags = "";
+            ArrayList<String> arrayTags = new ArrayList<>(object.getTags());
+            int i = 0;
+            for(String t:arrayTags) {
+            	if(i < arrayTags.size()) {
+            		tags += t.toUpperCase() + " ";
+            	}else {
+            		tags += t.toUpperCase();
+            	}
+            	
+            	i++;
+            }
+            
             if (object.getId() != 0) {
                 String query = "UPDATE games SET title = ?, description = ?, classification = ?, price = ?, release_date = ?, users_avg_score = ?, total_reviews = ?, controller_support = ?, requires_3rd_party_account = ?, stock = ?, tags = ?, developer_id = ?, platform_id = ? WHERE id = ?";
+                
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
                     ps.setString(1, object.getTitle());
                     ps.setString(2, object.getDescription());
@@ -33,7 +49,7 @@ public class GameDAO {
                     ps.setBoolean(8, object.isControllerSupport());
                     ps.setBoolean(9, object.isRequires3rdPartyAccount());
                     ps.setInt(10, object.getStock());
-                    ps.setString(11, object.getTags());
+                    ps.setString(11, tags);
                     ps.setInt(12, object.getDeveloperId());
                     ps.setInt(13, object.getPlatformId());
                     ps.setInt(14, object.getId());
@@ -54,7 +70,7 @@ public class GameDAO {
                     ps.setBoolean(8, object.isControllerSupport());
                     ps.setBoolean(9, object.isRequires3rdPartyAccount());
                     ps.setInt(10, object.getStock());
-                    ps.setString(110, object.getTags());
+                    ps.setString(11, tags);
                     ps.setInt(12, object.getDeveloperId());
                     ps.setInt(12, object.getPlatformId());
                     ps.executeUpdate();
@@ -93,7 +109,8 @@ public class GameDAO {
     //Tout prendre
     public Game getById(int game_id) {
         try {
-            PreparedStatement ps = Database.connexion.prepareStatement("SELECT games.id AS game_id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, developers.id AS developer_id, developers.name AS developer_name, developers.creation_date AS developer_creation, developers.country AS developer_country, developers.url_instagram AS developer_insta, developers.url_x AS developer_x, developers.url_facebook AS developer_facebook, developers.url_website AS developer_website FROM games JOIN platforms ON games.platform_id = platforms.id  JOIN developers ON games.developer_id = developers.id WHERE games.id = ?;");
+        	
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT games.id, title, description, classification, price, release_date, users_avg_score, controller_support, requires_3rd_party_account, total_reviews, stock, tags, developer_id, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id  JOIN developers ON games.developer_id = developers.id WHERE games.id = ?;");
             ps.setInt(1, game_id);
             ResultSet resultat = ps.executeQuery();
             Game object = new Game();
@@ -101,14 +118,11 @@ public class GameDAO {
             ModeDAO modedao = new ModeDAO();
             GenreDAO genredao = new GenreDAO();
             LanguageDAO languagedao = new LanguageDAO();
+            DeveloperDAO developerdao = new DeveloperDAO();
             
             while (resultat.next()) {
             	
-            	ArrayList<Mode> modesList = new ArrayList<>(modedao.readAllByGameId(game_id));
-            	ArrayList<Genre> genresList = new ArrayList<>(genredao.readAllByGameId(game_id));
-            	ArrayList<Language> languagesList = new ArrayList<>(languagedao.readAllByGameId(game_id));
-            	
-                object.setId(resultat.getInt("id"));
+            	object.setId(game_id);
                 object.setTitle(resultat.getString("title"));
                 object.setDescription(resultat.getString("description"));
                 object.setClassification(resultat.getInt("classification"));
@@ -119,11 +133,27 @@ public class GameDAO {
                 object.setControllerSupport(resultat.getBoolean("controller_support"));
                 object.setRequires3rdPartyAccount(resultat.getBoolean("requires_3rd_party_account"));
                 object.setStock(resultat.getInt("stock"));
-                object.setTags(resultat.getString("tags"));
+                
+                String tags = resultat.getString("tags");
+                String[] arrayTags = tags.split(" ");
+                ArrayList<String> arrayListTags = new ArrayList<>();
+                
+                for(String t:arrayTags) {
+                	arrayListTags.add(t.toUpperCase());
+                }
+                
+                object.setTags(arrayListTags);
+                
                 object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
+                
+            	ArrayList<Mode> modesList = new ArrayList<>(modedao.readAllByGameId(game_id));
+            	ArrayList<Genre> genresList = new ArrayList<>(genredao.readAllByGameId(game_id));
+            	ArrayList<Language> languagesList = new ArrayList<>(languagedao.readAllByGameId(game_id));
+            	
                 object.setModes(modesList);
                 object.setGenres(genresList);
                 object.setLanguages(languagesList);
+                object.setDeveloper(developerdao.getById(resultat.getInt("developer_id")));
                 
             }
             String objectInfos = object.getTitle();

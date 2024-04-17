@@ -112,8 +112,8 @@ public class GenreDAO {
             while (resultat.next()) {
                 Genre object = new Genre();
 
-                object.setId(resultat.getInt("language_id"));
-                object.setName(resultat.getString("language_name"));
+                object.setId(resultat.getInt("genre_id"));
+                object.setName(resultat.getString("genre_name"));
 
                 genresList.add(object);
             }

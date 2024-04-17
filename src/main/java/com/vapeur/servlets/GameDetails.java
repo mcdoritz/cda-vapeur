@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import static com.vapeur.config.Debug.*;
 
 import com.vapeur.beans.Game;
+import com.vapeur.config.Database;
 import com.vapeur.dao.GameDAO;
 
 /**
@@ -32,9 +33,11 @@ public class GameDetails extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		@SuppressWarnings("unused")
 		HttpSession session = request.getSession(false);
 		
 		if (request.getParameter("id") != null) {
+			Database.connect();
 			int id = Integer.parseInt(request.getParameter("id"));
 			if(id > 0) {
 				GameDAO gamedao = new GameDAO();
@@ -43,6 +46,11 @@ public class GameDetails extends HttpServlet {
 				if(game != null) {
 					prln("Servlet Game : game " + game.getTitle() + " trouvé");
 					request.setAttribute("game", game);
+					
+					/*for(String t:game.getTags()) {
+						prln(t);
+					}*/
+					
 					
 					request.setAttribute("euro", "€");
 					request.setAttribute("pageTitle", game.getTitle());

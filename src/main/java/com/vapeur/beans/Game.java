@@ -18,7 +18,7 @@ public class Game implements Serializable {
     private boolean controllerSupport;
     private boolean requires3rdPartyAccount;
     private int stock;
-    private String tags;
+    private ArrayList<String> tags;
     private int developerId;
     private Developer developer;
     private ArrayList<Genre> genres;
@@ -34,7 +34,7 @@ public class Game implements Serializable {
     
     //Light pour liste des jeux
     public Game(int id, String title,  float price, Date releaseDate, float usersAvgScore, 
-    		int totalReviews, int stock, String tags, Platform platform) {
+    		int totalReviews, int stock, ArrayList<String> tags, Platform platform) {
     	
         setId(id);
         setTitle(title);
@@ -49,7 +49,7 @@ public class Game implements Serializable {
     
     //Complet pour page détail
     public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, 
-    		int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, String tags, int developerId, Developer developer,
+    		int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, ArrayList<String> tags, int developerId, Developer developer,
     		ArrayList<Genre> genres, ArrayList<Mode> modes, int platformId, Platform platform, ArrayList<Video> videos, ArrayList<Language> languages) {
     	
         setId(id);
@@ -164,11 +164,11 @@ public class Game implements Serializable {
         this.stock = stock;
     }
 
-    public String getTags() {
+    public ArrayList<String> getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(ArrayList<String> tags) {
         this.tags = tags;
     }
    

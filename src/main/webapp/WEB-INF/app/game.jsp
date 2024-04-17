@@ -19,20 +19,6 @@
 						<p class="mb-30">
 							<c:out value="${game.description }" />
 						</p>
-						<div class="checklist list-two-column">
-							<ul>
-								<li><i class="far fa-shield-check"></i> Thousands of levels
-									across multiple worlds</li>
-								<li><i class="far fa-shield-check"></i> Challenging
-									gameplay to train your brain</li>
-								<li><i class="far fa-shield-check"></i> Daily events to
-									help you win more prizes</li>
-								<li><i class="far fa-shield-check"></i> Free rewards every
-									day</li>
-								<li><i class="far fa-shield-check"></i> Club Tournaments
-									and other exciting friends</li>
-							</ul>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -43,10 +29,10 @@
 							<div class="player-logo">
 								<img src="assets/img/tournament/1-1.png" alt="img">
 							</div>
-							<h2 class="sub-title"><a href="cart?add=${game.id }">Au panier !</a></h2>
-							<div class="game-meta-list">
-								<span>Mobile</span><span>Action RPG</span><span>PC</span>
-							</div>
+							<h2 class="sub-title">
+								<a href="cart?add=${game.id }" class="panier">Au panier !<br> <i
+									class="fa-solid fa-cart-shopping"></i></a>
+							</h2>
 							<div class="game-rating-info">
 								<div class="rating-wrap">
 									<span class="game-rating"><i class="fas fa-star"></i> <c:out
@@ -70,47 +56,95 @@
 									</c:if>
 								</div>
 							</div>
-							<div class="btn-wrap">
-								<a href="#"><img
-									src="assets/img/widget/widget-apple-btn.png" alt="img"></a> <a
-									href="#"><img
-									src="assets/img/widget/widget-playstore-btn.png" alt="img"></a>
+							<div></div>
+							<div class="counter-card">
+								<div class="media-body">
+									<h2 class="box-text" style="font-size: 2em">
+										<c:out value="${game.platform.name }" />
+									</h2>
+								</div>
 							</div>
 						</div>
 					</div>
+					<div class="widget widget_tag_cloud  ">
+						<h3 class="widget_title">Tags</h3>
+						<div class="tagcloud">
+							<c:forEach var="tag" items="${game.tags }">
+								<a href="store?filter="><span><c:out value="${tag }" /></span></a>
+							</c:forEach>
+						</div>
+					</div>
+					<div class="widget widget_tag_cloud  ">
+						<h3 class="widget_title">Genres</h3>
+						<div class="tagcloud">
+							<c:forEach var="genre" items="${game.genres }">
+								<a href="store?filter="><span><c:out
+											value="${genre.name }" /></span></a>
+							</c:forEach>
+						</div>
+					</div>
+					<div class="widget widget_tag_cloud  ">
+						<h3 class="widget_title">Modes de jeu</h3>
+						<div class="tagcloud">
+							<c:forEach var="mode" items="${game.modes }">
+								<a href="store?filter="><span><c:out
+											value="${mode.name }" /></span></a>
+							</c:forEach>
+						</div>
+					</div>
+					<div class="widget  ">
+							<div class="widget-game-info">
+								<h2 class="sub-title">
+									<a href="cart?add=${game.id }" class="panier">Au panier !<br>
+									<i class="fa-solid fa-cart-shopping"></i></a>
+								</h2>
+							</div>
+						</div>
 				</aside>
 			</div>
 			<div class="col-xxl-8 col-lg-7">
 				<div class="team-about-card">
 					<div class="title-area mb-0">
 						<span class="sub-title">Développement</span>
-						<h2 class="sec-title"><c:out value="${game.developerId }"/></h2>
+						<h2 class="sec-title">
+							<c:out value="${game.developer.name }" />
+						</h2>
 					</div>
-					<p class="about-card_text mt-30 mb-25">Successful esports teams
-						exhibit strong communication, strategic coordination, and
-						individual player skills. Team chemistry, effective coaching, and
-						adaptability to changing meats.</p>
+					<p class="about-card_text mt-30 mb-25"></p>
 					<div class="team-info-list">
 						<ul>
-							<li>Fondé en <span>2023</span></li>
-							<li>Pays: <span>Turkisdétan</span></li>
+							<li>Fondé en <span><fmt:formatDate pattern="yyyy"
+										value="${game.developer.creationDate}" /></span></li>
+							<li>Pays: <span><c:out
+										value="${game.developer.country }" /></span></li>
 						</ul>
 					</div>
 					<div class="team-social mt-25">
 						<h5 class="fw-semibold text-white">
-							Suivre <span class="text-theme"><c:out value="${game.developerId }"/></span>
+							Suivre <span class="text-theme"><c:out
+									value="${game.developer.name }" /></span>
 						</h5>
 						<div class="th-social style-mask">
-							<a class="facebook" href="https://www.facebook.com/"><i
-								class="fab fa-facebook-f"></i></a> <a class="twitter"
-								href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-							<a class="instagram" href="https://www.instagram.com/"> <i
-								class="fab fa-instagram"></i>
-							</a> <a class="linkedin" href="https://www.linkedin.com/"><i
-								class="fab fa-linkedin"></i></a> <a class="google-play"
-								href="https://www.google.com/"> <img
-								src="assets/img/icon/google-playstore-icon.svg" alt="icon">
-							</a>
+							<c:if test="${game.developer.urlInstagram != null }">
+								<a class="instagram" href="${game.developer.urlInstagram }">
+									<i class="fab fa-instagram"></i>
+								</a>
+							</c:if>
+							<c:if test="${game.developer.urlX != null }">
+								<a class="twitter" href="${game.developer.urlX }"> <i
+									class="fab fa-twitter"></i>
+								</a>
+							</c:if>
+							<c:if test="${game.developer.urlFacebook != null }">
+								<a class="facebook" href="${game.developer.urlFacebook }"> <i
+									class="fab fa-facebook-f"></i>
+								</a>
+							</c:if>
+							<c:if test="${game.developer.urlWebsite != null }">
+								<a class="google-play" href="${game.developer.urlWebsite }">
+									<img src="assets/img/icon/google-playstore-icon.svg" alt="icon">
+								</a>
+							</c:if>
 						</div>
 					</div>
 				</div>
