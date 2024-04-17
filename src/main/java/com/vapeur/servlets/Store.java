@@ -1,6 +1,7 @@
 package com.vapeur.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -29,15 +30,48 @@ public class Store extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		Database.connect();
 		GameDAO gamedao = new GameDAO();
+		List<Game> gamesList = new ArrayList<>();
+		int totalGames = gamedao.countAll();
+		prln(totalGames + " games dans la bdd");
 		
-		List<Game> gamesList = gamedao.readAll();
+		int page = 0;
 		
-		prln("nb : " + gamesList.size());
-		request.setCharacterEncoding("UTF-8");
-		request.setAttribute("gamesList", gamesList);
-		request.setAttribute("pageTitle", "Magasin");
-		request.setAttribute("euro", "€");
-		request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
+		try {
+			
+			if(request.getParameter("page") != null) {
+				page = Integer.parseInt(request.getParameter("page"));
+				if(page > 0) {
+					gamesList = gamedao.readAll(page);
+					
+				}else {
+					gamesList = gamedao.readAll(1);
+					
+				}
+			}else {
+				gamesList = gamedao.readAll(1);
+			}
+
+			request.setAttribute("page", page);
+			request.setAttribute("gamesInPage", gamesList.size());
+			request.setCharacterEncoding("UTF-8");
+			request.setAttribute("gamesList", gamesList);
+			request.setAttribute("pageTitle", "Magasin");
+			request.setAttribute("euro", "€");
+			request.setAttribute("totalGames", totalGames);
+			
+			//Si pas de games dans la liste, alors retour à la première page.
+			if(gamesList.size() == 0) {
+				response.sendRedirect("store");
+			}else {
+				request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
+			}
+
+		}catch (NumberFormatException e){
+			response.sendRedirect("404");
+		}
+		
+		
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

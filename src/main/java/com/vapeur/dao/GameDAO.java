@@ -89,23 +89,7 @@ public class GameDAO {
             ex.printStackTrace();
         }
     }
-    /* SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, \r\n"
-            		+ "platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym,\r\n"
-            		+ "genres.id AS genre_id, genres.name AS genre_name,\r\n"
-            		+ "modes.id AS mode_id, modes.name AS mode_name,\r\n"
-            		+ "languages.id AS language_id, languages.locale_code AS language_locale, languages.language AS language_name,\r\n"
-            		+ "games_languages.interface AS game_interface, games_languages.full_audio AS game_full_audio, games_languages.subtitles AS game_subtitles,\r\n"
-            		+ "developers.id AS developer_id, developers.name AS developer_name, developers.creation_date AS developer_creation, developers.country AS developer_country, developers.url_instagram AS developer_insta, developers.url_x AS developer_x, developers.url_facebook AS developer_facebook, developers.url_website AS developer_website\r\n"
-            		+ "FROM games \r\n"
-            		+ "JOIN platforms ON games.platform_id = platforms.id\r\n"
-            		+ "JOIN games_genres ON games.id = games_genres.game_id\r\n"
-            		+ "JOIN genres ON games_genres.genre_id = genres.id\r\n"
-            		+ "JOIN games_modes ON games.id = games_modes.game_id\r\n"
-            		+ "JOIN modes ON games_modes.mode_id = modes.id\r\n"
-            		+ "JOIN games_languages ON games.id = games_languages.game_id\r\n"
-            		+ "JOIN languages ON games_languages.language_id = languages.id\r\n"
-            		+ "JOIN developers ON games.developer_id = developers.id\r\n"
-            		+ "WHERE games.id = ?;*/
+    
     //Tout prendre
     public Game getById(int game_id) {
         try {
@@ -167,12 +151,20 @@ public class GameDAO {
     }
     
     //Sers à lister les jeux, inutile de tout prendre donc.
-    public List<Game> readAll() {
+    public List<Game> readAll(int page) {
         ArrayList<Game> gamesList = new ArrayList<>();
-        String query = "SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id ORDER BY games.id ASC";
+        int min;
+        
+        if(page < 2) {
+        	min = page;
+        	
+        }else {
+        	min = (page-1) * 12 + 1;
+        }
 
         try {
-            PreparedStatement ps = Database.connexion.prepareStatement(query);
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE stock > 0 ORDER BY games.title ASC LIMIT ?,12 ");
+            ps.setInt(1, min);
             ResultSet resultat = ps.executeQuery();
             
             PlatformDAO platformdao = new PlatformDAO();
@@ -196,6 +188,24 @@ public class GameDAO {
             bddSays("readAll", false, 0, null);
             ex.printStackTrace();
             return null;
+        }
+    }
+    
+    public int countAll() {
+    	try {
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT COUNT(*) AS total FROM games WHERE stock > 0");
+            ResultSet resultat = ps.executeQuery();
+            
+            int total = 0;
+            
+            while (resultat.next()) {
+                total = resultat.getInt("total");
+            }
+            
+            return total;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return 0;
         }
     }
 

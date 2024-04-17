@@ -19,6 +19,8 @@ public class Profile extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		
+		request.setAttribute("pageTitle", "Profil");
 		request.getRequestDispatcher("WEB-INF/app/profile.jsp").forward(request, response);
 	}
 

@@ -3,45 +3,61 @@
  */
 console.info("cartPrice.js");
 
-let uPricesDOM = document.querySelectorAll(".priceU");
-let quantitysDOM = document.querySelectorAll(".qty-input");
-let quantityXpriceDOM = document.querySelectorAll(".quantityXprice");
-let subTotalDOM = document.getElementById("cartSubTotal");
-let TotalDOM = document.getElementById("cartTotal");
+const uPricesDOM = document.querySelectorAll(".priceU");
+const quantitysDOM = document.querySelectorAll(".qty-input");
+const quantityXpriceDOM = document.querySelectorAll(".quantityXprice");
+const subTotalDOM = document.getElementById("cartSubTotal");
+const TotalDOM = document.getElementById("cartTotal");
 
-quantitysDOM.forEach(function(quantity){
-    quantity.addEventListener('change', function(event){
-        update();
-    })
+const freeShipRate = document.getElementById("free_shipping");
+const flatRate = document.getElementById("flat_rate");
+
+quantitysDOM.forEach(function(quantity) {
+	quantity.addEventListener('change', function(event) {
+		updateAll();
+	})
 })
 
+updateAll();
 
+function updateTotal(subTotalCart) {
 
-update();
+	if (subTotalCart > 0) {
+		if (flatRate.checked == true) {
+			TotalDOM.innerHTML = subTotalCart + 7.99;
+		} else {
+			TotalDOM.innerHTML = subTotalCart;
+		}
 
-function update(){
+		
+	}else{
+		TotalDOM.innerHTML = "0.00";
+	}
+	TotalDOM.innerHTML += " €";
+
+}
+
+function updateAll() {
 	let uPriceXquantity;
 	let subTotalCart = 0;
 	let i = 0;
 	uPricesDOM.forEach((element) => {
-		console.info(quantitysDOM[i].value);
-		console.warn(parseFloat(element.innerHTML));
-		uPriceXquantity = parseFloat(element.innerHTML)*parseInt(quantitysDOM[i].value);
+		uPriceXquantity = parseFloat(element.innerHTML) * parseInt(quantitysDOM[i].value);
 		quantityXpriceDOM[i].innerHTML = uPriceXquantity + " €";
 		subTotalCart += uPriceXquantity;
-		
+
 		element.innerHTML += " €";
-		
+
 		i++;
 	});
-	
-	subTotalDOM.innerHTML = subTotalCart + " €";
-	
-	/*prices.forEach((element) => {
-		price = parseFloat(element.innerHTML.replace(",", "."));
-		subTotalCart += price;
-	});
-	subTotalDOM.innerHTML = subTotalCart + " €";*/
+
+	if (subTotalCart > 0) {
+		subTotalDOM.innerHTML = subTotalCart + " €";
+	} else {
+		subTotalDOM.innerHTML = "0.00 €";
+	}
+	updateTotal(subTotalCart);
+
 }
 
 

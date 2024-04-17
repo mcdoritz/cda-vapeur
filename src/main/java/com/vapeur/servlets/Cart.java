@@ -34,6 +34,7 @@ public class Cart extends HttpServlet {
 		
 		HttpSession session = request.getSession(false);
 		prln("Servlet Cart");
+		Boolean redirect = false;
 		Map<Game, Integer> gamesAndQuantityInCart = new HashMap<>();
 		
 		
@@ -41,20 +42,14 @@ public class Cart extends HttpServlet {
 			if (session.getAttribute("cart") == null) {
 				prln("cart/del : Panier non créé");
 				session.setAttribute("cart", gamesAndQuantityInCart);
-				session.setAttribute("totalCartPrice", 0);
 			} else {
 				gamesAndQuantityInCart = (Map<Game, Integer>) session.getAttribute("cart");
-				
-				//Calcul total price
-				float totalCartPrice = (int) session.getAttribute("totalCartPrice");
-				prln("servlet cart : " + totalCartPrice + " €");
 				
 				Iterator<Map.Entry<Game, Integer>> iterator = gamesAndQuantityInCart.entrySet().iterator();
 				while (iterator.hasNext()) {
 					Map.Entry<Game, Integer> entry = iterator.next();
 					int game_id = entry.getKey().getId();
 					int quantity = entry.getValue();
-					totalCartPrice += entry.getKey().getPrice()*quantity;
 
 				}
 
@@ -75,10 +70,6 @@ public class Cart extends HttpServlet {
 			int id = Integer.parseInt(request.getParameter("add"));
 			if (id > 0) {
 				
-				// Ajout d'un game au panier
-				//Calcul total price
-				float totalCartPrice = (int) session.getAttribute("totalCartPrice");
-				
 				// Vérifier que le jeu n'est pas déjà présent dans le panier
 				Boolean gameInCart = false;
 				Iterator<Map.Entry<Game, Integer>> iterator = gamesAndQuantityInCart.entrySet().iterator();
@@ -92,7 +83,6 @@ public class Cart extends HttpServlet {
 						gameInCart = true;
 						prln("Servlet Cart/add : game déjà dans panier; + 1 quantity");
 						entry.setValue(quantity + 1);
-						totalCartPrice += entry.getKey().getPrice()*entry.getValue();
 						break;
 					}
 				}
@@ -107,8 +97,6 @@ public class Cart extends HttpServlet {
 						gamesAndQuantityInCart.put(gameToAdd, 1);
 						session.setAttribute("cart", gamesAndQuantityInCart);
 						
-						totalCartPrice += gameToAdd.getPrice();
-						session.setAttribute("totalCartPrice", totalCartPrice);
 						prln("Servlet Cart/add : ajout game");
 					} else {
 						prln("Servlet Cart/add : erreur dans la récupération du game");
@@ -116,14 +104,13 @@ public class Cart extends HttpServlet {
 				}
 
 			}
+			redirect = true;
 			// Si del différent de null, alors c'est qu'on supprime un jeu au panier
 		} else if (request.getParameter("del") != null) {
 			{
 				int id = Integer.parseInt(request.getParameter("del"));
 				if (id > 0) {
 					
-					//Calcul total price
-					int totalCartPrice = (int) session.getAttribute("totalCartPrice");
 
 					gamesAndQuantityInCart = (Map<Game, Integer>) session.getAttribute("cart");
 					int i = 0;
@@ -137,8 +124,6 @@ public class Cart extends HttpServlet {
 						// System.out.println("Game: " + game_id + ", quantity: " + quantity);
 						if (game_id == id) {
 							// Jeu présent ! Donc on suppr
-							totalCartPrice -= entry.getKey().getPrice()*entry.getValue();
-							session.setAttribute("totalCartPrice", totalCartPrice);
 							gamesAndQuantityInCart.remove(entry.getKey());
 							prln("Servlet Cart/del : game dans panier; supprimé");
 							prln("Reste " + gamesAndQuantityInCart.size() + " game(s) dans le panier");
@@ -147,14 +132,19 @@ public class Cart extends HttpServlet {
 					}
 				}
 			}
-
+			redirect = true;
 		}
 		prln("Il y a : " + gamesAndQuantityInCart.size() + " games dans le panier");
-	
 		request.setAttribute("NbGamesInCart", Integer.toString(gamesAndQuantityInCart.size()));
 		request.setAttribute("pageTitle", "Panier");
 		request.setAttribute("euro", "€");
-		request.getRequestDispatcher("WEB-INF/app/cart.jsp").forward(request, response);
+		
+		if(redirect) {
+			response.sendRedirect("cart");
+		}else {
+			request.getRequestDispatcher("WEB-INF/app/cart.jsp").forward(request, response);
+		}
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

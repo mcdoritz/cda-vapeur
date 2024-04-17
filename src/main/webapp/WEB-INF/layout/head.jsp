@@ -3,8 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta charset="UTF-8">
 <title><c:out value="${pageTitle != null ? pageTitle : 'Vapeur Store Inc.' }" /></title>
 <meta name="author" content="Bame">
 <meta name="description" content="Bame - Esports & Gaming HTML Template">
@@ -70,5 +69,5 @@
 <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
 <!-- Theme Custom CSS -->
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/fd.css">
+
 </head>

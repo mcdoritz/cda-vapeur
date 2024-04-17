@@ -1,5 +1,6 @@
-<section class="overflow-hidden space-top space-extra2-bottom">
+<section class="overflow-hidden space-top space-extra2-bottom" style="padding-top:1.5em">
 	<div class="container">
+		<h3 style="color:white;text-align:center"><c:out value="${totalGames } jeux en stock !"/></h3>
 		<div class="row gy-4">
 			<c:forEach var="game" items="${gamesList }">
 				<div class="col-lg-4 col-md-6">
@@ -38,11 +39,15 @@
 		<div class="pt-60 text-center">
 			<div class="th-pagination ">
 				<ul>
-					<li><a href="blog.html"><span class="btn-border"></span> 1</a></li>
-					<li><a href="blog.html"><span class="btn-border"></span> 2</a></li>
-					<li><a href="blog.html"><span class="btn-border"></span> 3</a></li>
-					<li><a href="blog.html"><span class="btn-border"></span><i
-							class="far fa-arrow-right"></i></a></li>
+					
+					<c:if test="${page > 1 }">
+						<c:set var="previousPage" value="${page - 1}" />
+						<li><a href="store?page=${previousPage }"><span class="btn-border"></span><i class="far fa-arrow-left"></i></a></li>
+					</c:if>
+					<c:if test="${gamesInPage > 11 }">
+						<c:set var="nextPage" value="${page + 1}" />
+						<li><a href="store?page=${nextPage }"><span class="btn-border"></span><i class="far fa-arrow-right"></i></a></li>
+					</c:if>
 				</ul>
 			</div>
 		</div>

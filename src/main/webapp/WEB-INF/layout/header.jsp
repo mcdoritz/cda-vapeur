@@ -34,8 +34,12 @@
                                         </ul>
                                     </li>
                                     <li><a href="library">Ma bibliothèque</a></li>
-                                    <li><a href="profile">Profil</a></li>
-                                    
+                                    <c:if test="${sessionScope.user != null }">
+                                    	<li><a href="profile">Profil</a></li>
+                                    </c:if>
+                                    <c:if test="${sessionScope.user == null }">
+                                    	<li><a href="login">Se connecter</a></li>
+                                    </c:if>
                                 </ul>
                             </nav>
                             <div class="header-button d-flex d-lg-none">

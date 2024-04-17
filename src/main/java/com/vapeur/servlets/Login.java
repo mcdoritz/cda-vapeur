@@ -31,7 +31,7 @@ public class Login extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
