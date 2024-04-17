@@ -5,11 +5,16 @@
 				<div class="col-lg-4 col-md-6">
 					<div class="game-card style2">
 						<div class="game-card-img">
-							<a href="tournament-details.html"> <img
+							<a href="game?id=${game.id }"> <img
 								src="assets/img/game/2-1.png" alt="${game.title }">
 							</a>
 							<div class="game-logo">
-								<img src="assets/img/game/logo2-1.png" alt="game logo">
+								<a href="game?id=${game.id }">
+									<img src="assets/img/game/logo2-1.png" alt="game logo">
+								</a>
+							</div>
+							<div style="font-weight:bold;font-style:italic;margin:-4.5em 0 1em 0;padding-left:6em">
+								<c:out value="${game.platform.name}"/>
 							</div>
 						</div>
 						<div class="game-card-details">

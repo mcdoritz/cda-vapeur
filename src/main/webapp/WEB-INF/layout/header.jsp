@@ -1,6 +1,11 @@
 <!--==============================
 	Header Area
 ==============================-->
+	<style>
+	  .sub-menu {
+	    margin-top:-1.5em!important;
+	  }
+	</style>
     <header class="th-header header-layout1">
         <div class="sticky-wrapper">
             <!-- Main Menu Area -->

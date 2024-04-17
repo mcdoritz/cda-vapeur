@@ -56,6 +56,16 @@
 										class="fal fa-trash-alt"></i></a></td>
 							</tr>
 						</c:forEach>
+						<tr>
+                            <td colspan="6" class="actions">
+                                <div class="th-cart-coupon">
+                                    <input type="text" class="form-control" placeholder="Coupon Code...">
+                                    <button type="submit" class="th-btn">Apply Coupon</button>
+                                </div>
+                                <button type="submit" class="th-btn">Update cart</button>
+                                <a href="shop.html" class="th-btn">Continue Shopping</a>
+                            </td>
+                        </tr>
 					</c:if>
 
 				</tbody>

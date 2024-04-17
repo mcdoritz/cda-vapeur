@@ -53,9 +53,9 @@ public class PlatformDAO {
         }
     }
 
-    public Platform getById(int platform_id, Boolean acronym) {
+    public Platform getById(int platform_id) {
         try {
-        	String query = "SELECT " + (acronym ? "acronym" : "*") + " FROM platforms WHERE id = ?";
+        	String query = "SELECT * FROM platforms WHERE id = ?";
 
             PreparedStatement ps = Database.connexion.prepareStatement(query);
             ps.setInt(1, platform_id);
@@ -63,18 +63,11 @@ public class PlatformDAO {
             ResultSet resultat = ps.executeQuery();
 
             Platform object = new Platform();
-            
-            if(acronym) {
-            	while (resultat.next()) {
-                    object.setId(resultat.getInt("id"));
-                    object.setAcronym(resultat.getString("acronym"));
-                }
-            }else {
-            	while (resultat.next()) {
-                    object.setId(resultat.getInt("id"));
-                    object.setName(resultat.getString("name"));
-                    object.setAcronym(resultat.getString("acronym"));
-                }
+
+        	while (resultat.next()) {
+                object.setId(resultat.getInt("id"));
+                object.setName(resultat.getString("name").toUpperCase());
+                object.setAcronym(resultat.getString("acronym").toUpperCase());
             }
             
             
@@ -101,7 +94,7 @@ public class PlatformDAO {
                 Platform object = new Platform();
 
                 object.setId(resultat.getInt("id"));
-                object.setName(resultat.getString("name"));
+                object.setName(resultat.getString("name").toUpperCase());
 
                 platformsList.add(object);
             }

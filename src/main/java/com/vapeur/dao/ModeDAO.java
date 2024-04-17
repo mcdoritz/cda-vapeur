@@ -99,6 +99,31 @@ public class ModeDAO {
             return null;
         }
     }
+    
+    public List<Mode> readAllByGameId(int game_id) {
+        ArrayList<Mode> modesList = new ArrayList<>();
+        String query = "SELECT modes.id AS mode_id, modes.name AS mode_name FROM games_modes JOIN modes ON games_modes.mode_id = modes.id WHERE game_id = ?";
+        try {
+            PreparedStatement ps = Database.connexion.prepareStatement(query);
+            ps.setInt(1, game_id);
+            ResultSet resultat = ps.executeQuery();
+
+            while (resultat.next()) {
+                Mode object = new Mode();
+
+                object.setId(resultat.getInt("mode_id"));
+                object.setName(resultat.getString("mode_name"));
+
+                modesList.add(object);
+            }
+            bddSays("readAll", true, modesList.size(), null);
+            return modesList;
+        } catch (Exception ex) {
+            bddSays("readAll", false, 0, null);
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     public void delete(int mode_id) {
         try {

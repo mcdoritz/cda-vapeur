@@ -23,8 +23,10 @@ public class Game implements Serializable {
     private Developer developer;
     private ArrayList<Genre> genres;
     private ArrayList<Mode> modes;
-    private ArrayList<Platform> platforms;
+    private int platformId;
+    private Platform platform;
     private ArrayList<Video> videos;
+    private ArrayList<Language> languages;
 
     // Constructeurs
     public Game() {
@@ -32,7 +34,7 @@ public class Game implements Serializable {
     
     //Light pour liste des jeux
     public Game(int id, String title,  float price, Date releaseDate, float usersAvgScore, 
-    		int totalReviews, int stock, String tags, ArrayList<Platform> platforms) {
+    		int totalReviews, int stock, String tags, Platform platform) {
     	
         setId(id);
         setTitle(title);
@@ -42,13 +44,13 @@ public class Game implements Serializable {
         setTotalReviews(totalReviews);
         setStock(stock);
         setTags(tags);
-        setPlatforms(platforms);
+        setPlatform(platform);
     }
     
     //Complet pour page détail
     public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, 
     		int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, String tags, int developerId, Developer developer,
-    		ArrayList<Genre> genres, ArrayList<Mode> modes, ArrayList<Platform> platforms, ArrayList<Video> videos) {
+    		ArrayList<Genre> genres, ArrayList<Mode> modes, int platformId, Platform platform, ArrayList<Video> videos, ArrayList<Language> languages) {
     	
         setId(id);
         setTitle(title);
@@ -66,8 +68,10 @@ public class Game implements Serializable {
         setDeveloper(developer);
         setGenres(genres);
         setModes(modes);
-        setPlatforms(platforms);
+        setPlatformId(platformId);
+        setPlatform(platform);
         setVideos(videos);
+        setLanguages(languages);
     }
 
     // Getters et setters
@@ -201,12 +205,20 @@ public class Game implements Serializable {
 		this.modes = modes;
 	}
 
-	public ArrayList<Platform> getPlatforms() {
-		return platforms;
+	public int getPlatformId() {
+		return platformId;
 	}
 
-	public void setPlatforms(ArrayList<Platform> platforms) {
-		this.platforms = platforms;
+	public void setPlatformId(int platformId) {
+		this.platformId = platformId;
+	}
+
+	public Platform getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
 	}
 
 	public ArrayList<Video> getVideos() {
@@ -217,12 +229,19 @@ public class Game implements Serializable {
 		this.videos = videos;
 	}
 
+	public ArrayList<Language> getLanguages() {
+		return languages;
+	}
+
+	public void setLanguages(ArrayList<Language> languages) {
+		this.languages = languages;
+	}
+
 	// Méthode toString pour l'affichage
     @Override
     public String toString() {
     	String allGenres = "";
     	String allModes = "";
-    	String allPlatforms = "";
     	
     	for(Genre g:genres) {
     		allGenres+= g.getName() + " ";
@@ -230,10 +249,6 @@ public class Game implements Serializable {
     	
     	for(Mode m:modes) {
     		allModes+= m.getName() + " ";
-    	}
-    	
-    	for(Platform p:platforms) {
-    		allPlatforms+= p.getName() + " ";
     	}
     	
         return "Game{" +
@@ -252,7 +267,7 @@ public class Game implements Serializable {
                 ", developer= " + developer.getName() +
                 ", genres= " + allGenres +
                 ", modes= " + allModes +
-                ", platforms= " + allPlatforms +
+                ", platform= " + platformId +
                 '}';
     }
 }

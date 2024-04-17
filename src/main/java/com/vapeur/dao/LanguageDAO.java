@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vapeur.beans.Genre;
 import com.vapeur.beans.Language;
 import com.vapeur.config.Database;
 
@@ -92,6 +93,35 @@ public class LanguageDAO {
                 object.setId(resultat.getInt("id"));
                 object.setLocaleCode(resultat.getString("locale_code"));
                 object.setLanguage(resultat.getString("language"));
+
+                languagesList.add(object);
+            }
+            bddSays("readAll", true, languagesList.size(), null);
+            return languagesList;
+        } catch (Exception ex) {
+            bddSays("readAll", false, 0, null);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public List<Language> readAllByGameId(int game_id) {
+        ArrayList<Language> languagesList = new ArrayList<>();
+        String query = "SELECT languages.id AS language_id, languages.language AS language_name, languages.locale_code AS language_code, games_languages.interface AS language_interface, games_languages.full_audio AS language_full_audio, games_languages.subtitles AS language_subtitles FROM games_languages JOIN languages ON games_languages.language_id = languages.id WHERE game_id = ?";
+        try {
+            PreparedStatement ps = Database.connexion.prepareStatement(query);
+            ps.setInt(1, game_id);
+            ResultSet resultat = ps.executeQuery();
+
+            while (resultat.next()) {
+                Language object = new Language();
+
+                object.setId(resultat.getInt("language_id"));
+                object.setLanguage(resultat.getString("language_name"));
+                object.setLocaleCode(resultat.getString("language_code"));
+                object.setFullAudioSupport(resultat.getBoolean("language_full_audio"));
+                object.setInterfaceSupport(resultat.getBoolean("language_interface"));
+                object.setSubtitles(resultat.getBoolean("language_subtitles"));
 
                 languagesList.add(object);
             }

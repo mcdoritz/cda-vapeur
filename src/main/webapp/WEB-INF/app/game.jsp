@@ -43,7 +43,7 @@
 							<div class="player-logo">
 								<img src="assets/img/tournament/1-1.png" alt="img">
 							</div>
-							<h2 class="game-info-title"><a href="cart?add=${game.id }">Au panier !</a></h2>
+							<h2 class="sub-title"><a href="cart?add=${game.id }">Au panier !</a></h2>
 							<div class="game-meta-list">
 								<span>Mobile</span><span>Action RPG</span><span>PC</span>
 							</div>

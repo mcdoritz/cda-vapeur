@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vapeur.beans.Genre;
+import com.vapeur.beans.Mode;
 import com.vapeur.config.Database;
 
 import static com.vapeur.config.Debug.*;
@@ -88,6 +89,31 @@ public class GenreDAO {
 
                 object.setId(resultat.getInt("id"));
                 object.setName(resultat.getString("name"));
+
+                genresList.add(object);
+            }
+            bddSays("readAll", true, genresList.size(), null);
+            return genresList;
+        } catch (Exception ex) {
+            bddSays("readAll", false, 0, null);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public List<Genre> readAllByGameId(int game_id) {
+        ArrayList<Genre> genresList = new ArrayList<>();
+        String query = "SELECT genres.id AS genre_id, genres.name AS genre_name FROM games_genres JOIN genres ON games_genres.genre_id = genres.id WHERE game_id = ?";
+        try {
+            PreparedStatement ps = Database.connexion.prepareStatement(query);
+            ps.setInt(1, game_id);
+            ResultSet resultat = ps.executeQuery();
+
+            while (resultat.next()) {
+                Genre object = new Genre();
+
+                object.setId(resultat.getInt("language_id"));
+                object.setName(resultat.getString("language_name"));
 
                 genresList.add(object);
             }
