@@ -43,6 +43,8 @@ public class Store extends HttpServlet {
 	private LanguageDAO languagedao = new LanguageDAO();
 	private PlatformDAO platformdao = new PlatformDAO();
 	private DeveloperDAO developerdao = new DeveloperDAO();
+	
+	private int page = 0;
 
     public Store() {
         super();
@@ -58,8 +60,6 @@ public class Store extends HttpServlet {
 		
 		int totalGames = gamedao.countAll();
 		prln(totalGames + " games dans la bdd");
-		
-		int page = 0;
 		
 		try {
 			
@@ -119,74 +119,49 @@ public class Store extends HttpServlet {
 		
 		prln("doPost Store");
 		
+		//Prendre les values du form et les puter dans l'url puis retour à doGet.
 		String[] genresSelected = request.getParameterValues("genres");
 		String[] modesSelected = request.getParameterValues("modes");
 		String[] languagesSelected = request.getParameterValues("languages");
 		String[] platformsSelected = request.getParameterValues("platforms");
 		String[] developersSelected = request.getParameterValues("developers");
 		
-		// -- Faire ça plutôt côté DAO ?  :
+		String filters [] = {"genres", "modes", "languages", "platforms", "developers"};
 		
-		ArrayList<Integer> genresFilter = new ArrayList<>();
-		ArrayList<Integer> modesFilter = new ArrayList<>();
-		ArrayList<Integer> languagesFilter = new ArrayList<>();
-		ArrayList<Integer> platformsFilter = new ArrayList<>();
-		ArrayList<Integer> developersFilter = new ArrayList<>();
+		ArrayList<String[]> filtersSelected = new ArrayList<>();
+		filtersSelected.add(genresSelected);
+		filtersSelected.add(modesSelected);
+		filtersSelected.add(languagesSelected);
+		filtersSelected.add(platformsSelected);
+		filtersSelected.add(developersSelected);
 		
-		if(genresSelected != null) {
-			for(String str:genresSelected) {
-				genresFilter.add(Integer.parseInt(str));
-			}
+		String parameters = "";
+		
+		Boolean alreadyOneParam = false;
+		int index = 0;
+		
+		for(String[] params:filtersSelected) {
+			if(params != null) {
+				parameters += !alreadyOneParam ? "?" + filters[index] + "=" : "&" + filters[index] + "=";
+				for(String str:params) {
+					parameters += str + ",";
+					alreadyOneParam = true;
+				}
+				parameters = parameters.substring(0, parameters.length() - 1); //Enlever la dernière virgule
+			}	
+			index++;
 		}
+	
+		prln("*******");
+		prln(parameters);
+		prln("*******");
 		
-		if(modesSelected != null) {
-			for(String str:modesSelected) {
-				modesFilter.add(Integer.parseInt(str));
-			}
-		}
+		String url = "store" + parameters;
+		prln("URL " + url);
 		
-		
-		if(languagesSelected != null) {
-			for(String str:languagesSelected) {
-				languagesFilter.add(Integer.parseInt(str));
-			}
-		}
-		
-		
-		
-		if(platformsSelected != null) {
-			for(String str:platformsSelected) {
-				platformsFilter.add(Integer.parseInt(str));
-			}
-		}
-		
-		
-		
-		if(developersSelected != null) {
-			for(String str:developersSelected) {
-				developersFilter.add(Integer.parseInt(str));
-			}
-		}
-        for(int g:genresFilter) {
-    		prln("Servlet valeur de  g : " + g);
-    	}
-		
-        List<Game> gamesList = new ArrayList<>();
-		gamesList = gamedao.readAll(1, genresFilter, modesFilter, languagesFilter, platformsFilter, developersFilter);
-		
-		request.setAttribute("gamesInPage", gamesList.size());
-		request.setCharacterEncoding("UTF-8");
-		request.setAttribute("gamesList", gamesList);
-		
-		prln("Taille liste filtrée : " + gamesList.size());
-		
-		request.setAttribute("genresChecked", genresFilter);
-		request.setAttribute("modesChecked", modesFilter);
-		request.setAttribute("languagesChecked", languagesFilter);
-		request.setAttribute("platformsChecked", platformsFilter);
-		request.setAttribute("developersChecked", developersFilter);
 		request.setAttribute("pageTitle", "Magasin");
-		request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
+		request.setAttribute("page", page);
+		response.sendRedirect(url);
 	}
 
 }
