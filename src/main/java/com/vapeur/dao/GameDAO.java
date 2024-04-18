@@ -151,10 +151,10 @@ public class GameDAO {
     }
     
     //Sers à lister les jeux, inutile de tout prendre donc.
-    public List<Game> readAll(int page) {
+    public List<Game> readAll(int page, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id, ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
         ArrayList<Game> gamesList = new ArrayList<>();
-        int min;
         
+        int min;
         if(page < 2) {
         	min = page;
         	
@@ -163,6 +163,38 @@ public class GameDAO {
         }
 
         try {
+        	
+        	//Construction de la query ------------------------
+        	String query = "SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id JOIN developers ON games.developer_id = developers.id JOIN games_genres ON games_genres.game_id = games.id JOIN genres ON games_genres.genre_id = genres.id JOIN games_modes ON games_modes.mode_id = games.id JOIN modes ON games_modes.mode_id = modes.id JOIN games_languages ON games_languages.game_id = games.id JOIN languages ON games_languages.language_id = languages.id WHERE stock > 0";
+        	String queryConditions = "";
+        	
+        	for(int g:genres_id) {
+        		prln("DAO valeur de  g : " + g);
+        		queryConditions += "games_genres.genre_id = " + g + " OR ";
+        	}
+        	for(int m:modes_id) {
+        		queryConditions += "games_modes.mode_id = " + m + " OR ";
+        	}
+        	for(int l:languages_id) {
+        		queryConditions += "games_languages.language_id = " + l + " OR ";
+        	}
+        	for(int p:platforms_id) {
+        		queryConditions += "platform_id = " + p + " OR ";
+        	}
+        	for(int d:developers_id) {
+        		queryConditions += "developer_id = " + d + " OR ";
+        	}
+        	prln(queryConditions);
+        	
+        	if(queryConditions != "") {
+        		queryConditions = queryConditions.substring(0, queryConditions.length() - 4); //Enlever le dernier OR
+        		query += " AND ";
+        	}
+        	query += queryConditions + " ORDER BY games.title ASC LIMIT ?,12";
+        	prln(query);
+        	
+        	// -------------------------------------------------------------
+        	
             PreparedStatement ps = Database.connexion.prepareStatement("SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE stock > 0 ORDER BY games.title ASC LIMIT ?,12 ");
             ps.setInt(1, min);
             ResultSet resultat = ps.executeQuery();

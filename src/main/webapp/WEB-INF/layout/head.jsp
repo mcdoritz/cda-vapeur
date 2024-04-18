@@ -70,4 +70,7 @@
 <!-- Theme Custom CSS -->
 <link rel="stylesheet" href="assets/css/style.css">
 
+<!-- Mon CSS -->
+<link rel="stylesheet" href="assets/css/fd.css">
+
 </head>

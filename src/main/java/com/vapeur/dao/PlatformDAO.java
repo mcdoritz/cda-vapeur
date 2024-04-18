@@ -72,7 +72,7 @@ public class PlatformDAO {
             
             
             String objectInfos = "Platform ID: " + object.getId();
-            bddSays("read", true, object.getId(), objectInfos);
+            //bddSays("read", true, object.getId(), objectInfos);
             return object;
 
         } catch (Exception ex) {
