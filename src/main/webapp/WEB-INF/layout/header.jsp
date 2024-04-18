@@ -39,6 +39,10 @@
                                     </c:if>
                                     <c:if test="${sessionScope.user == null }">
                                     	<li><a href="login">Se connecter</a></li>
+                                    	<li><a href="signup" style="color:var(--theme-color)" class="panier">S'inscrire</a></li>
+                                    </c:if>
+                                    <c:if test="${sessionScope.user != null }">
+                                    	<li><a href="logout">Se déconnecter</a></li>
                                     </c:if>
                                 </ul>
                             </nav>

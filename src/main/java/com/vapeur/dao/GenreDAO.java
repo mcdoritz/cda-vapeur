@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vapeur.beans.Game;
 import com.vapeur.beans.Genre;
 import com.vapeur.beans.Mode;
 import com.vapeur.config.Database;
@@ -125,6 +126,44 @@ public class GenreDAO {
             return null;
         }
     }
+    
+    public Genre getNameAndIdById(int id) {
+		try {
+
+			PreparedStatement ps = Database.connexion.prepareStatement(
+					"SELECT name FROM genres WHERE id = ?;");
+			ps.setInt(1, id);
+			ResultSet resultat = ps.executeQuery();
+			Genre object = new Genre();
+			while (resultat.next()) {
+				object.setId(id);
+				object.setName(resultat.getString("name"));
+			}
+			return object;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+    
+    public int countAll() {
+		try {
+			PreparedStatement ps = Database.connexion
+					.prepareStatement("SELECT COUNT(*) AS total FROM genres");
+			ResultSet resultat = ps.executeQuery();
+
+			int total = 0;
+
+			while (resultat.next()) {
+				total = resultat.getInt("total");
+			}
+
+			return total;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
 
     public void delete(int genre_id) {
         try {

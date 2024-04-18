@@ -64,10 +64,12 @@ public class GameDetails extends HttpServlet {
 				
 			}else {
 				prln("Erreur servlet Game : l'id dans l'URL n'est pas un nombre");
+				response.sendRedirect("store");
 			}
 			
 		}else {
 			prln("Erreur servlet Game : pas d'id dans l'URL");
+			response.sendRedirect("store");
 		}
 		
 	}

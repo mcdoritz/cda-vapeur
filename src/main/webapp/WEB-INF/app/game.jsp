@@ -21,6 +21,77 @@
 						</p>
 					</div>
 				</div>
+				<div class="widget widget_tag_cloud  ">
+					<h3 class="widget_title">Langues disponibles</h3>
+					<table class="table tournament-table" style="min-width: unset">
+						<thead>
+							<tr>
+								<th scope="col"></th>
+								<th scope="col" style="text-align: center">Interface</th>
+								<th scope="col" style="text-align: center">Audio</th>
+								<th scope="col" style="text-align: center; padding-right: 0">Sous-titres</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="langue" items="${game.languages }">
+								<tr>
+									<td><c:out value="${langue.language }" /></td>
+									<td style="text-align: center"><c:if
+											test="${langue.interfaceSupport == true }">
+											<i class="fa-regular fa-circle-check"></i>
+										</c:if></td>
+									<td style="text-align: center"><c:if
+											test="${langue.fullAudioSupport == true }">
+											<i class="fa-regular fa-circle-check"></i>
+										</c:if></td>
+									<td style="text-align: center"><c:if
+											test="${langue.subtitles == true }">
+											<i class="fa-regular fa-circle-check"></i>
+										</c:if></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+				<div class="widget widget_tag_cloud  ">
+					<h3 class="widget_title">Développeur : <c:out value="${game.developer.name }" /></h3>
+					<div class="team-info-list">
+							<ul>
+								<li>Fondé en <span><fmt:formatDate pattern="yyyy"
+											value="${game.developer.creationDate}" /></span></li>
+								<li>Pays: <span><c:out
+											value="${game.developer.country }" /></span></li>
+							</ul>
+						</div>
+						<div class="team-social mt-25">
+							<h5 class="fw-semibold text-white">
+								Suivre <span class="text-theme"><c:out
+										value="${game.developer.name }" /></span>
+							</h5>
+							<div class="th-social style-mask">
+								<c:if test="${game.developer.urlInstagram != null }">
+									<a class="instagram" href="${game.developer.urlInstagram }">
+										<i class="fab fa-instagram"></i>
+									</a>
+								</c:if>
+								<c:if test="${game.developer.urlX != null }">
+									<a class="twitter" href="${game.developer.urlX }"> <i
+										class="fab fa-twitter"></i>
+									</a>
+								</c:if>
+								<c:if test="${game.developer.urlFacebook != null }">
+									<a class="facebook" href="${game.developer.urlFacebook }"> <i
+										class="fab fa-facebook-f"></i>
+									</a>
+								</c:if>
+								<c:if test="${game.developer.urlWebsite != null }">
+									<a class="google-play" href="${game.developer.urlWebsite }">
+										<img src="assets/img/icon/google-playstore-icon.svg" alt="icon">
+									</a>
+								</c:if>
+							</div>
+						</div>
+				</div>
 			</div>
 			<div class="col-xxl-4 col-lg-5">
 				<aside class="sidebar-area">
@@ -30,8 +101,8 @@
 								<img src="assets/img/tournament/1-1.png" alt="img">
 							</div>
 							<h2 class="sub-title">
-								<a href="cart?add=${game.id }" class="panier">Au panier !<br> <i
-									class="fa-solid fa-cart-shopping"></i></a>
+								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
+									<i class="fa-solid fa-cart-shopping"></i></a>
 							</h2>
 							<div class="game-rating-info">
 								<div class="rating-wrap">
@@ -60,7 +131,8 @@
 							<div class="counter-card">
 								<div class="media-body">
 									<h2 class="box-text" style="font-size: 2em">
-										<c:out value="${game.platform.name }" />
+										<a href="store?platforms=${game.platform.id }" class="panier"><c:out
+												value="${game.platform.name }" /></a>
 									</h2>
 								</div>
 							</div>
@@ -93,62 +165,25 @@
 						</div>
 					</div>
 					<div class="widget  ">
-							<div class="widget-game-info">
-								<h2 class="sub-title">
-									<a href="cart?add=${game.id }" class="panier">Au panier !<br>
+						<div class="widget-game-info">
+							<h2 class="sub-title">
+								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
 									<i class="fa-solid fa-cart-shopping"></i></a>
-								</h2>
-							</div>
+							</h2>
 						</div>
+					</div>
 				</aside>
 			</div>
-			<div class="col-xxl-8 col-lg-7">
-				<div class="team-about-card">
-					<div class="title-area mb-0">
-						<span class="sub-title">Développement</span>
-						<h2 class="sec-title">
-							<c:out value="${game.developer.name }" />
-						</h2>
-					</div>
-					<p class="about-card_text mt-30 mb-25"></p>
-					<div class="team-info-list">
-						<ul>
-							<li>Fondé en <span><fmt:formatDate pattern="yyyy"
-										value="${game.developer.creationDate}" /></span></li>
-							<li>Pays: <span><c:out
-										value="${game.developer.country }" /></span></li>
-						</ul>
-					</div>
-					<div class="team-social mt-25">
-						<h5 class="fw-semibold text-white">
-							Suivre <span class="text-theme"><c:out
-									value="${game.developer.name }" /></span>
-						</h5>
-						<div class="th-social style-mask">
-							<c:if test="${game.developer.urlInstagram != null }">
-								<a class="instagram" href="${game.developer.urlInstagram }">
-									<i class="fab fa-instagram"></i>
-								</a>
-							</c:if>
-							<c:if test="${game.developer.urlX != null }">
-								<a class="twitter" href="${game.developer.urlX }"> <i
-									class="fab fa-twitter"></i>
-								</a>
-							</c:if>
-							<c:if test="${game.developer.urlFacebook != null }">
-								<a class="facebook" href="${game.developer.urlFacebook }"> <i
-									class="fab fa-facebook-f"></i>
-								</a>
-							</c:if>
-							<c:if test="${game.developer.urlWebsite != null }">
-								<a class="google-play" href="${game.developer.urlWebsite }">
-									<img src="assets/img/icon/google-playstore-icon.svg" alt="icon">
-								</a>
-							</c:if>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
+		<div class="widget widget_tag_cloud  ">
+					<h3 class="widget_title">Evaluations des utilisateurs</h3>
+
+		</div>
+		<div class="game-title-wrap">
+		<h2 class="page-title text-white mb-0">Ca va vous plaire également :</h2>
+		<p>Suggestions basées sur vos achats précédents</p>
 	</div>
+	<%@ include file="components/carroutext.jsp"%>
+	</div>
+	
 </section>

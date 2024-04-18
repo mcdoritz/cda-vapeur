@@ -1,8 +1,6 @@
 <div class="swiper th-slider hero-cta-slider1 swiper-fade swiper-initialized swiper-horizontal swiper-watch-progress swiper-backface-hidden" id="heroSlider1" data-slider-options="{&quot;effect&quot;:&quot;fade&quot;}">
         <div class="swiper-wrapper" id="swiper-wrapper-2fbc6a89d5689388" aria-live="off" style="transition-duration: 0ms; transition-delay: 0ms;">
-            
-            
-            
+
         <div class="swiper-slide swiper-slide-next" style="width: 1903px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;" role="group" aria-label="3 / 3" data-swiper-slide-index="2">
                 <div class="hero-cta-inner">
                     <div class="container th-container2">
@@ -50,12 +48,12 @@
                                 </div>
                             </div>
                             <div class="title-area mb-0">
-                                <h2 class="sec-title text-white custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.1s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.1s; animation-name: custom-anim-top;">Join The Big Tournaments</h2>
-                                <p class="mt-30 mb-30 custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">Beyond esports tournaments, include a broader calendar of gaming events, conferences, and conventions. and connect with each other.</p>
+                                <h2 class="sec-title text-white custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.1s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.1s; animation-name: custom-anim-top;">Join The Vapeur</h2>
+                                <p class="mt-30 mb-30 custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">Inscrivez-vous pour explorer, acheter et interagir avec une foultitude de jeux-vidéo ! Bienvenue dans un monde vaporeux, immersif et convivial !</p>
                                 <div class="btn-group custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">
-                                    <a href="about.html" class="th-btn style-border">
+                                    <a href="signup" class="th-btn style-border">
                                         <span class="btn-border">
-                                            JOIN NOW <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            Inscrivez-vous ! <i class="fa-solid fa-arrow-right ms-2"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -111,12 +109,12 @@
                                 </div>
                             </div>
                             <div class="title-area mb-0">
-                                <h2 class="sec-title text-white custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.1s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.1s; animation-name: custom-anim-top;">Join The Big Tournaments</h2>
-                                <p class="mt-30 mb-30 custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">Beyond esports tournaments, include a broader calendar of gaming events, conferences, and conventions. and connect with each other.</p>
+                                <h2 class="sec-title text-white custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.1s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.1s; animation-name: custom-anim-top;">Join les autres</h2>
+                                <p class="mt-30 mb-30 custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">Ils s'amusent comme des ptits fous, so will you do be doubida</p>
                                 <div class="btn-group custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">
-                                    <a href="about.html" class="th-btn style-border">
+                                    <a href="signup" class="th-btn style-border">
                                         <span class="btn-border">
-                                            JOIN NOW <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            Inscrivez-vous ! <i class="fa-solid fa-arrow-right ms-2"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -172,12 +170,12 @@
                                 </div>
                             </div>
                             <div class="title-area mb-0">
-                                <h2 class="sec-title text-white custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.1s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.1s; animation-name: custom-anim-top;">Join The Big Tournaments</h2>
-                                <p class="mt-30 mb-30 custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">Beyond esports tournaments, include a broader calendar of gaming events, conferences, and conventions. and connect with each other.</p>
+                                <h2 class="sec-title text-white custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.1s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.1s; animation-name: custom-anim-top;">Join n'est pas jouer</h2>
+                                <p class="mt-30 mb-30 custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">Joindre c'est bien. Acheter, c'est super. Jouer c'est EPIC !</p>
                                 <div class="btn-group custom-anim-top wow" data-wow-duration="1.3s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.3s; animation-delay: 0.2s; animation-name: custom-anim-top;">
-                                    <a href="about.html" class="th-btn style-border">
+                                    <a href="signup" class="th-btn style-border">
                                         <span class="btn-border">
-                                            JOIN NOW <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            Inscrivez-vous ! <i class="fa-solid fa-arrow-right ms-2"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -189,75 +187,4 @@
             </div></div>
         <div class="slider-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal"><span class="swiper-pagination-bullet" aria-label="Go to Slide 1" tabindex="0"></span><span class="swiper-pagination-bullet swiper-pagination-bullet-active" aria-label="Go to Slide 2" tabindex="0" aria-current="true"></span><span class="swiper-pagination-bullet" aria-label="Go to Slide 3" tabindex="0"></span></div>
     <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span></div>
-    <div class="marquee-area-1 bg-repeat overflow-hidden background-image" style="background-image: url(&quot;assets/img/bg/jiji-bg.png&quot;);">
-        <div class="container-fluid">
-            <div class="swiper th-slider swiper-initialized swiper-horizontal swiper-backface-hidden" id="marqueeSlider1" data-slider-options="{&quot;breakpoints&quot;:{&quot;0&quot;:{&quot;slidesPerView&quot;:&quot;auto&quot;}},&quot;autoplay&quot;:{&quot;delay&quot;:1500,&quot;disableOnInteraction&quot;:false},&quot;spaceBetween&quot;:50}">
-                <div class="swiper-wrapper" id="swiper-wrapper-0b382ce4ace298ac" aria-live="off" style="transition-duration: 1000ms; transform: translate3d(-1157.72px, 0px, 0px);">
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                    <!-- Single Item -->
-                    
-
-                <div class="marquee-item swiper-slide" style="margin-right: 50px;" role="group" aria-label="4 / 8" data-swiper-slide-index="3">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">COLLECTION OG GAMES</a></h3>
-                    </div><div class="marquee-item swiper-slide" style="margin-right: 50px;" role="group" aria-label="5 / 8" data-swiper-slide-index="4">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">GAMING SPANING</a></h3>
-                    </div><div class="marquee-item swiper-slide swiper-slide-prev" style="margin-right: 50px;" role="group" aria-label="6 / 8" data-swiper-slide-index="5">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">ACTION - PACKED</a></h3>
-                    </div><div class="marquee-item swiper-slide swiper-slide-active" style="margin-right: 50px;" role="group" aria-label="7 / 8" data-swiper-slide-index="6">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">MIND - BENDING</a></h3>
-                    </div><div class="marquee-item swiper-slide swiper-slide-next" style="margin-right: 50px;" role="group" aria-label="8 / 8" data-swiper-slide-index="7">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">COLLECTION OG GAMES</a></h3>
-                    </div><div class="marquee-item swiper-slide" style="margin-right: 50px;" role="group" aria-label="1 / 8" data-swiper-slide-index="0">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">GAMING SPANING</a></h3>
-                    </div><div class="marquee-item swiper-slide" style="margin-right: 50px;" role="group" aria-label="2 / 8" data-swiper-slide-index="1">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">ACTION - PACKED</a></h3>
-                    </div><div class="marquee-item swiper-slide" style="margin-right: 50px;" role="group" aria-label="3 / 8" data-swiper-slide-index="2">
-                        <div class="marquee_icon">
-                            <img src="assets/img/normal/star.png" alt="Icon">
-                        </div>
-                        <h3 class="marquee-title"><a href="service-details.html">MIND - BENDING</a></h3>
-                    </div></div>
-            <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span></div>
-        </div>
-    </div>
+    <%@ include file="components/carroutext.jsp"%>

@@ -54,26 +54,12 @@ public class Store extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		
-		if(request.getParameter("reset") != null) {
-			prln("reset");
-		}
-		
-		for(int i:genres) {
-			prln("valeur de genres_id : " + i);
-		}
 		genres.clear();
 		modes.clear();
 		languages.clear();
 		platforms.clear();
 		developers.clear();
-		prln("*** cleared **");
-		for(int i:genres) {
-			prln("valeur de genres_id : " + i);
-		}
 		
-		if(genres.size() == 0) {
-			prln("genres vide");
-		}
 		
 		Database.connect();
 		
@@ -91,6 +77,14 @@ public class Store extends HttpServlet {
 			String languagesSelectedStr  = request.getParameter("languages");
 			String platformsSelectedStr  = request.getParameter("platforms");
 			String developersSelectedStr  = request.getParameter("developers");
+			
+			if(request.getParameter("reset") != null) {
+				genresSelectedStr = null;
+				modesSelectedStr  = null;
+				languagesSelectedStr  = null;
+				platformsSelectedStr  = null;
+				developersSelectedStr  = null;
+			}
 			
 			String[] genresSelectedTbl;
 			String[] modesSelectedTbl;
@@ -160,8 +154,6 @@ public class Store extends HttpServlet {
 			ArrayList<Platform> platformsFilter = new ArrayList<>(platformdao.readAll());
 			ArrayList<Developer> developersFilter = new ArrayList<>(developerdao.readAll());
 			
-			
-			
 			// ----------------------------------------
 			
 			request.setAttribute("genres", genresFilter);
@@ -169,6 +161,12 @@ public class Store extends HttpServlet {
 			request.setAttribute("languages", languagesFilter);
 			request.setAttribute("platforms", platformsFilter);
 			request.setAttribute("developers", developersFilter);
+			
+			request.setAttribute("genresSelected", genres);
+			request.setAttribute("modesSelected", modes);
+			request.setAttribute("languagesSelected", languages);
+			request.setAttribute("platformsSelected", platforms);
+			request.setAttribute("developersSelected", developers);
 			
 			request.setAttribute("page", page);
 			request.setAttribute("gamesInPage", gamesList.size());

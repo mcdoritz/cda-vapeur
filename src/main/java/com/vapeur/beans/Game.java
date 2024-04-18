@@ -237,37 +237,17 @@ public class Game implements Serializable {
 		this.languages = languages;
 	}
 
-	// Méthode toString pour l'affichage
-    @Override
-    public String toString() {
-    	String allGenres = "";
-    	String allModes = "";
-    	
-    	for(Genre g:genres) {
-    		allGenres+= g.getName() + " ";
-    	}
-    	
-    	for(Mode m:modes) {
-    		allModes+= m.getName() + " ";
-    	}
-    	
-        return "Game{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", classification=" + classification +
-                ", price=" + price +
-                ", releaseDate=" + releaseDate +
-                ", usersAvgScore=" + usersAvgScore +
-                ", totalreviews=" + totalReviews +
-                ", controllerSupport=" + controllerSupport +
-                ", requires3rdPartyAccount=" + requires3rdPartyAccount +
-                ", stock=" + stock +
-                ", tags= " + tags + '\'' +
-                ", developer= " + developer.getName() +
-                ", genres= " + allGenres +
-                ", modes= " + allModes +
-                ", platform= " + platformId +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Game [id=" + id + ", title=" + title + ", description=" + description + ", classification="
+				+ classification + ", price=" + price + ", releaseDate=" + releaseDate + ", usersAvgScore="
+				+ usersAvgScore + ", totalReviews=" + totalReviews + ", controllerSupport=" + controllerSupport
+				+ ", requires3rdPartyAccount=" + requires3rdPartyAccount + ", stock=" + stock + ", tags=" + tags
+				+ ", developerId=" + developerId + ", developer=" + developer + ", genres=" + genres + ", modes="
+				+ modes + ", platformId=" + platformId + ", platform=" + platform + ", videos=" + videos
+				+ ", languages=" + languages + "]";
+	}
+
+	
+
 }

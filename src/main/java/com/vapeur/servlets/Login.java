@@ -1,9 +1,6 @@
 package com.vapeur.servlets;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,11 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import com.vapeur.beans.User;
 import com.vapeur.config.Database;
 import com.vapeur.dao.UserDAO;
+
+import static com.vapeur.config.Debug.*;
 
 @WebServlet("/login")
 public class Login extends HttpServlet {
@@ -30,8 +28,19 @@ public class Login extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		// TODO Auto-generated method stub
-		request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
+		
+		if(session.getAttribute("user")== null) {
+			prln("login : pas d'user loggué");
+			request.setAttribute("pageTitle", "Connexion");
+			request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
+			
+		}else {
+			prln("login : user loggué");
+			
+			response.sendRedirect("library");
+		}
+		
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +57,7 @@ public class Login extends HttpServlet {
 				// Si tout est OK création de la session
 				HttpSession session = request.getSession();
 				session.setAttribute("user", authorizedUser);
-				response.sendRedirect("/");
+				response.sendRedirect("library");
 			} else {
 				doGet(request, response);
 			}

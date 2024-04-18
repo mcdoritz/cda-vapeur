@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vapeur.beans.Developer;
+import com.vapeur.beans.Mode;
 import com.vapeur.config.Database;
 
 import static com.vapeur.config.Debug.*;
@@ -123,6 +124,44 @@ public class DeveloperDAO {
             return null;
         }
     }
+    
+    public Developer getNameAndIdById(int id) {
+		try {
+
+			PreparedStatement ps = Database.connexion.prepareStatement(
+					"SELECT name FROM developers WHERE id = ?;");
+			ps.setInt(1, id);
+			ResultSet resultat = ps.executeQuery();
+			Developer object = new Developer();
+			while (resultat.next()) {
+				object.setId(id);
+				object.setName(resultat.getString("name"));
+			}
+			return object;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+    
+    public int countAll() {
+		try {
+			PreparedStatement ps = Database.connexion
+					.prepareStatement("SELECT COUNT(*) AS total FROM developers");
+			ResultSet resultat = ps.executeQuery();
+
+			int total = 0;
+
+			while (resultat.next()) {
+				total = resultat.getInt("total");
+			}
+
+			return total;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
 
     public void delete(int developer_id) {
         try {

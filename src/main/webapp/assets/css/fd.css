@@ -1,5 +1,5 @@
 @charset "ISO-8859-1";
 
-.option-label, .panier:hover{
+.option-label, .panier:hover, .fd-link:hover{
 	color:white!important;
 }

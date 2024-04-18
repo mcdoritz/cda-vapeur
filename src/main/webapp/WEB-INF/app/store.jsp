@@ -12,7 +12,7 @@
 		<h3 style="color: white; text-align: center">
 			
 		</h3>
-		<%@ include file="forms/filters.jsp"%>
+		<%@ include file="forms/filtersForm.jsp"%>
 		<div class="row gy-4">
 			<c:forEach var="game" items="${gamesList }">
 				<div class="col-lg-4 col-md-6">

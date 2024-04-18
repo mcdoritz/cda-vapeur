@@ -1,8 +1,9 @@
 package com.vapeur.servlets;
 
+import static com.vapeur.config.Debug.prln;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,9 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.vapeur.beans.Game;
-
-import static com.vapeur.config.Debug.*;
+import com.vapeur.config.Database;
+import com.vapeur.dao.GameDAO;
 
 @WebServlet(urlPatterns = { "/", "/landing" })
 public class Landing extends HttpServlet {
@@ -34,7 +34,11 @@ public class Landing extends HttpServlet {
 			response.sendRedirect("404");
 			return;
 		}
+		Database.connect();
+		GameDAO gamedao = new GameDAO();
 		
+		ArrayList<Object> list = new ArrayList<>(gamedao.auHasard());
+		request.setAttribute("list", list);
 
 		// ----------------------
 		request.getRequestDispatcher("WEB-INF/app/landing.jsp").forward(request, response);

@@ -1,14 +1,15 @@
 package com.vapeur.dao;
 
-import static com.vapeur.config.Debug.*;
+import static com.vapeur.config.Debug.bddSays;
+import static com.vapeur.config.Debug.prln;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import com.vapeur.beans.Game;
 import com.vapeur.beans.Genre;
@@ -176,7 +177,7 @@ public class GameDAO {
 				prln("DAO valeur de  g : " + g);
 				queryConditions += "games_genres.genre_id = " + g + " OR ";
 			}
-			queryJoins += modes_id.size() > 0 ? " JOIN games_modes ON games_modes.mode_id = games.id JOIN modes ON games_modes.mode_id = modes.id " : "";
+			queryJoins += modes_id.size() > 0 ? " JOIN games_modes ON games_modes.game_id = games.id JOIN modes ON games_modes.mode_id = modes.id " : "";
 			for (int m : modes_id) {
 				queryConditions += "games_modes.mode_id = " + m + " OR ";
 			}
@@ -229,6 +230,25 @@ public class GameDAO {
 			return null;
 		}
 	}
+	
+	public Game getNameAndIdById(int id) {
+		try {
+
+			PreparedStatement ps = Database.connexion.prepareStatement(
+					"SELECT title FROM games WHERE id = ?;");
+			ps.setInt(1, id);
+			ResultSet resultat = ps.executeQuery();
+			Game object = new Game();
+			while (resultat.next()) {
+				object.setId(id);
+				object.setTitle(resultat.getString("title"));
+			}
+			return object;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
 
 	public int countAll() {
 		try {
@@ -258,6 +278,40 @@ public class GameDAO {
 		} catch (Exception ex) {
 			bddSays("delete", false, game_id, null);
 			ex.printStackTrace();
+		}
+	}
+	
+	/*
+	 * Récupère 1 jeu, 1 genre, 1 developer, 1 mode de jeu
+	 */
+	public ArrayList<Object> auHasard() {
+		try {
+			
+			ModeDAO modedao = new ModeDAO();
+			GenreDAO genredao = new GenreDAO();
+			DeveloperDAO developerdao = new DeveloperDAO();
+			
+			Random dé = new Random();
+			
+			ArrayList<Object> list = new ArrayList<>();
+						
+			//Game
+			list.add(getNameAndIdById(dé.nextInt(countAll()-1)+1));
+
+			
+			//Genre
+			list.add(genredao.getNameAndIdById(dé.nextInt(genredao.countAll()-1)+1));
+			
+			//Déveloper
+			list.add(developerdao.getNameAndIdById(dé.nextInt(developerdao.countAll()-1)+1));
+			
+			//Mode
+			list.add(modedao.getNameAndIdById(dé.nextInt(modedao.countAll()-1)+1));
+			
+			return list;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
 		}
 	}
 }

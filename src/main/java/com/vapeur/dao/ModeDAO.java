@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vapeur.beans.Genre;
 import com.vapeur.beans.Mode;
 import com.vapeur.config.Database;
 
@@ -124,6 +125,44 @@ public class ModeDAO {
             return null;
         }
     }
+    
+    public Mode getNameAndIdById(int id) {
+		try {
+
+			PreparedStatement ps = Database.connexion.prepareStatement(
+					"SELECT name FROM modes WHERE id = ?;");
+			ps.setInt(1, id);
+			ResultSet resultat = ps.executeQuery();
+			Mode object = new Mode();
+			while (resultat.next()) {
+				object.setId(id);
+				object.setName(resultat.getString("name"));
+			}
+			return object;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+    
+    public int countAll() {
+		try {
+			PreparedStatement ps = Database.connexion
+					.prepareStatement("SELECT COUNT(*) AS total FROM modes");
+			ResultSet resultat = ps.executeQuery();
+
+			int total = 0;
+
+			while (resultat.next()) {
+				total = resultat.getInt("total");
+			}
+
+			return total;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
 
     public void delete(int mode_id) {
         try {
