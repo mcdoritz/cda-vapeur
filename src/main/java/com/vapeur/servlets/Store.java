@@ -53,6 +53,28 @@ public class Store extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		
+		if(request.getParameter("reset") != null) {
+			prln("reset");
+		}
+		
+		for(int i:genres) {
+			prln("valeur de genres_id : " + i);
+		}
+		genres.clear();
+		modes.clear();
+		languages.clear();
+		platforms.clear();
+		developers.clear();
+		prln("*** cleared **");
+		for(int i:genres) {
+			prln("valeur de genres_id : " + i);
+		}
+		
+		if(genres.size() == 0) {
+			prln("genres vide");
+		}
+		
 		Database.connect();
 		
 		List<Game> gamesList = new ArrayList<>();
@@ -62,28 +84,82 @@ public class Store extends HttpServlet {
 		prln(totalGames + " games dans la bdd");
 		
 		try {
+			//Récupérer tous les paramètres de l'url // String => tableau str => tableau int
+
+			String genresSelectedStr = request.getParameter("genres");
+			String modesSelectedStr  = request.getParameter("modes");
+			String languagesSelectedStr  = request.getParameter("languages");
+			String platformsSelectedStr  = request.getParameter("platforms");
+			String developersSelectedStr  = request.getParameter("developers");
 			
+			String[] genresSelectedTbl;
+			String[] modesSelectedTbl;
+			String[] languagesSelectedTbl;
+			String[] platformsSelectedTbl;
+			String[] developersSelectedTbl;
+			
+			if(genresSelectedStr != null) {
+				genresSelectedTbl = genresSelectedStr.split(",");
+				for(String str:genresSelectedTbl) {
+					prln("genre id str : " + str);
+					genres.add(Integer.parseInt(str));
+				}
+			}
+			
+			if(modesSelectedStr != null) {
+				modesSelectedTbl = modesSelectedStr.split(",");
+				for(String str:modesSelectedTbl) {
+					modes.add(Integer.parseInt(str));
+				}
+			}
+			
+			if(languagesSelectedStr != null) {
+				languagesSelectedTbl = languagesSelectedStr.split(",");
+				for(String str:languagesSelectedTbl) {
+					languages.add(Integer.parseInt(str));
+				}
+			}
+			
+			if(platformsSelectedStr != null) {
+				platformsSelectedTbl = platformsSelectedStr.split(",");
+				for(String str:platformsSelectedTbl) {
+					platforms.add(Integer.parseInt(str));
+				}
+			}
+			
+			if(developersSelectedStr != null) {
+				developersSelectedTbl = developersSelectedStr.split(",");
+				for(String str:developersSelectedTbl) {
+					developers.add(Integer.parseInt(str));
+				}
+			}
+
 			if(request.getParameter("page") != null) {
 				page = Integer.parseInt(request.getParameter("page"));
 				if(page > 0) {
+					prln("ICI");
 					gamesList = gamedao.readAll(page, genres, modes, languages, platforms, developers);
 					
 				}else {
+					prln("LA");
 					gamesList = gamedao.readAll(1, genres, modes, languages, platforms, developers);
 					
 				}
 			}else {
-				gamesList = gamedao.readAll(1, genres, modes, languages, platforms, developers);
+				prln("LA BAS");
+				for(int i:genres) {
+					prln("valeur de genres_id avant dao : " + i);
+				}
+				gamesList = gamedao.readAll(0, genres, modes, languages, platforms, developers);
 			}
 			
-			// Préparation des options pour les filtres
-			
-			
+			// Préparation des options pour l'affichage des filtres
 			ArrayList<Genre> genresFilter = new ArrayList<>(genredao.readAll());
 			ArrayList<Mode> modesFilter = new ArrayList<>(modedao.readAll());
 			ArrayList<Language> languagesFilter = new ArrayList<>(languagedao.readAll());
 			ArrayList<Platform> platformsFilter = new ArrayList<>(platformdao.readAll());
 			ArrayList<Developer> developersFilter = new ArrayList<>(developerdao.readAll());
+			
 			
 			
 			// ----------------------------------------
@@ -104,12 +180,15 @@ public class Store extends HttpServlet {
 			
 			//Si pas de games dans la liste, alors retour à la première page.
 			if(gamesList.size() == 0) {
-				response.sendRedirect("store");
+				prln("po de jeu");
+				response.sendRedirect("landing");
 			}else {
 				request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
 			}
 
 		}catch (NumberFormatException e){
+			prln("Exception de nombre dans la SERVLET");
+			e.printStackTrace();
 			response.sendRedirect("404");
 		}
 
@@ -120,11 +199,11 @@ public class Store extends HttpServlet {
 		prln("doPost Store");
 		
 		//Prendre les values du form et les puter dans l'url puis retour à doGet.
-		String[] genresSelected = request.getParameterValues("genres");
-		String[] modesSelected = request.getParameterValues("modes");
-		String[] languagesSelected = request.getParameterValues("languages");
-		String[] platformsSelected = request.getParameterValues("platforms");
-		String[] developersSelected = request.getParameterValues("developers");
+		String[] genresSelected = request.getParameterValues("genresForm");
+		String[] modesSelected = request.getParameterValues("modesForm");
+		String[] languagesSelected = request.getParameterValues("languagesForm");
+		String[] platformsSelected = request.getParameterValues("platformsForm");
+		String[] developersSelected = request.getParameterValues("developersForm");
 		
 		String filters [] = {"genres", "modes", "languages", "platforms", "developers"};
 		
@@ -151,16 +230,9 @@ public class Store extends HttpServlet {
 			}	
 			index++;
 		}
-	
-		prln("*******");
-		prln(parameters);
-		prln("*******");
 		
 		String url = "store" + parameters;
-		prln("URL " + url);
-		
-		request.setAttribute("pageTitle", "Magasin");
-		request.setAttribute("page", page);
+		prln("servlet store dopost " + url);
 		response.sendRedirect(url);
 	}
 

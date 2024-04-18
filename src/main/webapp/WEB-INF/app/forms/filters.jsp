@@ -7,7 +7,7 @@
 				<li class="menu-item-has-children"><a href="#">Genres</a>
 					<ul class="sub-menu">
 						<c:forEach var="genre" items="${genres }" varStatus="i">
-							<li><input type="checkbox" id="genre-${genre.id }" name="genres"
+							<li><input type="checkbox" id="genre-${genre.id }" name="genresForm"
 							value="${genre.id }"><label for="genre-${genre.id }" class="option-label">
 								<i class="fa-solid fa-bolt"></i>&nbsp<c:out value="${genre.name }"/></label>
 							</li>
@@ -19,7 +19,7 @@
 						jeu</a>
 					<ul class="sub-menu">
 						<c:forEach var="mode" items="${modes }" varStatus="i">
-							<li><input type="checkbox" id="mode-${mode.id }" name="modes"
+							<li><input type="checkbox" id="mode-${mode.id }" name="modesForm"
 							value="${mode.id }"><label for="mode-${mode.id }" class="option-label">
 								<i class="fa-solid fa-rotate"></i>&nbsp<c:out value="${mode.name }"/></label>
 							</li>
@@ -31,7 +31,7 @@
 						dispo</a>
 					<ul class="sub-menu">
 						<c:forEach var="language" items="${languages }" varStatus="i">
-							<li><input type="checkbox" id="language-${language.id }" name="languages"
+							<li><input type="checkbox" id="language-${language.id }" name="languagesForm"
 							value="${language.id }"><label for="language-${language.id }" class="option-label">
 								<i class="fa-solid fa-language"></i>&nbsp<c:out value="${language.language }"/></label>
 							</li>
@@ -42,7 +42,7 @@
 				<li class="menu-item-has-children"><a href="#">Plateformes</a>
 					<ul class="sub-menu">
 						<c:forEach var="platform" items="${platforms }" varStatus="i">
-							<li><input type="checkbox" id="platform-${platform.id }" name="platforms"
+							<li><input type="checkbox" id="platform-${platform.id }" name="platformsForm"
 							value="${platform.id }"><label for="platform-${platform.id }" class="option-label">
 								<i class="fa-solid fa-gamepad"></i>&nbsp<c:out value="${platform.name }"/></label>
 							</li>
@@ -53,7 +53,7 @@
 				<li class="menu-item-has-children"><a href="#">Développeurs</a>
 					<ul class="sub-menu">
 						<c:forEach var="developer" items="${developers }" varStatus="i">
-							<li><input type="checkbox" id="developer-${developer.id }" name="developers"
+							<li><input type="checkbox" id="developer-${developer.id }" name="developersForm"
 							value="${developer.id }"><label for="developer-${developer.id }" class="option-label">
 								<i class="fa-solid fa-code"></i>&nbsp<c:out value="${developer.name }"/></label>
 							</li>
@@ -69,7 +69,7 @@
 			<button type="submit" class="th-btn" form="gameFilters" value="Submit">
 				Filtrer <i class="fa-solid fa-arrow-right ms-2"></i>
 			</button>
-			
+			<a href="store?reset=1">Réinitialiser</a>
 		</div>
 	</div>
 </form>

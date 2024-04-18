@@ -78,7 +78,7 @@
 						<h3 class="widget_title">Genres</h3>
 						<div class="tagcloud">
 							<c:forEach var="genre" items="${game.genres }">
-								<a href="store?filter="><span><c:out
+								<a href="store?genres=${genre.id }"><span><c:out
 											value="${genre.name }" /></span></a>
 							</c:forEach>
 						</div>
@@ -87,7 +87,7 @@
 						<h3 class="widget_title">Modes de jeu</h3>
 						<div class="tagcloud">
 							<c:forEach var="mode" items="${game.modes }">
-								<a href="store?filter="><span><c:out
+								<a href="store?modes=${mode.id }"><span><c:out
 											value="${mode.name }" /></span></a>
 							</c:forEach>
 						</div>
