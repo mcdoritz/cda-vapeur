@@ -6,7 +6,6 @@
 	margin-top: -1.5em !important;
 }
 </style>
-<div class="cursor"></div>
 
     <!--[if lte IE 9]>
     	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
@@ -21,7 +20,6 @@
      Preloader
   ==============================-->
     <div class="preloader ">
-        <button class="th-btn preloaderCls">CANCEL PRELOADER </button>
         <div class="preloader-inner">
             <span class="loader"></span>
         </div>
@@ -29,7 +27,7 @@
     <div class="popup-search-box d-none d-lg-block">
         <button class="searchClose"><i class="fal fa-times"></i></button>
         <form action="search">
-            <input type="text" placeholder="Que recherchez vous ?">
+            <input type="text" placeholder="Que recherchez vous ?" name="search">
             <button type="submit"><i class="fal fa-search"></i></button>
         </form>
     </div>

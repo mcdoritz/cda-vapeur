@@ -171,17 +171,23 @@ public class GameDAO {
 			String query = "SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id ";
 			String queryJoins = "";
 			String queryConditions = "";
-			
-			queryJoins += genres_id.size() > 0 ? " JOIN games_genres ON games_genres.game_id = games.id JOIN genres ON games_genres.genre_id = genres.id " : "";
+
+			queryJoins += genres_id.size() > 0
+					? " JOIN games_genres ON games_genres.game_id = games.id JOIN genres ON games_genres.genre_id = genres.id "
+					: "";
 			for (int g : genres_id) {
 				prln("DAO valeur de  g : " + g);
 				queryConditions += "games_genres.genre_id = " + g + " OR ";
 			}
-			queryJoins += modes_id.size() > 0 ? " JOIN games_modes ON games_modes.game_id = games.id JOIN modes ON games_modes.mode_id = modes.id " : "";
+			queryJoins += modes_id.size() > 0
+					? " JOIN games_modes ON games_modes.game_id = games.id JOIN modes ON games_modes.mode_id = modes.id "
+					: "";
 			for (int m : modes_id) {
 				queryConditions += "games_modes.mode_id = " + m + " OR ";
 			}
-			queryJoins += languages_id.size() > 0 ? " JOIN games_languages ON games_languages.game_id = games.id JOIN languages ON games_languages.language_id = languages.id " : "";
+			queryJoins += languages_id.size() > 0
+					? " JOIN games_languages ON games_languages.game_id = games.id JOIN languages ON games_languages.language_id = languages.id "
+					: "";
 			for (int l : languages_id) {
 				queryConditions += "games_languages.language_id = " + l + " OR ";
 			}
@@ -192,14 +198,14 @@ public class GameDAO {
 				queryConditions += "developer_id = " + d + " OR ";
 			}
 			// prln(queryConditions);
-			
+
 			query += queryJoins;
 
 			if (queryConditions != "") {
 				queryConditions = queryConditions.substring(0, queryConditions.length() - 4); // Enlever le dernier OR
 				query += " WHERE stock > 0 AND ";
 			}
-			query += queryConditions + " ORDER BY games.title ASC LIMIT "+min+",12";
+			query += queryConditions + " ORDER BY games.title ASC LIMIT " + min + ",12";
 			prln(query);
 
 			// -------------------------------------------------------------
@@ -208,8 +214,7 @@ public class GameDAO {
 			ResultSet resultat = ps.executeQuery();
 
 			PlatformDAO platformdao = new PlatformDAO();
-			
-			
+
 			while (resultat.next()) {
 				Game object = new Game();
 				object.setId(resultat.getInt("id"));
@@ -230,12 +235,67 @@ public class GameDAO {
 			return null;
 		}
 	}
-	
+
+	public List<Game> readSearched(int page, String search) throws DAOException {
+		ArrayList<Game> gamesList = new ArrayList<>();
+
+		int min;
+		if (page < 2) {
+			min = page;
+
+		} else {
+			min = (page - 1) * 12 + 1;
+		}
+
+		// Construction de la query ------------------------
+		String query = "SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE stock > 0 AND games.title LIKE ? ORDER BY games.title ASC LIMIT ?,12 ";
+
+		if (search != "") {
+			if (search.length() > 3) {
+				try {
+					PreparedStatement ps = Database.connexion.prepareStatement(query);
+					ps.setString(1, "%"+search+"%");
+					ps.setInt(2, min);
+					ResultSet resultat = ps.executeQuery();
+
+					PlatformDAO platformdao = new PlatformDAO();
+
+					while (resultat.next()) {
+						Game object = new Game();
+						object.setId(resultat.getInt("id"));
+						object.setTitle(resultat.getString("title"));
+						object.setPrice(resultat.getFloat("price"));
+						object.setReleaseDate(resultat.getDate("release_date"));
+						object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
+						object.setTotalReviews(resultat.getInt("total_reviews"));
+						object.setStock(resultat.getInt("stock"));
+						object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
+						gamesList.add(object);
+					}
+					// bddSays("readAll", true, gamesList.size(), null);
+					return gamesList;
+				} catch (Exception ex) {
+					bddSays("readAll", false, 0, null);
+					ex.printStackTrace();
+					return null;
+				}
+
+			} else {
+				
+				throw new DAOException("La recherche est trop courte");
+				
+			}
+		}
+		throw new DAOException("Il n'y a rien dans la recherche");
+
+		// -------------------------------------------------------------
+
+	}
+
 	public Game getNameAndIdById(int id) {
 		try {
 
-			PreparedStatement ps = Database.connexion.prepareStatement(
-					"SELECT title FROM games WHERE id = ?;");
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT title FROM games WHERE id = ?;");
 			ps.setInt(1, id);
 			ResultSet resultat = ps.executeQuery();
 			Game object = new Game();
@@ -280,34 +340,33 @@ public class GameDAO {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * Récupère 1 jeu, 1 genre, 1 developer, 1 mode de jeu
 	 */
 	public ArrayList<Object> auHasard() {
 		try {
-			
+
 			ModeDAO modedao = new ModeDAO();
 			GenreDAO genredao = new GenreDAO();
 			DeveloperDAO developerdao = new DeveloperDAO();
-			
-			Random dé = new Random();
-			
-			ArrayList<Object> list = new ArrayList<>();
-						
-			//Game
-			list.add(getNameAndIdById(dé.nextInt(countAll()-1)+1));
 
-			
-			//Genre
-			list.add(genredao.getNameAndIdById(dé.nextInt(genredao.countAll()-1)+1));
-			
-			//Déveloper
-			list.add(developerdao.getNameAndIdById(dé.nextInt(developerdao.countAll()-1)+1));
-			
-			//Mode
-			list.add(modedao.getNameAndIdById(dé.nextInt(modedao.countAll()-1)+1));
-			
+			Random dé = new Random();
+
+			ArrayList<Object> list = new ArrayList<>();
+
+			// Game
+			list.add(getNameAndIdById(dé.nextInt(countAll() - 1) + 1));
+
+			// Genre
+			list.add(genredao.getNameAndIdById(dé.nextInt(genredao.countAll() - 1) + 1));
+
+			// Déveloper
+			list.add(developerdao.getNameAndIdById(dé.nextInt(developerdao.countAll() - 1) + 1));
+
+			// Mode
+			list.add(modedao.getNameAndIdById(dé.nextInt(modedao.countAll() - 1) + 1));
+
 			return list;
 		} catch (Exception ex) {
 			ex.printStackTrace();
