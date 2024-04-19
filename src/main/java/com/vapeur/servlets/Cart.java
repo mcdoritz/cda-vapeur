@@ -149,6 +149,17 @@ public class Cart extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		prln("doPost Cart");
+		
+		if(request.getParameter("maj") != null) {
+			prln("Maj du panier");
+		}
+		
+		//Méthode : récupérer le panier dans la session.
+		//Récupérer l'ID du jeu et la quantité dans le form
+		// Modifier la quantité dans les objets récupérés de la session.
+		//Maj session.
 
 		doGet(request, response);
 	}

@@ -6,7 +6,7 @@
 				<div class="woocommerce-message">Shipping costs updated.</div>
 			</div>
 		</c:if>
-		<form action="#" class="woocommerce-cart-form">
+		<form action="cart?maj" method="POST" class="woocommerce-cart-form">
 			<table class="cart_table">
 				<thead>
 					<tr>
@@ -40,12 +40,13 @@
 								</span></td>
 								<td data-title="Quantity">
 									<div class="quantity">
-										<button class="quantity-minus qty-btn">
+										<button class="quantityChange quantity-minus qty-btn" onClick="updateAll()">
 											<i class="far fa-minus"></i>
 										</button>
-										<input type="number" class="qty-input" value="${game.value }"
-											min="1" max="99">
-										<button class="quantity-plus qty-btn">
+										<input type="number" class="qty-input"
+											min="1" max="99" value="${game.value }" name="quantity-${i.count }">
+										<input type="hidden" value="${game.key.id }" name="game-${i.count }">
+										<button class="quantityChange quantity-plus qty-btn" onClick="updateAll()">
 											<i class="far fa-plus"></i>
 										</button>
 									</div>
@@ -60,7 +61,8 @@
 						<tr>
 							<td colspan="6" class="actions">
 								<button type="submit" class="th-btn">Mettre &#xE0; jour
-									le panier</button> <a href="store" class="th-btn">Continuer le
+									le panier</button>
+									<a href="store" class="th-btn">Continuer le
 									shopping</a>
 							</td>
 						</tr>
