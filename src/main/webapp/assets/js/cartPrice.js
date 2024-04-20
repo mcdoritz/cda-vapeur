@@ -15,6 +15,14 @@ const flatRate = document.getElementById("flat_rate");
 
 updateAll();
 
+
+function updateIt(){
+	
+	console.info("updateIt");
+	
+	
+}
+
 function updateTotal(subTotalCart) {
 	if (subTotalCart > 0) {
 		if (flatRate.checked == true) {

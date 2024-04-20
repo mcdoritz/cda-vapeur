@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import com.vapeur.beans.User;
 import com.vapeur.config.Database;
+import com.vapeur.dao.DAOException;
 import com.vapeur.dao.UserDAO;
 
 import static com.vapeur.config.Debug.*;
@@ -46,22 +47,34 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
+		request.setAttribute("pageTitle", "Connexion");
 		
 		// Vérification que les champs sont pas null AJOUTER VERIFICATION VALIDATION
 		if (request.getParameter("email") != null && request.getParameter("password") != null) {
 			Database.connect();
 			UserDAO userdao = new UserDAO();
-			User authorizedUser = userdao.login(request.getParameter("email"), request.getParameter("password"));
-
-			if (authorizedUser != null) {
-				// Si tout est OK création de la session
-				HttpSession session = request.getSession();
-				session.setAttribute("user", authorizedUser);
-				response.sendRedirect("library");
-			} else {
-				doGet(request, response);
+			User authorizedUser;
+			try {
+				authorizedUser = userdao.login(request.getParameter("email"), request.getParameter("password"));
+				if (authorizedUser != null) {
+					// Si tout est OK création de la session
+					HttpSession session = request.getSession();
+					session.setAttribute("user", authorizedUser);
+					response.sendRedirect("profile");
+				} else {
+					doGet(request, response);
+				}
+			} catch (DAOException e) {
+				request.setAttribute("errorMsg", e.getMessage());
+				e.printStackTrace();
+				
+				request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
 			}
+			
+			
 
+		}else {
+			request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
 		}
 	}
 }

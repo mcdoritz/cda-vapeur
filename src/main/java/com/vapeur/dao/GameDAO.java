@@ -12,12 +12,15 @@ import java.util.List;
 import java.util.Random;
 
 import com.vapeur.beans.Game;
+import com.vapeur.beans.GameResults;
 import com.vapeur.beans.Genre;
 import com.vapeur.beans.Language;
 import com.vapeur.beans.Mode;
 import com.vapeur.config.Database;
 
 public class GameDAO {
+	
+	private int limitPerPage = 12;
 
 	public void save(Game object) {
 		try {
@@ -153,7 +156,7 @@ public class GameDAO {
 	}
 
 	// Sers à lister les jeux, inutile de tout prendre donc.
-	public List<Game> readAll(int page, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
+	public GameResults readAll(int page, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
 			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
 		ArrayList<Game> gamesList = new ArrayList<>();
 
@@ -162,7 +165,7 @@ public class GameDAO {
 			min = page;
 
 		} else {
-			min = (page - 1) * 12 + 1;
+			min = (page - 1) * limitPerPage + 1;
 		}
 
 		try {
@@ -171,46 +174,121 @@ public class GameDAO {
 			String query = "SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id ";
 			String queryJoins = "";
 			String queryConditions = "";
+			
+			int index = 0;
+			if(genres_id.size() > 0) {
+				queryJoins += " JOIN games_genres ON games_genres.game_id = games.id JOIN genres ON games_genres.genre_id = genres.id ";
+				queryConditions += " AND (";
+				
+				for (int g : genres_id) {
+					queryConditions += "games_genres.genre_id = ? ";
+					if(index != genres_id.size()-1) {
+						queryConditions += "OR ";
+					}
+					index++;
+				}
+				queryConditions += " ) ";
+			}
+			
+			
+			index = 0;
+			if(modes_id.size() > 0) {
+				queryJoins += " JOIN games_modes ON games_modes.game_id = games.id JOIN modes ON games_modes.mode_id = modes.id ";
+				queryConditions += " AND (";
+				
+				for (int m : modes_id) {
+					queryConditions += "games_modes.mode_id = ? ";
+					if(index != modes_id.size()-1) {
+						queryConditions += "OR ";
+					}
+					index++;
+				}
+				queryConditions += " ) ";
+			}
+			
+			
+			
+			if(languages_id.size() > 0) {
+				queryJoins += " JOIN games_languages ON games_languages.game_id = games.id JOIN languages ON games_languages.language_id = languages.id ";
+				queryConditions += " AND (";
+				index = 0;
+				for (int l : languages_id) {
+					queryConditions += "games_languages.language_id = ? ";
+					if(index != languages_id.size()-1) {
+						queryConditions += "OR ";
+					}
+					index++;
+				}
+				queryConditions += " ) ";
+			}
+			
+			
+			
+			if(platforms_id.size() > 0) {
+				queryConditions += " AND (";
+				index = 0;
+				for (int p : platforms_id) {
+					queryConditions += "platform_id = ? ";
+					if(index != platforms_id.size()-1) {
+						queryConditions += "OR ";
+					}
+					index++;
+				}
+				queryConditions += ") ";
+			}
+			
+			
+			
+			if(developers_id.size() > 0) {
+				queryConditions += " AND (";
+				index = 0;
+				for (int d : developers_id) {
+					queryConditions += "developer_id = ? ";
+					if(index != developers_id.size()-1) {
+						queryConditions += "OR ";
+					}
+					index++;
+				}
+				queryConditions += " ) ";
+			}
+			
+			prln(queryConditions);
 
-			queryJoins += genres_id.size() > 0
-					? " JOIN games_genres ON games_genres.game_id = games.id JOIN genres ON games_genres.genre_id = genres.id "
-					: "";
-			for (int g : genres_id) {
-				prln("DAO valeur de  g : " + g);
-				queryConditions += "games_genres.genre_id = " + g + " OR ";
-			}
-			queryJoins += modes_id.size() > 0
-					? " JOIN games_modes ON games_modes.game_id = games.id JOIN modes ON games_modes.mode_id = modes.id "
-					: "";
-			for (int m : modes_id) {
-				queryConditions += "games_modes.mode_id = " + m + " OR ";
-			}
-			queryJoins += languages_id.size() > 0
-					? " JOIN games_languages ON games_languages.game_id = games.id JOIN languages ON games_languages.language_id = languages.id "
-					: "";
-			for (int l : languages_id) {
-				queryConditions += "games_languages.language_id = " + l + " OR ";
-			}
-			for (int p : platforms_id) {
-				queryConditions += "platform_id = " + p + " OR ";
-			}
-			for (int d : developers_id) {
-				queryConditions += "developer_id = " + d + " OR ";
-			}
-			// prln(queryConditions);
-
-			query += queryJoins;
-
-			if (queryConditions != "") {
-				queryConditions = queryConditions.substring(0, queryConditions.length() - 4); // Enlever le dernier OR
-				query += " WHERE stock > 0 AND ";
-			}
-			query += queryConditions + " ORDER BY games.title ASC LIMIT " + min + ",12";
+			query += queryJoins + " WHERE stock > 0" + queryConditions + " ORDER BY games.title ASC LIMIT ?,?";			
+			String queryCount = "SELECT COUNT(DISTINCT games.id) AS total FROM games " + queryJoins + queryConditions;
+			
 			prln(query);
+			prln(queryCount);
 
 			// -------------------------------------------------------------
 
 			PreparedStatement ps = Database.connexion.prepareStatement(query);
+			
+			index = 1;
+			
+			for (int g : genres_id) {
+				ps.setInt(index, g);
+				index++;
+			}
+			for (int m : modes_id) {
+				ps.setInt(index, m);
+				index++;
+			}
+			for (int l : languages_id) {
+				ps.setInt(index, l);
+				index++;
+			}
+			for (int p : platforms_id) {
+				ps.setInt(index, p);
+				index++;
+			}
+			for (int d : developers_id) {
+				ps.setInt(index, d);
+				index++;
+			}
+			
+			ps.setInt(index, min);
+			ps.setInt(index+1, limitPerPage);
 			ResultSet resultat = ps.executeQuery();
 
 			PlatformDAO platformdao = new PlatformDAO();
@@ -227,8 +305,19 @@ public class GameDAO {
 				object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
 				gamesList.add(object);
 			}
-			// bddSays("readAll", true, gamesList.size(), null);
-			return gamesList;
+			int totalResults = 0;
+			
+			// S'il y a autant que 12 résultats dans la recherche, alors voir s'il y en a plus :
+			if(gamesList.size() == limitPerPage) {
+				totalResults = countAll(queryCount, genres_id, modes_id, languages_id, platforms_id, developers_id);
+			}else {
+				totalResults = gamesList.size();
+			}
+
+			GameResults gameresults = new GameResults(gamesList, totalResults);
+			prln("gr:" + gameresults.getGames().size());
+			prln("gr:" + gameresults.getTotalResults());
+			return gameresults;
 		} catch (Exception ex) {
 			bddSays("readAll", false, 0, null);
 			ex.printStackTrace();
@@ -236,7 +325,7 @@ public class GameDAO {
 		}
 	}
 
-	public List<Game> readSearched(int page, String search) throws DAOException {
+	public GameResults readSearched(int page, String search) throws DAOException {
 		ArrayList<Game> gamesList = new ArrayList<>();
 
 		int min;
@@ -248,47 +337,80 @@ public class GameDAO {
 		}
 
 		// Construction de la query ------------------------
-		String query = "SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE stock > 0 AND games.title LIKE ? ORDER BY games.title ASC LIMIT ?,12 ";
-
+		String query = "SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE stock > 0 AND games.title LIKE ? ";
+		prln(search);
 		if (search != "") {
 			if (search.length() > 3) {
-				try {
-					PreparedStatement ps = Database.connexion.prepareStatement(query);
-					ps.setString(1, "%"+search+"%");
-					ps.setInt(2, min);
-					ResultSet resultat = ps.executeQuery();
-
-					PlatformDAO platformdao = new PlatformDAO();
-
-					while (resultat.next()) {
-						Game object = new Game();
-						object.setId(resultat.getInt("id"));
-						object.setTitle(resultat.getString("title"));
-						object.setPrice(resultat.getFloat("price"));
-						object.setReleaseDate(resultat.getDate("release_date"));
-						object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
-						object.setTotalReviews(resultat.getInt("total_reviews"));
-						object.setStock(resultat.getInt("stock"));
-						object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
-						gamesList.add(object);
+				if(search.length() < 50) {
+					
+					// Diviser pour mieux chercher
+					String[] arraySearch = search.split(" ");
+					
+					// i = 1 car dans la query on a déjà AND games.title LIKE...
+					for(int i = 1; i < arraySearch.length; i++) {
+						query += "OR games.title LIKE ? ";
 					}
-					// bddSays("readAll", true, gamesList.size(), null);
-					return gamesList;
-				} catch (Exception ex) {
-					bddSays("readAll", false, 0, null);
-					ex.printStackTrace();
-					return null;
+					
+					query += " ORDER BY games.title ASC LIMIT ?,12 ";
+					
+					try {
+						PreparedStatement ps = Database.connexion.prepareStatement(query);
+						int index = 1;
+						for(int i = 0; i < arraySearch.length; i++) {
+							ps.setString(i+1, "%" + arraySearch[i] + "%");
+							index++;
+						}
+
+						ps.setInt(index, min);
+						ResultSet resultat = ps.executeQuery();
+
+						PlatformDAO platformdao = new PlatformDAO();
+
+						while (resultat.next()) {
+							Game object = new Game();
+							object.setId(resultat.getInt("id"));
+							object.setTitle(resultat.getString("title"));
+							object.setPrice(resultat.getFloat("price"));
+							object.setReleaseDate(resultat.getDate("release_date"));
+							object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
+							object.setTotalReviews(resultat.getInt("total_reviews"));
+							object.setStock(resultat.getInt("stock"));
+							object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
+							gamesList.add(object);
+						}
+						int totalResults = 0;
+						
+						// S'il y a autant que 12 résultats dans la recherche, alors voir s'il y en a plus :
+						if(gamesList.size() == limitPerPage) {
+							totalResults = countAllSearch(search);
+						}else {
+							totalResults = gamesList.size();
+						}
+
+						GameResults gameresults = new GameResults(gamesList, totalResults);
+						
+						return gameresults;
+						
+					} catch (Exception ex) {
+						bddSays("readAll", false, 0, null);
+						ex.printStackTrace();
+						throw new DAOException("Erreur avec la base de données.");
+					}
+				
+				}else {
+					throw new DAOException("La recherche est trop longue");
 				}
+				
 
 			} else {
-				
-				throw new DAOException("La recherche est trop courte");
-				
-			}
-		}
-		throw new DAOException("Il n'y a rien dans la recherche");
 
-		// -------------------------------------------------------------
+				throw new DAOException("La recherche est trop courte");
+
+			}
+		}else {
+			throw new DAOException("Il n'y a rien dans la recherche");
+		}
+		
 
 	}
 
@@ -310,10 +432,43 @@ public class GameDAO {
 		}
 	}
 
-	public int countAll() {
+	public int countAll(String query, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
+			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
 		try {
+			if(query == "all") {
+				query =  "SELECT COUNT(*) AS total FROM games";
+			}
 			PreparedStatement ps = Database.connexion
-					.prepareStatement("SELECT COUNT(*) AS total FROM games WHERE stock > 0");
+					.prepareStatement(query);
+			
+			int index = 1;
+			
+			if(genres_id != null && modes_id != null && languages_id != null && platforms_id != null && developers_id != null) {
+				for (int g : genres_id) {
+					ps.setInt(index, g);
+					index++;
+				}
+				for (int m : modes_id) {
+					ps.setInt(index, m);
+					index++;
+				}
+				for (int l : languages_id) {
+					ps.setInt(index, l);
+					index++;
+				}
+				for (int p : platforms_id) {
+					ps.setInt(index, p);
+					index++;
+				}
+				for (int d : developers_id) {
+					ps.setInt(index, d);
+					index++;
+				}
+			}
+			
+			
+			
+			
 			ResultSet resultat = ps.executeQuery();
 
 			int total = 0;
@@ -321,12 +476,55 @@ public class GameDAO {
 			while (resultat.next()) {
 				total = resultat.getInt("total");
 			}
-
 			return total;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return 0;
 		}
+	}
+
+	public int countAllSearch(String search) throws DAOException {
+		String query = "SELECT COUNT(*) games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE stock > 0 AND games.title LIKE ? ";
+		// Diviser pour mieux chercher
+		String[] arraySearch = search.split(" ");
+		
+		// i = 1 car dans la query on a déjà AND games.title LIKE...
+		for(int i = 1; i < arraySearch.length; i++) {
+			query += "OR games.title LIKE ? ";
+		}
+		if (search != "") {
+			if (search.length() > 3) {
+				if(search.length() < 50) {
+					try {
+						PreparedStatement ps = Database.connexion.prepareStatement(query);
+						for(int i = 0; i < arraySearch.length; i++) {
+							ps.setString(i+1, "%" + arraySearch[i] + "%");
+						}
+						ResultSet resultat = ps.executeQuery();
+
+						int total = 0;
+
+						while (resultat.next()) {
+							total = resultat.getInt("total");
+						}
+
+						return total;
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						throw new DAOException("Erreur avec la base de données");
+					}
+				}else {
+					throw new DAOException("La recherche est trop longue");
+				}
+				
+			}else {
+				throw new DAOException("La recherche est trop courte");
+			}
+			
+		}else {
+			throw new DAOException("Il n'y a rien dans la recherche");
+		}
+		
 	}
 
 	public void delete(int game_id) {
@@ -356,7 +554,7 @@ public class GameDAO {
 			ArrayList<Object> list = new ArrayList<>();
 
 			// Game
-			list.add(getNameAndIdById(dé.nextInt(countAll() - 1) + 1));
+			list.add(getNameAndIdById(dé.nextInt(countAll("all", null, null, null, null, null) - 1) + 1));
 
 			// Genre
 			list.add(genredao.getNameAndIdById(dé.nextInt(genredao.countAll() - 1) + 1));

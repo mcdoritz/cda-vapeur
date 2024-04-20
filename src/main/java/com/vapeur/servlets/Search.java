@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import static com.vapeur.config.Debug.*;
 
 import com.vapeur.beans.Game;
+import com.vapeur.beans.GameResults;
 import com.vapeur.config.Database;
 import com.vapeur.dao.DAOException;
 import com.vapeur.dao.GameDAO;
@@ -21,6 +22,8 @@ import com.vapeur.dao.GameDAO;
 @WebServlet("/search")
 public class Search extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private int page = 0;
 
     public Search() {
         super();
@@ -31,29 +34,45 @@ public class Search extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		
 		String search = "";
+		
 		if(request.getParameter("search") != null) {
 			search = request.getParameter("search");
 			
 			try {
 				Database.connect();
 				GameDAO gamedao = new GameDAO();
-				List<Game> gamesList = new ArrayList<>();
-				gamesList = gamedao.readSearched(0, search);
-				for(Game g:gamesList) {
-					prln(g.getTitle());
+				GameResults gameresults = new GameResults();
+				
+				if(request.getParameter("page") != null) {
+					page = Integer.parseInt(request.getParameter("page"));
+					if(page > 0) {
+						gameresults = gamedao.readSearched(page, search);
+						
+					}else {
+						gameresults = gamedao.readSearched(1, search);
+						
+					}
+				}else {
+					gameresults = gamedao.readSearched(0, search);
 				}
+				
+				request.setAttribute("search", search);
+				request.setAttribute("totalGames", gameresults.getTotalResults());
+				request.setAttribute("gamesList", gameresults.getGames());
+				
 			} catch (DAOException e) {
 				prln(e.getMessage());
-				e.printStackTrace();
+				request.setAttribute("errorMsg", e.getMessage());
 			}
-			
+			request.setAttribute("pageTitle", "Résultats de la recherche");
+			request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
 		}else {
-			prln("Erreur, saerch vide");
+			prln("Search vide");
+			request.setAttribute("infoMsg", "Entrez votre recherche");
+			request.setAttribute("pageTitle", "Rechercher un jeu");
+			request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
 		}
 		
-		
-		
-		request.getRequestDispatcher("WEB-INF/app/search.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

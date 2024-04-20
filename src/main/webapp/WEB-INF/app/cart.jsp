@@ -6,7 +6,7 @@
 				<div class="woocommerce-message">Shipping costs updated.</div>
 			</div>
 		</c:if>
-		<form action="cart?maj" method="POST" class="woocommerce-cart-form">
+		<form action="cart" method="POST" class="woocommerce-cart-form">
 			<table class="cart_table">
 				<thead>
 					<tr>
@@ -32,7 +32,7 @@
 									href="shop-detailis.html"><img width="91" height="91"
 										src="assets/img/product/product_thumb_1_1.png" alt="Image"></a>
 								</td>
-								<td data-title="Name" style="text-align: left; max-width: 20%"><a
+								<td data-title="Name" style="text-align: left;"><a
 									class="cart-productname" href="game?id=${game.key.id }"><c:out
 											value="${game.key.title }" /></a></td>
 								<td data-title="Price"><span class="amount priceU">
@@ -40,13 +40,13 @@
 								</span></td>
 								<td data-title="Quantity">
 									<div class="quantity">
-										<button class="quantityChange quantity-minus qty-btn" onClick="updateAll()">
+										<button class="quantityChange quantity-minus qty-btn" onClick="updateIt()">
 											<i class="far fa-minus"></i>
 										</button>
 										<input type="number" class="qty-input"
-											min="1" max="99" value="${game.value }" name="quantity-${i.count }">
-										<input type="hidden" value="${game.key.id }" name="game-${i.count }">
-										<button class="quantityChange quantity-plus qty-btn" onClick="updateAll()">
+											min="1" max="10" value="${game.value }" name="quantity">
+										<input type="hidden" value="${game.key.id }" name="game-id">
+										<button class="quantityChange quantity-plus qty-btn" onClick="updateIt()">
 											<i class="far fa-plus"></i>
 										</button>
 									</div>

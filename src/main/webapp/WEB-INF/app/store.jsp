@@ -2,17 +2,42 @@
 	style="padding-top: 1.5em">
 	<div class="container">
 		<div class="counter-card">
-			<div class="media-body" style="text-align:center">
-				<h4 class="box-number">
-					<span class="counter-number"><c:out value="${totalGames }" /></span>
-				</h4>
-				<p class="box-text">jeux en stock !</p>
-			</div>
+			<c:if test="${errorMsg == null && infoMsg == null}">
+				<div class="media-body" style="text-align: center">
+					<h4 class="box-number">
+						<span class="counter-number"><c:out value="${totalGames }" /></span>
+					</h4>
+					<p class="box-text">
+						jeux
+						<c:choose>
+							<c:when test="${genres == null}">
+							trouv&#233;(s) pour la recherche : " <c:out value="${search}" /> "
+						</c:when>
+							<c:otherwise>
+								<c:out value="en stock !" />
+							</c:otherwise>
+						</c:choose>
+					</p>
+				</div>
+			</c:if>
 		</div>
-		<h3 style="color: white; text-align: center">
-			
-		</h3>
-		<%@ include file="forms/filtersForm.jsp"%>
+		<h3 style="color: white; text-align: center"></h3>
+		<c:if test="${errorMsg != null}">
+			<p style="color: var(--bs-warning)">
+				<c:out value="${errorMsg }" />
+			</p>
+		</c:if>
+		<c:if test="${infoMsg != null}">
+			<p style="color: var(--theme-color)">
+				<c:out value="${infoMsg }" />
+			</p>
+		</c:if>
+		<c:if test="${genres != null }">
+			<%@ include file="forms/filtersForm.jsp"%>
+		</c:if>
+		<c:if test="${genres == null }">
+			<%@ include file="forms/inPageSearch.jsp"%>
+		</c:if>
 		<div class="row gy-4">
 			<c:forEach var="game" items="${gamesList }">
 				<div class="col-lg-4 col-md-6">
@@ -42,9 +67,8 @@
 								</p>
 							</div>
 							<div class="media-body">
-								<span class="game-rating"><i class="fas fa-star"></i>
-								<c:out value=" ${game.usersAvgScore }" /></span> <span
-									class="review-count">(<c:out
+								<span class="game-rating"><i class="fas fa-star"></i> <c:out
+										value=" ${game.usersAvgScore }" /></span> <span class="review-count">(<c:out
 										value="${game.totalReviews }" /> &#233;val.)
 								</span>
 							</div>

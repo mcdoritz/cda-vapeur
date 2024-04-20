@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import com.vapeur.beans.Developer;
 import com.vapeur.beans.Game;
+import com.vapeur.beans.GameResults;
 import com.vapeur.beans.Genre;
 import com.vapeur.beans.Language;
 import com.vapeur.beans.Mode;
@@ -45,6 +46,7 @@ public class Store extends HttpServlet {
 	private DeveloperDAO developerdao = new DeveloperDAO();
 	
 	private int page = 0;
+	private int limitPerPage = 12;
 
     public Store() {
         super();
@@ -64,10 +66,7 @@ public class Store extends HttpServlet {
 		Database.connect();
 		
 		List<Game> gamesList = new ArrayList<>();
-		
-		
-		int totalGames = gamedao.countAll();
-		prln(totalGames + " games dans la bdd");
+		GameResults gameResults = new GameResults();
 		
 		try {
 			//Récupérer tous les paramètres de l'url // String => tableau str => tableau int
@@ -132,11 +131,11 @@ public class Store extends HttpServlet {
 				page = Integer.parseInt(request.getParameter("page"));
 				if(page > 0) {
 					prln("ICI");
-					gamesList = gamedao.readAll(page, genres, modes, languages, platforms, developers);
+					gameResults = gamedao.readAll(page, genres, modes, languages, platforms, developers);
 					
 				}else {
 					prln("LA");
-					gamesList = gamedao.readAll(1, genres, modes, languages, platforms, developers);
+					gameResults = gamedao.readAll(1, genres, modes, languages, platforms, developers);
 					
 				}
 			}else {
@@ -144,7 +143,7 @@ public class Store extends HttpServlet {
 				for(int i:genres) {
 					prln("valeur de genres_id avant dao : " + i);
 				}
-				gamesList = gamedao.readAll(0, genres, modes, languages, platforms, developers);
+				gameResults = gamedao.readAll(0, genres, modes, languages, platforms, developers);
 			}
 			
 			// Préparation des options pour l'affichage des filtres
@@ -168,21 +167,29 @@ public class Store extends HttpServlet {
 			request.setAttribute("platformsSelected", platforms);
 			request.setAttribute("developersSelected", developers);
 			
+			int gamesInPage = 0;
+			int totalResults = 0;
+			
+			if(gameResults != null) {
+				gamesInPage = gameResults.getTotalResults() > limitPerPage ? limitPerPage : gameResults.getTotalResults();
+				totalResults = gameResults.getTotalResults();
+				request.setAttribute("gamesInPage", gamesInPage);
+				request.setAttribute("gamesList", gameResults.getGames());
+				request.setAttribute("totalGames", gameResults.getTotalResults());
+			}
+
 			request.setAttribute("page", page);
-			request.setAttribute("gamesInPage", gamesList.size());
+			
 			request.setCharacterEncoding("UTF-8");
-			request.setAttribute("gamesList", gamesList);
 			request.setAttribute("pageTitle", "Magasin");
 			request.setAttribute("euro", "€");
-			request.setAttribute("totalGames", totalGames);
 			
 			//Si pas de games dans la liste, alors retour à la première page.
-			if(gamesList.size() == 0) {
+			if( totalResults == 0) {
 				prln("po de jeu");
-				response.sendRedirect("landing");
-			}else {
-				request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
+				request.setAttribute("infoMsg", "Les filtres ont tout filtré ! Mettez moins de filtres");
 			}
+			request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
 
 		}catch (NumberFormatException e){
 			prln("Exception de nombre dans la SERVLET");

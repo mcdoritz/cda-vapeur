@@ -18,8 +18,10 @@ import com.vapeur.dao.UserDAO;
 public class UserDAO {
 
 	
-	public void save(User object) {
+	public Boolean save(User object) throws DAOException {
 		try {
+			
+			String hashPassword = BCrypt.hashpw(object.getPassword(), BCrypt.gensalt());
 
 			if (object.getId() != 0) {
 
@@ -28,7 +30,7 @@ public class UserDAO {
 			        try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
 			            ps.setString(1, object.getEmail());
 			            ps.setString(2, object.getNickname());
-			            ps.setString(3, object.getPassword());
+			            ps.setString(3, hashPassword);
 			            ps.setString(4, object.getFirstname());
 			            ps.setString(5, object.getLastname());
 			            ps.setBoolean(6, object.isActive());
@@ -37,8 +39,9 @@ public class UserDAO {
 
 			            ps.executeUpdate();
 			        }
-				String objectInfos = object.getFirstname() + " " + object.getLastname();
+				String objectInfos = object.getNickname() + " " + object.getEmail();
 				bddSays("update", true, object.getId(), objectInfos);
+				return true;
 
 			} else {
 				String query = "INSERT INTO users (email, nickname, password, firstname, lastname, active, shipping_address) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -46,21 +49,22 @@ public class UserDAO {
 		        try (PreparedStatement ps = Database.connexion.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 		            ps.setString(1, object.getEmail());
 		            ps.setString(2, object.getNickname());
-		            ps.setString(3, object.getPassword());
+		            ps.setString(3, hashPassword);
 		            ps.setString(4, object.getFirstname());
 		            ps.setString(5, object.getLastname());
-		            ps.setBoolean(6, object.isActive());
+		            ps.setBoolean(6, true); // Hé oui !
 		            ps.setString(7, object.getShippingAddress());
 
 		            ps.executeUpdate();
 		            
 		            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
 		                if (generatedKeys.next()) {
-		                	String objectInfos = object.getFirstname() + " " + object.getLastname();
+		                	String objectInfos = object.getNickname() + " " + object.getEmail();
 		                	bddSays("create", true, generatedKeys.getInt(1), objectInfos);
+		                	return true;
 		                } else {
 		                	bddSays("create", false, object.getId(), null);
-		                    throw new SQLException("L'insertion a échoué, aucun ID généré n'a été récupéré.");
+		                    throw new DAOException("Erreur avec la base de données");
 		                    
 		                }
 		            }
@@ -70,7 +74,9 @@ public class UserDAO {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return false;
 		}
+		
 		
 	}
 
@@ -107,7 +113,7 @@ public class UserDAO {
 		}
 	}
 	
-	public User login(String email, String password) {
+	public User login(String email, String password) throws DAOException {
 		try {
 
 			PreparedStatement ps = Database.connexion.prepareStatement("SELECT id, password FROM users WHERE email = ? AND active = true");
@@ -117,24 +123,28 @@ public class UserDAO {
 
 			User object = new User();
 			
-			while (resultat.next()) {
-                object.setId(resultat.getInt("id"));
+			if(!resultat.next()) {
+                
+                throw new DAOException("Utilisateur non trouvé dans la BDD");
+            }else {
+            	object.setId(resultat.getInt("id"));
                 object.setPassword(resultat.getString("password"));
+                
+                String objectInfos = object.getId() + " " + object.getEmail();
+    			bddSays("read", true, object.getId(), objectInfos);
+    			
+    			if (BCrypt.checkpw(password, object.getPassword())) {
+    				
+    				User authorizedUser = getById(object.getId());
+    				
+    				return authorizedUser;
+    				
+    			}else {
+    				throw new DAOException("Le mot de passe n'est pas bon.");
+    			}	
             }
 			
-			String objectInfos = object.getFirstname() + " " + object.getLastname();
-			bddSays("read", true, object.getId(), objectInfos);
-			
-			if (BCrypt.checkpw(password, object.getPassword())) {
-				
-				User authorizedUser = getById(object.getId());
-				
-				return authorizedUser;
-				
-			}else {
-				prln("User trouvé, mais le mot de passe n'est pas bon.");
-				return null;
-			}			
+					
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

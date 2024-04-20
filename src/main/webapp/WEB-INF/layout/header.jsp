@@ -24,13 +24,7 @@
             <span class="loader"></span>
         </div>
     </div>
-    <div class="popup-search-box d-none d-lg-block">
-        <button class="searchClose"><i class="fal fa-times"></i></button>
-        <form action="search">
-            <input type="text" placeholder="Que recherchez vous ?" name="search">
-            <button type="submit"><i class="fal fa-search"></i></button>
-        </form>
-    </div>
+    <%@ include file="../app/forms/inHeaderSearch.jsp"%>
     
     <!--==============================-->
     <!--==============================

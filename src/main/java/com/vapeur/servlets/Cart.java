@@ -31,20 +31,19 @@ public class Cart extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		HttpSession session = request.getSession(false);
 		prln("Servlet Cart");
 		Boolean redirect = false;
 		Map<Game, Integer> gamesAndQuantityInCart = new HashMap<>();
-		
-		
+
 		if (session != null) {
 			if (session.getAttribute("cart") == null) {
 				prln("cart/del : Panier non créé");
 				session.setAttribute("cart", gamesAndQuantityInCart);
 			} else {
 				gamesAndQuantityInCart = (Map<Game, Integer>) session.getAttribute("cart");
-				
+
 				Iterator<Map.Entry<Game, Integer>> iterator = gamesAndQuantityInCart.entrySet().iterator();
 				while (iterator.hasNext()) {
 					Map.Entry<Game, Integer> entry = iterator.next();
@@ -69,7 +68,7 @@ public class Cart extends HttpServlet {
 		if (request.getParameter("add") != null) {
 			int id = Integer.parseInt(request.getParameter("add"));
 			if (id > 0) {
-				
+
 				// Vérifier que le jeu n'est pas déjà présent dans le panier
 				Boolean gameInCart = false;
 				Iterator<Map.Entry<Game, Integer>> iterator = gamesAndQuantityInCart.entrySet().iterator();
@@ -96,7 +95,7 @@ public class Cart extends HttpServlet {
 					if (gameToAdd.getTitle() != null) {
 						gamesAndQuantityInCart.put(gameToAdd, 1);
 						session.setAttribute("cart", gamesAndQuantityInCart);
-						
+
 						prln("Servlet Cart/add : ajout game");
 					} else {
 						prln("Servlet Cart/add : erreur dans la récupération du game");
@@ -110,7 +109,6 @@ public class Cart extends HttpServlet {
 			{
 				int id = Integer.parseInt(request.getParameter("del"));
 				if (id > 0) {
-					
 
 					gamesAndQuantityInCart = (Map<Game, Integer>) session.getAttribute("cart");
 					int i = 0;
@@ -138,28 +136,44 @@ public class Cart extends HttpServlet {
 		request.setAttribute("NbGamesInCart", Integer.toString(gamesAndQuantityInCart.size()));
 		request.setAttribute("pageTitle", "Panier");
 		request.setAttribute("euro", "€");
-		
-		if(redirect) {
+
+		if (redirect) {
 			response.sendRedirect("cart");
-		}else {
+		} else {
 			request.getRequestDispatcher("WEB-INF/app/cart.jsp").forward(request, response);
 		}
-		
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		HttpSession session = request.getSession(false);
 		prln("doPost Cart");
-		
-		if(request.getParameter("maj") != null) {
-			prln("Maj du panier");
+
+		if (session != null) {
+			if (session.getAttribute("cart") != null) {
+
+		        String[] articlesIds = request.getParameterValues("game-id");
+		        String[] quantites = request.getParameterValues("quantity");
+
+		        if (articlesIds != null && quantites != null) {
+
+		            for (int i = 0; i < articlesIds.length && i < quantites.length; i++) {
+		                String articleId = articlesIds[i];
+		                String quantite = quantites[i];
+
+		                System.out.println("Article ID: " + articleId + ", Quantité: " + quantite);
+		            }
+		        }
+				
+
+			}
 		}
-		
-		//Méthode : récupérer le panier dans la session.
-		//Récupérer l'ID du jeu et la quantité dans le form
+
+		// Méthode : récupérer le panier dans la session.
+		// Récupérer l'ID du jeu et la quantité dans le form
 		// Modifier la quantité dans les objets récupérés de la session.
-		//Maj session.
+		// Maj session.
 
 		doGet(request, response);
 	}

@@ -1,6 +1,7 @@
 package com.vapeur.beans;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -17,8 +18,14 @@ public class User implements Serializable {
     // Constructeurs
     public User() {
     }
+    
+    public User(String email, String nickname, String password ) throws BeanException {
+        setEmail(email);
+        setNickname(nickname);
+        setPassword(password);
+    }
 
-    public User(int id, String email, String nickname, String password, String firstname, String lastname, boolean active, String shippingAddress) {
+    public User(int id, String email, String nickname, String password, String firstname, String lastname, boolean active, String shippingAddress) throws BeanException {
         setId(id);
         setEmail(email);
         setNickname(nickname);
@@ -42,16 +49,32 @@ public class User implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String email) throws BeanException {
+    	String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    	
+    	if(Pattern.compile(regex).matcher(email).matches()) {
+    		this.email = email;
+    	}else {
+    		throw new BeanException("L'email n'est pas valide");
+    	}
+    	
+        
     }
 
     public String getNickname() {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickname(String nickname) throws BeanException {
+    	
+    	if(nickname.length() < 3) {
+    		throw new BeanException("Le pseudonyme est trop court");
+    	}else if(nickname.length() > 30){
+    		throw new BeanException("Le pseudonyme est trop long");
+    	}else {
+    		this.nickname = nickname;
+    	}
+        
     }
 
     public String getPassword() {
@@ -67,7 +90,12 @@ public class User implements Serializable {
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    	if(firstname != null) {
+    		this.firstname = firstname.substring(0).toUpperCase() + firstname.substring(1).toLowerCase();
+    	}else {
+    		this.firstname = null;
+    	}
+        
     }
 
     public String getLastname() {
@@ -75,7 +103,11 @@ public class User implements Serializable {
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+    	if(lastname != null) {
+    		this.lastname = lastname.substring(0).toUpperCase() + lastname.substring(1).toLowerCase();
+    	}else {
+    		this.lastname = null;
+    	}
     }
 
     public boolean isActive() {

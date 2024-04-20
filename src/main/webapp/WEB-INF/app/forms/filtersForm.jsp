@@ -107,11 +107,18 @@
 				value="Submit">
 				Filtrer <i class="fa-solid fa-arrow-right ms-2"></i>
 			</button>
-			<a href="store" class="th-btn style-border"> <span
-				class="btn-border"> Réinitialiser <i
-					class="fa-solid fa-arrow-right ms-2"></i>
-			</span>
-			</a>
+			<c:if test="${not empty genresSelected || not empty modesSelected || not empty languagesSelected || not empty platformsSelected || not empty developersSelected}">
+				<a href="store" class="th-btn style-border"> <span
+					class="btn-border"> Réinitialiser <i
+						class="fa-solid fa-arrow-right ms-2"></i>
+				</span>
+				</a>
+			</c:if>
+			<a href="search" class="th-btn style-border"> <span
+					class="btn-border"> Rechercher <i
+						class="fa-solid fa-search"></i>
+				</span>
+				</a>
 		</div>
 	</div>
 </form>
