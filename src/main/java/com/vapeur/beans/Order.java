@@ -1,7 +1,7 @@
 package com.vapeur.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;

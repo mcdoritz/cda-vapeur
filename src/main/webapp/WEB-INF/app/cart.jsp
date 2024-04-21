@@ -6,7 +6,7 @@
 				<div class="woocommerce-message">Shipping costs updated.</div>
 			</div>
 		</c:if>
-		<form action="cart" method="POST" class="woocommerce-cart-form">
+		<form action="checkout" method="POST" class="woocommerce-cart-form">
 			<table class="cart_table">
 				<thead>
 					<tr>
@@ -37,16 +37,21 @@
 											value="${game.key.title }" /></a></td>
 								<td data-title="Price"><span class="amount priceU">
 										<c:out value="${game.key.price }" />
+										<input type="hidden" class="qty-input"
+											value="${game.key.price }" name="uPrice">
 								</span></td>
 								<td data-title="Quantity">
 									<div class="quantity">
-										<button class="quantityChange quantity-minus qty-btn" onClick="updateIt()">
+										<button class="quantityChange quantity-minus qty-btn"
+											onClick="updateIt()">
 											<i class="far fa-minus"></i>
 										</button>
-										<input type="number" class="qty-input"
-											min="1" max="10" value="${game.value }" name="quantity">
-										<input type="hidden" value="${game.key.id }" name="game-id">
-										<button class="quantityChange quantity-plus qty-btn" onClick="updateIt()">
+										<input type="number" class="qty-input" min="1" max="10"
+											value="${game.value }" name="quantity"> <input
+											type="hidden" value="${game.key.id }" name="game-id">
+											
+										<button class="quantityChange quantity-plus qty-btn"
+											onClick="updateIt()">
 											<i class="far fa-plus"></i>
 										</button>
 									</div>
@@ -61,8 +66,7 @@
 						<tr>
 							<td colspan="6" class="actions">
 								<button type="submit" class="th-btn">Mettre &#xE0; jour
-									le panier</button>
-									<a href="store" class="th-btn">Continuer le
+									le panier</button> <a href="store" class="th-btn">Continuer le
 									shopping</a>
 							</td>
 						</tr>
@@ -70,59 +74,63 @@
 
 				</tbody>
 			</table>
-		</form>
-		<div class="row justify-content-end">
-			<div class="col-md-8 col-lg-7 col-xl-6">
-				<h2 class="h4 summary-title">Total du panier</h2>
-				<c:if test="${NbGamesInCart > 0}">
-					<table class="cart_totals">
-						<tbody>
-							<tr>
-								<td>Sous-total du panier</td>
-								<td data-title="Cart Subtotal"><span class="amount"><bdi
-											id="cartSubTotal"></bdi></span></td>
-							</tr>
-							<tr class="shipping">
-								<th>Pr&#233;paration et envoi</th>
-								<td data-title="Shipping and Handling">
-									<ul class="woocommerce-shipping-methods list-unstyled">
-										<li><input type="radio" id="free_shipping"
-											name="shipping_method" class="shipping_method"> <label
-											for="free_shipping">Livraison en 3 mois (GRATUIT)</label></li>
-										<li><input type="radio" id="flat_rate"
-											name="shipping_method" class="shipping_method"
-											checked="checked"> <label for="flat_rate">Livraison
-												en 3 jours (7.99 &#8364;)</label></li>
-									</ul>
-									<p class="woocommerce-shipping-destination">&#199;a
-										co&#251;te d'aller vite !</p>
-								</td>
-							</tr>
 
-
-						</tbody>
-						<tfoot>
-							<tr class="order-total">
-								<td>Super total</td>
-								<td data-title="Total"><strong><span
-										class="amount"> <bdi id="cartTotal">0 &#8364;</bdi>
-									</span></strong></td>
-							</tr>
-						</tfoot>
-
-					</table>
-				</c:if>
-				<div class="wc-proceed-to-checkout mb-30">
-					<c:if test="${NbGamesInCart < 1}">
-						<a href="store" class="th-btn">Faire du shopping !</a>
-					</c:if>
+			<div class="row justify-content-end">
+				<div class="col-md-8 col-lg-7 col-xl-6">
+					<h2 class="h4 summary-title">Total du panier</h2>
 					<c:if test="${NbGamesInCart > 0}">
-						<a href="checkout.html" class="th-btn">Confirmer l'achat !</a>
-					</c:if>
+						<table class="cart_totals">
+							<tbody>
+								<tr>
+									<td>Sous-total du panier</td>
+									<td data-title="Cart Subtotal"><span class="amount"><bdi
+												id="cartSubTotal"></bdi></span></td>
+								</tr>
+								<tr class="shipping">
+									<th>Pr&#233;paration et envoi</th>
+									<td data-title="Shipping and Handling">
+										<ul class="woocommerce-shipping-methods list-unstyled">
+											<li><input type="radio" id="free_shipping"
+												name="shipping_method" class="shipping_method"> <label
+												for="free_shipping">Livraison en 3 mois (GRATUIT)</label></li>
+											<li><input type="radio" id="flat_rate"
+												name="shipping_method" class="shipping_method"
+												checked="checked"> <label for="flat_rate">Livraison
+													en 3 jours (7.99 &#8364;)</label></li>
+										</ul>
+										<p class="woocommerce-shipping-destination">&#199;a
+											co&#251;te d'aller vite !</p>
+									</td>
+								</tr>
 
+
+							</tbody>
+							<tfoot>
+								<tr class="order-total">
+									<td>Super total</td>
+									<td data-title="Total"><strong><span
+											class="amount"> <bdi id="cartTotal">0 &#8364;</bdi>
+										</span></strong></td>
+								</tr>
+							</tfoot>
+
+						</table>
+					</c:if>
+					<div class="wc-proceed-to-checkout mb-30">
+						<c:if test="${NbGamesInCart < 1}">
+							<a href="store" class="th-btn">Faire du shopping !</a>
+						</c:if>
+						<c:if test="${NbGamesInCart > 0}">
+							<button class="th-btn">
+								Valider la commande <i class="fa fa-sign-in" aria-hidden="true"></i>
+							</button>
+						</c:if>
+						
+
+					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 </div>
 <script src="assets/js/cartPrice.js"></script>

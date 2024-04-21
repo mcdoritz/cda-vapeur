@@ -14,7 +14,7 @@ import com.vapeur.config.Database;
 
 public class OrderDAO {
 
-    public void save(Order object) {
+    public int save(Order object) throws DAOException {
         try {
             if (object.getId() != 0) {
                 String query = "UPDATE orders SET date = ?, user_id = ? WHERE id = ?";
@@ -28,6 +28,7 @@ public class OrderDAO {
                 }
                 String objectInfos = "Order ID: " + object.getId();
                 bddSays("update", true, object.getId(), objectInfos);
+                return object.getId();
             } else {
                 String query = "INSERT INTO orders (date, user_id) VALUES (?, ?)";
                 
@@ -39,18 +40,22 @@ public class OrderDAO {
                     
                     try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
-                            String objectInfos = "Order ID: " + generatedKeys.getInt(1);
-                            bddSays("create", true, generatedKeys.getInt(1), objectInfos);
+                        	int id = generatedKeys.getInt(1);
+                            String objectInfos = "Order ID: " + id;
+                            bddSays("create", true, id, objectInfos);
+                            return id;
                         } else {
                             bddSays("create", false, object.getId(), null);
-                            throw new SQLException("L'insertion a échoué, aucun ID généré n'a été récupéré.");
+                            throw new DAOException("Erreur avec la BDD, contactez le service client.");
                         }
                     }
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            throw new DAOException("Erreur avec la bdd");
         }
+		
     }
 
     public Order getById(int order_id) {

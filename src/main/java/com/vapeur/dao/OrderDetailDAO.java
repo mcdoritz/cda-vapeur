@@ -31,6 +31,28 @@ public class OrderDetailDAO {
             ex.printStackTrace();
         }
     }
+    
+    public void saveList(ArrayList<OrderDetail> ordersList) throws DAOException {
+        try {
+            
+            try (PreparedStatement ps = Database.connexion.prepareStatement("INSERT INTO order_details (game_id, order_id, quantity, unit_price) VALUES (?, ?, ?, ?)")) {
+            	
+            	for(OrderDetail od:ordersList) {
+            		ps.setInt(1, od.getGameId());
+                    ps.setInt(2, od.getOrderId());
+                    ps.setInt(3, od.getQuantity());
+                    ps.setFloat(4, od.getUnitPrice());
+                    
+                    ps.executeUpdate();
+                    String objectInfos = "Order Detail inséré : " + od.getOrderId();
+            	}
+                
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Erreur avec l'insertion dans la BDD des détails de la commande");
+        }
+    }
 
     public List<OrderDetail> getByOrderId(int order_id) {
         ArrayList<OrderDetail> orderDetailsList = new ArrayList<>();
@@ -60,7 +82,7 @@ public class OrderDetailDAO {
         }
     }
 
-    public void deleteByOrderId(int order_id) {
+    public void delete(int order_id) {
         try {
             PreparedStatement ps = Database.connexion.prepareStatement("DELETE FROM order_details WHERE order_id = ?");
             ps.setInt(1, order_id);

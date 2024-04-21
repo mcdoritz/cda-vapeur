@@ -1,0 +1,1 @@
+<c:out value="${errorMsg != null ? infoMsg : errorMsg }"/>

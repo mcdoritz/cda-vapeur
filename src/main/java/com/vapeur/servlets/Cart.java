@@ -145,37 +145,4 @@ public class Cart extends HttpServlet {
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		HttpSession session = request.getSession(false);
-		prln("doPost Cart");
-
-		if (session != null) {
-			if (session.getAttribute("cart") != null) {
-
-		        String[] articlesIds = request.getParameterValues("game-id");
-		        String[] quantites = request.getParameterValues("quantity");
-
-		        if (articlesIds != null && quantites != null) {
-
-		            for (int i = 0; i < articlesIds.length && i < quantites.length; i++) {
-		                String articleId = articlesIds[i];
-		                String quantite = quantites[i];
-
-		                System.out.println("Article ID: " + articleId + ", Quantité: " + quantite);
-		            }
-		        }
-				
-
-			}
-		}
-
-		// Méthode : récupérer le panier dans la session.
-		// Récupérer l'ID du jeu et la quantité dans le form
-		// Modifier la quantité dans les objets récupérés de la session.
-		// Maj session.
-
-		doGet(request, response);
-	}
-
 }

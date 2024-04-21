@@ -60,6 +60,11 @@
 		<error-code>403</error-code>
 		<location>/WEB-INF/error/403.jsp</location>
 	</error-page>
+	
+	<error-page>
+		<error-code>405</error-code>
+		<location>/WEB-INF/error/405.jsp</location>
+	</error-page>
 
 	<error-page>
 		<error-code>500</error-code>
