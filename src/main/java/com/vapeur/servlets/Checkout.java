@@ -81,8 +81,8 @@ public class Checkout extends HttpServlet {
 									OrderDetail orderdetail = new OrderDetail();
 
 									orderdetail.setGameId(Integer.valueOf(gamesIds[i]));
-									orderdetail.setQuantity(i);
-									orderdetail.setOrderId(Integer.valueOf(quantites[i]));
+									orderdetail.setQuantity(Integer.valueOf(quantites[i]));
+									orderdetail.setOrderId(order_id);
 									orderdetail.setUnitPrice(Float.valueOf(unitPrices[i]));
 
 									ordersList.add(orderdetail);
@@ -93,7 +93,7 @@ public class Checkout extends HttpServlet {
 
 								// Vide le panier
 								session.setAttribute("cart", null);
-								request.setAttribute("infoMsg", "La commande a bien été passée ! <br> Retrouvez là dans votre profil.");
+								request.setAttribute("infoMsg", "La commande a bien été passée ! Retrouvez la dans votre profil, et retrouvez vos jeux dans la biliothèque !.");
 								request.getRequestDispatcher("WEB-INF/app/checkout.jsp").forward(request, response);
 
 							} catch (DAOException e) {

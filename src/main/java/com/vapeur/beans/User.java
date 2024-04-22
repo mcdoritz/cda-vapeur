@@ -91,7 +91,7 @@ public class User implements Serializable {
 
     public void setFirstname(String firstname) {
     	if(firstname != null) {
-    		this.firstname = firstname.substring(0).toUpperCase() + firstname.substring(1).toLowerCase();
+    		this.firstname = firstname.substring(0,1).toUpperCase() + firstname.substring(1).toLowerCase();
     	}else {
     		this.firstname = null;
     	}
@@ -104,7 +104,7 @@ public class User implements Serializable {
 
     public void setLastname(String lastname) {
     	if(lastname != null) {
-    		this.lastname = lastname.substring(0).toUpperCase() + lastname.substring(1).toLowerCase();
+    		this.lastname = lastname.substring(0,1).toUpperCase() + lastname.substring(1).toLowerCase();
     	}else {
     		this.lastname = null;
     	}

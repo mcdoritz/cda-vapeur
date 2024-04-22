@@ -324,6 +324,42 @@ public class GameDAO {
 			return null;
 		}
 	}
+	
+	public GameResults library(int user_id) {
+		
+		try {
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
+			ps.setInt(1, user_id);
+			
+			ResultSet resultat = ps.executeQuery();
+			
+			ArrayList<Game> gamesList = new ArrayList<>();
+			
+			PlatformDAO platformdao = new PlatformDAO();
+
+			while (resultat.next()) {
+				Game object = new Game();
+				object.setId(resultat.getInt("id"));
+				object.setTitle(resultat.getString("title"));
+				object.setPrice(resultat.getFloat("price"));
+				object.setReleaseDate(resultat.getDate("release_date"));
+				object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
+				object.setTotalReviews(resultat.getInt("total_reviews"));
+				object.setStock(resultat.getInt("stock"));
+				object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
+				gamesList.add(object);
+			}
+			
+			GameResults gameresults = new GameResults(gamesList, gamesList.size());
+			return gameresults;
+			
+			
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public GameResults readSearched(int page, String search) throws DAOException {
 		ArrayList<Game> gamesList = new ArrayList<>();
