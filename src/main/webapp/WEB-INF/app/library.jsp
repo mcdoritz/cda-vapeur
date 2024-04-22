@@ -32,53 +32,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-1.png" alt="img">PRO Player</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-2.png" alt="img">The Lion King</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-3.png" alt="img">The Assassin King</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">4</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-4.png" alt="img">Cyberpunk</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">5</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-5.png" alt="img">Team Gorilla</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">6</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-6.png" alt="img">King Of Badgamer</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">7</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-7.png" alt="img">Team Ninja</a></td>
-                            <td>GS6</td>
-                            <td>4</td>
-                        </tr>
+                    	<c:forEach var="game" items="${gamesList }" varStatus="i">
+	                        <tr>
+	                            <th scope="row"><c:out value="${i.count }"/></th>
+	                            <td><a href="game?id=${game.id }"><img src="assets/img/tournament/1-1.png" alt="img"><c:out value="${game.title }"/></a></td>
+	                            <td><c:out value="${game.platform.name }"/></td>
+	                            <td><c:out value="${game.usersAvgScore }"/></td>
+	
+	                        </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>

@@ -8,16 +8,22 @@ public class Order implements Serializable {
     
     private int id;
     private Date date;
+    private float amount;
+    private int totalQuantity;
     private int userId;
+    private String name;
 
     // Constructeurs
     public Order() {
     }
 
-    public Order(int id, Date date, int userId) {
+    public Order(int id, Date date, float amount, int totalQuantity, int userId, String name) {
         setId(id);
         setDate(date);
+        setAmount(amount);
+        setTotalQuantity(totalQuantity);
         setUserId(userId);
+        setName(name);
     }
 
     // Getters et setters
@@ -45,7 +51,31 @@ public class Order implements Serializable {
         this.userId = userId;
     }
 
-    // Méthode toString pour l'affichage
+    public float getAmount() {
+		return amount;
+	}
+
+	public void setAmount(float amount) {
+		this.amount = amount;
+	}
+
+	public int getTotalQuantity() {
+		return totalQuantity;
+	}
+
+	public void setTotalQuantity(int totalQuantity) {
+		this.totalQuantity = totalQuantity;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	// Méthode toString pour l'affichage
     @Override
     public String toString() {
         return "Order{" +

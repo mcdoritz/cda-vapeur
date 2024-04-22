@@ -2,15 +2,19 @@ package com.vapeur.dao;
 
 import static com.vapeur.config.Debug.bddSays;
 
+import java.sql.Timestamp;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.vapeur.beans.Order;
 import com.vapeur.config.Database;
+import static com.vapeur.config.Debug.*;
 
 public class OrderDAO {
 
@@ -20,7 +24,7 @@ public class OrderDAO {
                 String query = "UPDATE orders SET date = ?, user_id = ? WHERE id = ?";
                 
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
-                    ps.setDate(1, new java.sql.Date(object.getDate().getTime()));
+                    ps.setDate(1, (Date) object.getDate());
                     ps.setInt(2, object.getUserId());
                     ps.setInt(3, object.getId());
 
@@ -33,7 +37,8 @@ public class OrderDAO {
                 String query = "INSERT INTO orders (date, user_id) VALUES (?, ?)";
                 
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                    ps.setDate(1, new java.sql.Date(object.getDate().getTime()));
+                	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    ps.setTimestamp(1, timestamp);
                     ps.setInt(2, object.getUserId());
 
                     ps.executeUpdate();
@@ -106,6 +111,49 @@ public class OrderDAO {
             bddSays("readAll", false, 0, null);
             ex.printStackTrace();
             return null;
+        }
+    }
+    
+    public List<Order> readAllByUserId(int user_id) throws DAOException {
+        ArrayList<Order> ordersList = new ArrayList<>();      
+        
+        try {
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT orders.id AS order_id, orders.date AS order_date, SUM(order_details.quantity) AS totalQuantity, SUM(order_details.unit_price) AS amount, GROUP_CONCAT(games.title SEPARATOR ', ') AS name FROM order_details JOIN orders ON order_details.order_id = orders.id JOIN games ON order_details.game_id = games.id WHERE order_details.order_id IN (SELECT id FROM orders WHERE user_id = ?) GROUP BY orders.date ORDER BY orders.id");
+            ps.setInt(1, user_id);
+            ResultSet resultat = ps.executeQuery();
+            
+            DecimalFormat decimals = new DecimalFormat("#.##");
+
+            while (resultat.next()) {
+                Order object = new Order();
+                if(resultat.getInt("order_id") != 0) {
+                	object.setId(resultat.getInt("order_id"));
+                    object.setDate(resultat.getDate("order_date"));
+                    Float amount = Float.parseFloat(decimals.format(resultat.getFloat("amount")));
+                    object.setAmount(amount);
+                    object.setTotalQuantity(resultat.getInt("totalQuantity"));
+                    object.setUserId(user_id);
+                    
+                    String gamesNames = resultat.getString("name");
+                    if(gamesNames != null) {
+                    	int gamesNameLength = gamesNames.length() > 50 ? 50 : gamesNames.length();
+                    	String dottts = gamesNameLength >= 50 ? " ..." : "";
+                    	prln(gamesNames.substring(0, gamesNameLength)+ dottts);
+                        object.setName(gamesNames.substring(0, gamesNameLength)+ dottts);
+
+                    }
+                    ordersList.add(object);
+                    bddSays("readAll", true, ordersList.size(), null);
+                }else {
+                	ordersList = null;
+                }
+            }
+   
+            return ordersList;
+        } catch (Exception ex) {
+            bddSays("readAll", false, 0, null);
+            ex.printStackTrace();
+            throw new DAOException("Erreur avec la BDD dans la récupération des commandes");
         }
     }
 

@@ -43,7 +43,7 @@
 							<ul>
 								<li>Adresse de livraison: <span> <c:if
 											test="${sessionScope.user.shippingAddress == null }">
-											Pas d'adresse renseign�e
+											Pas d'adresse renseignÃ©e
 										</c:if> <c:if test="${sessionScope.user.shippingAddress != null }">
 											<c:out value="${sessionScope.user.shippingAddress }" />
 										</c:if>
@@ -65,74 +65,52 @@
 			</div>
 
 		</div>
-		
+
 		<div class="container">
-            <div class="title-area text-center custom-anim-top wow  animated" data-wow-duration="1.5s" data-wow-delay="0.2s" style="visibility: visible; animation-duration: 1.5s; animation-delay: 0.2s; animation-name: custom-anim-top;">
-                <span class="sub-title style2"># Historique de commandes</span>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table tournament-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Nb.jeux</th>
-                            <th scope="col">Montant</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td><a href="order?id="><img src="assets/img/tournament/1-1.png" alt="img">PRO Player</a></td>
-                            <td>4</td>
-                            <td>0</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-2.png" alt="img">The Lion King</a></td>
-                            <td>4</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-3.png" alt="img">The Assassin King</a></td>
-                            <td>4</td>
-                            <td>1</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">4</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-4.png" alt="img">Cyberpunk</a></td>
-                            <td>4</td>
-                            <td>0</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">5</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-5.png" alt="img">Team Gorilla</a></td>
-                            <td>4</td>
-                            <td>1</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">6</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-6.png" alt="img">King Of Badgamer</a></td>
-                            <td>4</td>
-                            <td>0</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">7</th>
-                            <td><a href="tournament.html"><img src="assets/img/tournament/1-7.png" alt="img">Team Ninja</a></td>
-                            <td>4</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+			<div class="title-area text-center custom-anim-top wow  animated"
+				data-wow-duration="1.5s" data-wow-delay="0.2s"
+				style="visibility: visible; animation-duration: 1.5s; animation-delay: 0.2s; animation-name: custom-anim-top;">
+				<span class="sub-title style2"># Historique de commandes</span>
+			</div>
+			<c:if test="${errorMsg != null}">
+				<p style="color: var(--bs-warning); text-align: center">
+					<c:out value="${errorMsg }" />
+				</p>
+			</c:if>
+			<c:if test="${ordersList == null}">
+				<p style="color: var(--theme-color)" style="text-align:center">
+				Aucune commande trouv&#233;e !
+			</p>
+			
+			</c:if>
+			<c:if test="${errorMsg == null && ordersList != null}">
+				<div class="table-responsive">
+					<table class="table tournament-table">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Date</th>
+								<th scope="col">Jeux</th>
+								<th scope="col">Nb.jeux</th>
+								<th scope="col">Montant</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach var="order" items="${ordersList }" varStatus="i">
+								<tr>
+									<th scope="row"><c:out value="${order.id }" /></th>
+									<td><a href="game?id=${order.id }"><img
+											src="assets/img/tournament/1-1.png" alt="img"></a></td>
+									<td><c:out value="${order.name }" /></td>
+									<td><c:out value="${order.totalQuantity }" /></td>
+									<td><c:out value="${order.amount } " />&#8364;</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+			</c:if>
+		</div>
 
 	</section>
 </c:if>
