@@ -1,6 +1,7 @@
 package com.vapeur.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Order implements Serializable {
@@ -12,18 +13,20 @@ public class Order implements Serializable {
     private int totalQuantity;
     private int userId;
     private String name;
+    private ArrayList<OrderDetail> orderDetails;
 
     // Constructeurs
     public Order() {
     }
 
-    public Order(int id, Date date, float amount, int totalQuantity, int userId, String name) {
+    public Order(int id, Date date, float amount, int totalQuantity, int userId, String name, ArrayList<OrderDetail> orderDetails) {
         setId(id);
         setDate(date);
         setAmount(amount);
         setTotalQuantity(totalQuantity);
         setUserId(userId);
         setName(name);
+        setOrderDetails(orderDetails);
     }
 
     // Getters et setters
@@ -73,6 +76,14 @@ public class Order implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public ArrayList<OrderDetail> getOrderDetails() {
+		return orderDetails;
+	}
+
+	public void setOrderDetails(ArrayList<OrderDetail> orderDetails) {
+		this.orderDetails = orderDetails;
 	}
 
 	// Méthode toString pour l'affichage

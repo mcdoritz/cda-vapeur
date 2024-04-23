@@ -54,7 +54,7 @@ public class OrderDetailDAO {
         }
     }
 
-    public List<OrderDetail> getByOrderId(int order_id) {
+    public ArrayList<OrderDetail> getByOrderId(int order_id) {
         ArrayList<OrderDetail> orderDetailsList = new ArrayList<>();
         try {
             PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM order_details WHERE order_id = ?");

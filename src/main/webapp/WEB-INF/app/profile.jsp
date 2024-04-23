@@ -77,13 +77,13 @@
 					<c:out value="${errorMsg }" />
 				</p>
 			</c:if>
-			<c:if test="${ordersList == null}">
-				<p style="color: var(--theme-color)" style="text-align:center">
+			<c:if test="${ordersList.size() == 0}">
+				<p style="color: var(--theme-color);text-align:center">
 				Aucune commande trouv&#233;e !
 			</p>
 			
 			</c:if>
-			<c:if test="${errorMsg == null && ordersList != null}">
+			<c:if test="${errorMsg == null && ordersList.size() > 0}">
 				<div class="table-responsive">
 					<table class="table tournament-table">
 						<thead>
@@ -99,8 +99,7 @@
 							<c:forEach var="order" items="${ordersList }" varStatus="i">
 								<tr>
 									<th scope="row"><c:out value="${order.id }" /></th>
-									<td><a href="game?id=${order.id }"><img
-											src="assets/img/tournament/1-1.png" alt="img"></a></td>
+									<td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${order.date }" /></td>
 									<td><c:out value="${order.name }" /></td>
 									<td><c:out value="${order.totalQuantity }" /></td>
 									<td><c:out value="${order.amount } " />&#8364;</td>

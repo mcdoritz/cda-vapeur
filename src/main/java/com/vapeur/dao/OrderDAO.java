@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vapeur.beans.Order;
+import com.vapeur.beans.OrderDetail;
 import com.vapeur.config.Database;
 import static com.vapeur.config.Debug.*;
 
@@ -114,24 +115,40 @@ public class OrderDAO {
         }
     }
     
-    public List<Order> readAllByUserId(int user_id) throws DAOException {
+    @SuppressWarnings("null")
+	public List<Order> readAllByUserId(int user_id) throws DAOException {
         ArrayList<Order> ordersList = new ArrayList<>();      
         
         try {
-            PreparedStatement ps = Database.connexion.prepareStatement("SELECT orders.id AS order_id, orders.date AS order_date, SUM(order_details.quantity) AS totalQuantity, SUM(order_details.unit_price) AS amount, GROUP_CONCAT(games.title SEPARATOR ', ') AS name FROM order_details JOIN orders ON order_details.order_id = orders.id JOIN games ON order_details.game_id = games.id WHERE order_details.order_id IN (SELECT id FROM orders WHERE user_id = ?) GROUP BY orders.date ORDER BY orders.id");
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT orders.id AS order_id, orders.date AS order_date, SUM(order_details.quantity) AS totalQuantity, SUM(order_details.unit_price) AS amount, games.id AS game_id, GROUP_CONCAT(games.title SEPARATOR ', ') AS name FROM order_details JOIN orders ON order_details.order_id = orders.id JOIN games ON order_details.game_id = games.id WHERE order_details.order_id IN (SELECT id FROM orders WHERE user_id = ?) GROUP BY orders.date ORDER BY orders.id");
             ps.setInt(1, user_id);
             ResultSet resultat = ps.executeQuery();
             
             DecimalFormat decimals = new DecimalFormat("#.##");
+            OrderDetailDAO orderdetailsdao = new OrderDetailDAO();
 
             while (resultat.next()) {
                 Order object = new Order();
+                
                 if(resultat.getInt("order_id") != 0) {
-                	object.setId(resultat.getInt("order_id"));
+                	int order_id = resultat.getInt("order_id");
+                	object.setId(order_id);
                     object.setDate(resultat.getDate("order_date"));
-                    Float amount = Float.parseFloat(decimals.format(resultat.getFloat("amount")));
+                    
+                    ArrayList<OrderDetail> orderDetails = new ArrayList<>();
+                    
+                    orderDetails = orderdetailsdao.getByOrderId(order_id);
+                    Float amount = (float) 0;
+                    int totalQuantity = 0;
+                    
+                    for(OrderDetail od:orderDetails) {
+                    	amount += od.getUnitPrice() * od.getQuantity();
+                    	totalQuantity += od.getQuantity();
+                    }
+                    
+                    
                     object.setAmount(amount);
-                    object.setTotalQuantity(resultat.getInt("totalQuantity"));
+                    object.setTotalQuantity(totalQuantity);
                     object.setUserId(user_id);
                     
                     String gamesNames = resultat.getString("name");
@@ -142,13 +159,18 @@ public class OrderDAO {
                         object.setName(gamesNames.substring(0, gamesNameLength)+ dottts);
 
                     }
+                    
                     ordersList.add(object);
+                    for(Order o:ordersList) {
+                    	prln(o.getAmount() + " € x " + o.getTotalQuantity());
+                    }
                     bddSays("readAll", true, ordersList.size(), null);
                 }else {
+                	prln("Orderlist null");
                 	ordersList = null;
                 }
             }
-   
+            prln("Orderlist size : " + ordersList.size());
             return ordersList;
         } catch (Exception ex) {
             bddSays("readAll", false, 0, null);
