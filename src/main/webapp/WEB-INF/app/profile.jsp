@@ -1,13 +1,3 @@
-<c:if test="${sessionScope.user == null }">
-	<div class="container" style="margin-top: 1em">
-		<div class="title-area text-center" style="margin-bottom: 0">
-			<h2 class="sec-title text-white" style="margin-bottom: 0">Quel
-				est votre profil ?</h2>
-			<p style="margin-bottom: 0">Pour le savoir, connectez-vous.</p>
-		</div>
-	</div>
-	<%@ include file="forms/loginForm.jsp"%>
-</c:if>
 <c:if test="${sessionScope.user != null }">
 	<section class="space">
 		<div class="container">
@@ -55,7 +45,7 @@
 					</div>
 					<br>
 					<div style="text-align: center">
-						<a href="profil?edit" class="th-btn style-border"> <span
+						<a href="editProfile" class="th-btn style-border"> <span
 							class="btn-border"> Editer mon profil <i
 								class="fa-solid fa-edit"></i>
 						</span>

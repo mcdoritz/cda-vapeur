@@ -25,7 +25,7 @@ public class UserDAO {
 
 			if (object.getId() != 0) {
 
-			       String query = "UPDATE users SET email = ?, nickname = ?, password = ?, firstname = ?, lastname = ?, active = ?, shipping_address = ? WHERE id = ?";
+			       String query = "UPDATE users SET email = ?, nickname = ?, password = ?, firstname = ?, lastname = ?, active = ?, shipping_address = ?, avatar = ? WHERE id = ?";
 			        
 			        try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
 			            ps.setString(1, object.getEmail());
@@ -35,7 +35,8 @@ public class UserDAO {
 			            ps.setString(5, object.getLastname());
 			            ps.setBoolean(6, object.isActive());
 			            ps.setString(7, object.getShippingAddress());
-			            ps.setInt(8, object.getId());
+			            ps.setString(8, object.getAvatar());
+			            ps.setInt(9, object.getId());
 
 			            ps.executeUpdate();
 			        }
@@ -44,7 +45,7 @@ public class UserDAO {
 				return true;
 
 			} else {
-				String query = "INSERT INTO users (email, nickname, password, firstname, lastname, active, shipping_address) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				String query = "INSERT INTO users (email, nickname, password, firstname, lastname, active, shipping_address, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		        
 		        try (PreparedStatement ps = Database.connexion.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 		            ps.setString(1, object.getEmail());
@@ -54,6 +55,7 @@ public class UserDAO {
 		            ps.setString(5, object.getLastname());
 		            ps.setBoolean(6, true); // Hé oui !
 		            ps.setString(7, object.getShippingAddress());
+		            ps.setString(8, object.getAvatar());
 
 		            ps.executeUpdate();
 		            
@@ -100,6 +102,7 @@ public class UserDAO {
                 object.setLastname(resultat.getString("lastname"));
                 object.setActive(resultat.getBoolean("active"));
                 object.setShippingAddress(resultat.getString("shipping_address"));
+                object.setAvatar(resultat.getString("avatar"));
             }
 			
 			String objectInfos = object.getFirstname() + " " + object.getLastname();
@@ -182,6 +185,7 @@ public class UserDAO {
                 objet.setLastname(resultat.getString("lastname"));
                 objet.setActive(resultat.getBoolean("active"));
                 objet.setShippingAddress(resultat.getString("shipping_address"));
+                objet.setAvatar(resultat.getString("avatar"));
 
                 usersList.add(objet);
             }

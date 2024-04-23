@@ -115,7 +115,6 @@ public class OrderDAO {
         }
     }
     
-    @SuppressWarnings("null")
 	public List<Order> readAllByUserId(int user_id) throws DAOException {
         ArrayList<Order> ordersList = new ArrayList<>();      
         

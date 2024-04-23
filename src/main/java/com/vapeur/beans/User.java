@@ -14,6 +14,7 @@ public class User implements Serializable {
     private String lastname;
     private boolean active;
     private String shippingAddress;
+    private String avatar;
 
     // Constructeurs
     public User() {
@@ -25,7 +26,7 @@ public class User implements Serializable {
         setPassword(password);
     }
 
-    public User(int id, String email, String nickname, String password, String firstname, String lastname, boolean active, String shippingAddress) throws BeanException {
+    public User(int id, String email, String nickname, String password, String firstname, String lastname, boolean active, String shippingAddress, String avatar) throws BeanException {
         setId(id);
         setEmail(email);
         setNickname(nickname);
@@ -34,6 +35,7 @@ public class User implements Serializable {
         setLastname(lastname);
         setActive(active);
         setShippingAddress(shippingAddress);
+        setAvatar(avatar);
     }
 
     // Getters et setters
@@ -126,7 +128,15 @@ public class User implements Serializable {
         this.shippingAddress = shippingAddress;
     }
 
-    // Méthode toString pour l'affichage
+    public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	// Méthode toString pour l'affichage
     @Override
     public String toString() {
         return "User{" +

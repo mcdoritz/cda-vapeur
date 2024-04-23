@@ -1,5 +1,4 @@
-<div
-	class="contact-sec-1 space bg-repeat overflow-hidden background-image"
+<div class="contact-sec-1 space bg-repeat overflow-hidden background-image"
 	style="background-image: url(&quot;assets/img/bg/jiji-bg2.png&quot;);">
 	<div class="container">
 		<div class="row align-items-center justify-content-between">

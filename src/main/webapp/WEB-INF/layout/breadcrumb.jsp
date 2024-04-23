@@ -5,7 +5,7 @@
 		</div>
 		<c:if test="${sessionScope.user != null }">
 			<c:if test="${pageTitle == 'Profil' || pageTitle == 'Bibliothèque' }">
-				<h3 style="color:white"><c:out value="de Msieur'dame ${sessionScope.user.nickname } !"/></h3>
+				<h3 style="color:white"><c:out value="de ${sessionScope.user.nickname } !"/></h3>
 			</c:if>
 		</c:if>
 	</div>
