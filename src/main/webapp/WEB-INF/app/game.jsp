@@ -2,6 +2,11 @@
 	<div class="container">
 		<div class="row gx-40">
 			<div class="col-xxl-8 col-lg-7">
+				<c:if test="${errorMsg != null}">
+					<p style="color: var(--bs-warning); text-align: center">
+						<c:out value="${errorMsg }" />
+					</p>
+				</c:if>
 				<div class="page-single game-details-wrap">
 					<div class="page-img mb-50">
 						<img class="w-100" src="assets/img/game/game-s-1-1.png" alt="img">
@@ -54,43 +59,46 @@
 					</table>
 				</div>
 				<div class="widget widget_tag_cloud  ">
-					<h3 class="widget_title">Développeur : <c:out value="${game.developer.name }" /></h3>
+					<h3 class="widget_title">
+						Développeur :
+						<c:out value="${game.developer.name }" />
+					</h3>
 					<div class="team-info-list">
-							<ul>
-								<li>Fondé en <span><fmt:formatDate pattern="yyyy"
-											value="${game.developer.creationDate}" /></span></li>
-								<li>Pays: <span><c:out
-											value="${game.developer.country }" /></span></li>
-							</ul>
+						<ul>
+							<li>Fondé en <span><fmt:formatDate pattern="yyyy"
+										value="${game.developer.creationDate}" /></span></li>
+							<li>Pays: <span><c:out
+										value="${game.developer.country }" /></span></li>
+						</ul>
+					</div>
+					<div class="team-social mt-25">
+						<h5 class="fw-semibold text-white">
+							Suivre <span class="text-theme"><c:out
+									value="${game.developer.name }" /></span>
+						</h5>
+						<div class="th-social style-mask">
+							<c:if test="${game.developer.urlInstagram != null }">
+								<a class="instagram" href="${game.developer.urlInstagram }">
+									<i class="fab fa-instagram"></i>
+								</a>
+							</c:if>
+							<c:if test="${game.developer.urlX != null }">
+								<a class="twitter" href="${game.developer.urlX }"> <i
+									class="fab fa-twitter"></i>
+								</a>
+							</c:if>
+							<c:if test="${game.developer.urlFacebook != null }">
+								<a class="facebook" href="${game.developer.urlFacebook }"> <i
+									class="fab fa-facebook-f"></i>
+								</a>
+							</c:if>
+							<c:if test="${game.developer.urlWebsite != null }">
+								<a class="google-play" href="${game.developer.urlWebsite }">
+									<img src="assets/img/icon/google-playstore-icon.svg" alt="icon">
+								</a>
+							</c:if>
 						</div>
-						<div class="team-social mt-25">
-							<h5 class="fw-semibold text-white">
-								Suivre <span class="text-theme"><c:out
-										value="${game.developer.name }" /></span>
-							</h5>
-							<div class="th-social style-mask">
-								<c:if test="${game.developer.urlInstagram != null }">
-									<a class="instagram" href="${game.developer.urlInstagram }">
-										<i class="fab fa-instagram"></i>
-									</a>
-								</c:if>
-								<c:if test="${game.developer.urlX != null }">
-									<a class="twitter" href="${game.developer.urlX }"> <i
-										class="fab fa-twitter"></i>
-									</a>
-								</c:if>
-								<c:if test="${game.developer.urlFacebook != null }">
-									<a class="facebook" href="${game.developer.urlFacebook }"> <i
-										class="fab fa-facebook-f"></i>
-									</a>
-								</c:if>
-								<c:if test="${game.developer.urlWebsite != null }">
-									<a class="google-play" href="${game.developer.urlWebsite }">
-										<img src="assets/img/icon/google-playstore-icon.svg" alt="icon">
-									</a>
-								</c:if>
-							</div>
-						</div>
+					</div>
 				</div>
 			</div>
 			<div class="col-xxl-4 col-lg-5">
@@ -176,14 +184,84 @@
 			</div>
 		</div>
 		<div class="widget widget_tag_cloud  ">
-					<h3 class="widget_title">Evaluations des utilisateurs</h3>
-
+			<div class="th-comments-wrap ">
+				<h3 class="blog-inner-title">
+					<i class="far fa-comments"></i> Commentaires des vapeurGameurs (x
+					<c:out value="${game.comments.size() }" />
+					)
+				</h3>
+				<c:if test="${game.comments.size() == 0 }">
+					Ce jeu n'a pas été commenté !
+				
+				</c:if>
+				<c:if test="${game.comments.size() > 0 }">
+					<ul class="comment-list">
+						<c:forEach var="comment" items="${game.comments }">
+							<li class="th-comment-item">
+								<div class="th-post-comment">
+									<div class="comment-avater">
+										<img src="assets/img/blog/comment-author-1.jpg"
+											alt="Comment Author">
+									</div>
+									<div class="comment-content">
+										<h3 class="name">
+											<span style="color:var(--theme-color)"><c:out value="${comment.userNickname }" /></span> a donné
+											<span class="color-<fmt:formatNumber value="${comment.score}" pattern="###" />"><fmt:formatNumber value="${comment.score }" pattern="###" />/5</span> et a dit :
+										</h3>
+										<span class="commented-on">
+											<fmt:formatDate value="${comment.uploaded }" pattern="EEEE dd MMMM yyyy HH:mm" />
+										</span>
+										<p class="text">
+											<c:out value="${comment.content }" />
+										</p>
+									</div>
+								</div>
+							</li>
+						</c:forEach>
+					</ul>
+				</c:if>
+			</div>
+			<c:if test="${sessionScope.user != null }">
+				<div class="game-title-wrap">
+					<h2 class="page-title text-white mb-0">Ca va vous plaire
+						également :</h2>
+					<p>Suggestions basées sur vos achats précédents</p>
+				</div>
+				<%@ include file="components/carroutext.jsp"%>
+				<div class="th-comment-form ">
+					<div class="form-title">
+						<h3 class="blog-inner-title mb-2">
+							<i class="fa-solid fa-reply"></i> Leave a Comment
+						</h3>
+						<p class="form-text">Your email address will not be published.
+							Required fields are marked *</p>
+					</div>
+					<div class="row">
+						<div class="col-md-6 form-group style-border">
+							<input type="text" placeholder="Your Name*" class="form-control">
+							<i class="far fa-user"></i>
+						</div>
+						<div class="col-md-6 form-group style-border">
+							<input type="text" placeholder="Your Email*" class="form-control">
+							<i class="far fa-envelope"></i>
+						</div>
+						<div class="col-12 form-group style-border">
+							<input type="text" placeholder="Website" class="form-control">
+							<i class="far fa-globe"></i>
+						</div>
+						<div class="col-12 form-group style-border">
+							<textarea placeholder="Write a Comment*" class="form-control"></textarea>
+							<i class="far fa-pencil"></i>
+						</div>
+						<div class="col-12 form-group mb-0">
+							<button class="th-btn">
+								SEND MESSAGE <i class="far fa-arrow-right ms-2"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</c:if>
 		</div>
-		<div class="game-title-wrap">
-		<h2 class="page-title text-white mb-0">Ca va vous plaire également :</h2>
-		<p>Suggestions basées sur vos achats précédents</p>
 	</div>
-	<%@ include file="components/carroutext.jsp"%>
-	</div>
-	
+
 </section>

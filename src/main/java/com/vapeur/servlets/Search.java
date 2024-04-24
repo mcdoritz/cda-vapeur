@@ -60,7 +60,7 @@ public class Search extends HttpServlet {
 				request.setAttribute("totalGames", gameresults.getTotalResults());
 				request.setAttribute("gamesList", gameresults.getGames());
 				
-			} catch (DAOException e) {
+			} catch (Exception e) {
 				prln(e.getMessage());
 				request.setAttribute("errorMsg", e.getMessage());
 			}

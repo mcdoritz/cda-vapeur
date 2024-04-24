@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vapeur.beans.Game;
 import com.vapeur.beans.OrderDetail;
 import com.vapeur.config.Database;
 
@@ -33,24 +34,51 @@ public class OrderDetailDAO {
     }
     
     public void saveList(ArrayList<OrderDetail> ordersList) throws DAOException {
+    	String message = "";
         try {
+        	
+        	// D'ABORD VERIFIER TOUS LES STOCKS DE TOUS LES JEUX DU PANIER
+        	GameDAO gamedao = new GameDAO();
+        	
+        	for(OrderDetail od:ordersList) {
+        		Game game = gamedao.getStockAndTitle(od.getGameId());
+        		int quantity = od.getQuantity();
+        		if(game.getStock() < quantity) {
+        			message = "Stock insuffisant pour " + game.getTitle() + ": " + game.getStock() + " restant(s) pour " + quantity + " demandé(s).";
+            		throw new DAOException(message);
+        		}
+        		
+        	}
             
-            try (PreparedStatement ps = Database.connexion.prepareStatement("INSERT INTO order_details (game_id, order_id, quantity, unit_price) VALUES (?, ?, ?, ?)")) {
+            PreparedStatement ps = Database.connexion.prepareStatement("INSERT INTO order_details (game_id, order_id, quantity, unit_price) VALUES (?, ?, ?, ?)");
             	
             	for(OrderDetail od:ordersList) {
-            		ps.setInt(1, od.getGameId());
-                    ps.setInt(2, od.getOrderId());
-                    ps.setInt(3, od.getQuantity());
-                    ps.setFloat(4, od.getUnitPrice());
-                    
-                    ps.executeUpdate();
-                    String objectInfos = "Order Detail inséré : " + od.getOrderId();
-            	}
+            		Game game = gamedao.getStockAndTitle(od.getGameId());
+            		int quantity = od.getQuantity();
+            		int game_id = od.getGameId();
+
+            		if(game.getStock() >= quantity) { // je laisse une deuxième vérif, au cas où pas de bol une autre commande d'un autre user viendrait entre les 2
+	            			
+	            		ps.setInt(1, game_id);
+	                    ps.setInt(2, od.getOrderId());
+	                    ps.setInt(3, quantity);
+	                    ps.setFloat(4, od.getUnitPrice());
+	                    
+	                    //Màj du stock
+	                    gamedao.updateStock(game_id, quantity*-1);
+	                    
+	                    ps.executeUpdate();
+	                    String objectInfos = "Order Detail inséré : " + od.getOrderId();
+	            	}else {
+	            		message = "Stock insuffisant pour " + game.getTitle() + ": " + game.getStock() + " restant(s) pour " + quantity + " demandé(s).";
+	            		throw new DAOException(message);
+	            	}
+            	
                 
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new DAOException("Erreur avec l'insertion dans la BDD des détails de la commande");
+            throw new DAOException(message);
         }
     }
 

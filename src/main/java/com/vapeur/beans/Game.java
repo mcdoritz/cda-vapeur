@@ -27,6 +27,7 @@ public class Game implements Serializable {
     private Platform platform;
     private ArrayList<Video> videos;
     private ArrayList<Language> languages;
+    private ArrayList<Comment> comments;
 
     // Constructeurs
     public Game() {
@@ -47,10 +48,17 @@ public class Game implements Serializable {
         setPlatform(platform);
     }
     
+    //Titre et stock
+    
+    public Game(String title, int stock) {
+    	setTitle(title);
+    	setStock(stock);
+    }
+    
     //Complet pour page détail
     public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, 
     		int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, ArrayList<String> tags, int developerId, Developer developer,
-    		ArrayList<Genre> genres, ArrayList<Mode> modes, int platformId, Platform platform, ArrayList<Video> videos, ArrayList<Language> languages) {
+    		ArrayList<Genre> genres, ArrayList<Mode> modes, int platformId, Platform platform, ArrayList<Video> videos, ArrayList<Language> languages, ArrayList<Comment> comments) {
     	
         setId(id);
         setTitle(title);
@@ -72,6 +80,7 @@ public class Game implements Serializable {
         setPlatform(platform);
         setVideos(videos);
         setLanguages(languages);
+        setComments(comments);
     }
 
     // Getters et setters
@@ -235,6 +244,14 @@ public class Game implements Serializable {
 
 	public void setLanguages(ArrayList<Language> languages) {
 		this.languages = languages;
+	}
+
+	public ArrayList<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(ArrayList<Comment> comments) {
+		this.comments = comments;
 	}
 
 	@Override

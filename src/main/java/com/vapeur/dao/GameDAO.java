@@ -93,6 +93,56 @@ public class GameDAO {
 			ex.printStackTrace();
 		}
 	}
+	
+	public Game getStockAndTitle(int game_id) {
+		
+		int stock = 0;
+		String title = null;
+		
+		try {
+
+			if (game_id != 0) {			
+
+				try (PreparedStatement ps = Database.connexion.prepareStatement("SELECT title, stock FROM games WHERE id = ?")) {
+					ps.setInt(1, game_id);
+					ResultSet resultat = ps.executeQuery();
+
+					while (resultat.next()) {
+						stock = resultat.getInt("stock");
+						title = resultat.getString("title");
+					}
+					
+					prln("Stock du jeu " + title + " : " + stock  + " unités.");
+					return new Game(title, stock);
+				}
+			}else {
+				return null;
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void updateStock(int game_id, int stockModif) {
+		try {
+			prln("stockmodif : " + stockModif);
+			if (stockModif != 0 && game_id != 0) {		
+
+				try (PreparedStatement ps = Database.connexion.prepareStatement("UPDATE games SET stock = stock + ? WHERE id = ?")) {
+					ps.setInt(1, stockModif);
+					ps.setInt(2, game_id);
+					
+					ps.executeUpdate();
+					prln("Stock du jeu " + game_id + " mis à jour");
+				}
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	// Tout prendre
 	public Game getById(int game_id) {
@@ -108,6 +158,7 @@ public class GameDAO {
 			GenreDAO genredao = new GenreDAO();
 			LanguageDAO languagedao = new LanguageDAO();
 			DeveloperDAO developerdao = new DeveloperDAO();
+			CommentDAO commentdao = new CommentDAO();
 
 			while (resultat.next()) {
 
@@ -143,6 +194,7 @@ public class GameDAO {
 				object.setGenres(genresList);
 				object.setLanguages(languagesList);
 				object.setDeveloper(developerdao.getById(resultat.getInt("developer_id")));
+				object.setComments(commentdao.getByGameId(game_id));
 
 			}
 			String objectInfos = object.getTitle();
@@ -471,9 +523,14 @@ public class GameDAO {
 	public int countAll(String query, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
 			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
 		try {
+			// Pour la sélection au hasard pour la landing page :
 			if(query == "all") {
-				query =  "SELECT COUNT(*) AS total FROM games";
+				query =  "SELECT COUNT(*) AS total FROM games WHERE stock > 0";
+			}else {
+				query += "WHERE stock > 0";
 			}
+			
+			prln("countALL QUERY : " + query);
 			PreparedStatement ps = Database.connexion
 					.prepareStatement(query);
 			
@@ -501,10 +558,7 @@ public class GameDAO {
 					index++;
 				}
 			}
-			
-			
-			
-			
+
 			ResultSet resultat = ps.executeQuery();
 
 			int total = 0;

@@ -12,6 +12,7 @@ import static com.vapeur.config.Debug.*;
 
 import com.vapeur.beans.Game;
 import com.vapeur.config.Database;
+import com.vapeur.dao.CommentDAO;
 import com.vapeur.dao.GameDAO;
 
 /**
@@ -37,49 +38,43 @@ public class GameDetails extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		
 		if (request.getParameter("id") != null) {
-			Database.connect();
-			int id = Integer.parseInt(request.getParameter("id"));
-			if(id > 0) {
-				GameDAO gamedao = new GameDAO();
-				Game game = gamedao.getById(id);
-				
-				if(game != null) {
-					prln("Servlet Game : game " + game.getTitle() + " trouvé");
-					request.setAttribute("game", game);
+			try {
+				Database.connect();
+				int id = Integer.parseInt(request.getParameter("id"));
+				if(id > 0) {
+					GameDAO gamedao = new GameDAO();
+					Game game = gamedao.getById(id);
 					
-					/*for(String t:game.getTags()) {
-						prln(t);
-					}*/
-					
-					
-					request.setAttribute("euro", "€");
-					request.setAttribute("pageTitle", game.getTitle());
-					request.getRequestDispatcher("WEB-INF/app/game.jsp").forward(request, response);
+					if(game != null) {
+						prln("Servlet Game : game " + game.getTitle() + " trouvé");
+						request.setAttribute("game", game);
+						
+						/*for(String t:game.getTags()) {
+							prln(t);
+						}*/
+
+						request.setAttribute("euro", "€");
+						request.setAttribute("pageTitle", game.getTitle());
+						request.getRequestDispatcher("WEB-INF/app/game.jsp").forward(request, response);
+					}else {
+						prln("Erreur servlet Game : pas de game trouvé");
+						response.sendRedirect("store");
+					}
+
 				}else {
-					prln("Erreur servlet Game : pas de game trouvé");
+					prln("Erreur servlet Game : l'id dans l'URL n'est pas un nombre");
 					response.sendRedirect("store");
 				}
-				
-				
-				
-			}else {
-				prln("Erreur servlet Game : l'id dans l'URL n'est pas un nombre");
-				response.sendRedirect("store");
+			}catch (Exception e) {
+				request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
 			}
+			
 			
 		}else {
 			prln("Erreur servlet Game : pas d'id dans l'URL");
 			response.sendRedirect("store");
 		}
 		
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.vapeur.servlets;
 import static com.vapeur.config.Debug.prln;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.vapeur.config.Database;
+import com.vapeur.config.DatabaseException;
 import com.vapeur.dao.GameDAO;
 
 @WebServlet(urlPatterns = { "/", "/landing" })
@@ -34,11 +36,17 @@ public class Landing extends HttpServlet {
 			response.sendRedirect("404");
 			return;
 		}
-		Database.connect();
-		GameDAO gamedao = new GameDAO();
 		
-		ArrayList<Object> list = new ArrayList<>(gamedao.auHasard());
-		request.setAttribute("list", list);
+		try {
+			Database.connect();
+			GameDAO gamedao = new GameDAO();
+			
+			ArrayList<Object> list = new ArrayList<>(gamedao.auHasard());
+			request.setAttribute("list", list);
+		}catch (Exception e) {
+			request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
+		}
+		
 
 		// ----------------------
 		request.getRequestDispatcher("WEB-INF/app/landing.jsp").forward(request, response);

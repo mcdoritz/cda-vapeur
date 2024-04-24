@@ -3,6 +3,8 @@ package com.vapeur.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class Database {
 	/*
 	private static String url = "jdbc:mysql://localhost:3306/lesformulix?useUnicode=yes&characterEncoding=UTF-8";
@@ -22,9 +24,7 @@ public class Database {
 			System.out.println("connection to db.........ok");
 
 		} catch (Exception ex) {
-			//ex.printStackTrace();
-			//ex.getMessage();
-			System.err.println(ex.getMessage());
+			System.err.println(ex.getMessage());	
 		}
 	}
 }

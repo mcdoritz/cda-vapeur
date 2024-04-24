@@ -38,15 +38,20 @@ public class Profile extends HttpServlet {
 				User user = new User();
 				user = (User) session.getAttribute("user");
 				if (user.getId() > 0) {
-					Database.connect();
-					OrderDAO orderdao = new OrderDAO();
 					try {
-						request.setAttribute("ordersList", orderdao.readAllByUserId(user.getId()));
-					} catch (DAOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						request.setAttribute("errorMsg", e.getMessage());
+						Database.connect();
+						OrderDAO orderdao = new OrderDAO();
+						try {
+							request.setAttribute("ordersList", orderdao.readAllByUserId(user.getId()));
+						} catch (DAOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							request.setAttribute("errorMsg", e.getMessage());
+						}
+					}catch (Exception e) {
+						request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
 					}
+					
 				} else {
 					request.setAttribute("errorMsg", "Erreur, merci de vous reconnecter.");
 				}

@@ -33,19 +33,23 @@ public class Library extends HttpServlet {
 				User user = (User) session.getAttribute("user");
 				if(user.getId() != 0) {
 					prln("user.getId est pas null");
-					
-					Database.connect();
-					GameDAO gamedao = new GameDAO();
-					GameResults gameresults = new GameResults();
-					
-					gameresults = gamedao.library(user.getId());
-					
-					if(gameresults != null) {
-						request.setAttribute("gamesList", gameresults.getGames());
-						request.setAttribute("pageTitle", "Bibliothèque");
-					}else {
-						request.setAttribute("infoMsg", "La biliothèque est vide !");
+					try {
+						Database.connect();
+						GameDAO gamedao = new GameDAO();
+						GameResults gameresults = new GameResults();
+						
+						gameresults = gamedao.library(user.getId());
+						
+						if(gameresults != null) {
+							request.setAttribute("gamesList", gameresults.getGames());
+							request.setAttribute("pageTitle", "Bibliothèque");
+						}else {
+							request.setAttribute("infoMsg", "La biliothèque est vide !");
+						}
+					}catch (Exception e) {
+						request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
 					}
+					
 					
 				}else {
 					request.setAttribute("errorMsg", "Erreur avec la liste des jeux.");

@@ -68,10 +68,15 @@ public class Signup extends HttpServlet {
 					} catch (DAOException e) {
 						prln(e.getMessage());
 						request.setAttribute("errorMsg", e.getMessage());
+						request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
 						
 					} catch (BeanException e) {
 						request.setAttribute("errorMsg", e.getMessage());
 						e.printStackTrace();
+						request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
+					} catch (Exception e) {
+						request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
+						request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
 					}
 					
 					request.getRequestDispatcher("WEB-INF/app/signup.jsp").forward(request, response);

@@ -11,16 +11,20 @@ public class Comment implements Serializable {
     private Timestamp uploaded;
     private float score;
     private int userId;
+    private String userNickname;
+    private int gameId;
 
     public Comment() {
     }
 
-    public Comment(int id, String content, Timestamp uploaded, float score, int userId) {
+    public Comment(int id, String content, Timestamp uploaded, float score, int userId, String userNickname, int gameId) {
         setId(id);
         setContent(content);
         setUploaded(uploaded);
         setScore(score);
         setUserId(userId);
+        setUserNickname(userNickname);
+        setGameId(gameId);
     }
 
     public int getId() {
@@ -63,7 +67,23 @@ public class Comment implements Serializable {
         this.userId = userId;
     }
 
-    @Override
+    public int getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(int gameId) {
+		this.gameId = gameId;
+	}
+
+	public String getUserNickname() {
+		return userNickname;
+	}
+
+	public void setUserNickname(String userNickname) {
+		this.userNickname = userNickname;
+	}
+
+	@Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +

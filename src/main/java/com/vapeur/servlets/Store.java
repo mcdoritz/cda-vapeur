@@ -62,140 +62,144 @@ public class Store extends HttpServlet {
 		platforms.clear();
 		developers.clear();
 		
-		
-		Database.connect();
-		
-		List<Game> gamesList = new ArrayList<>();
-		GameResults gameResults = new GameResults();
-		
 		try {
-			//Récupérer tous les paramètres de l'url // String => tableau str => tableau int
+			Database.connect();
+			
+			List<Game> gamesList = new ArrayList<>();
+			GameResults gameResults = new GameResults();
+			
+			try {
+				//Récupérer tous les paramètres de l'url // String => tableau str => tableau int
 
-			String genresSelectedStr = request.getParameter("genres");
-			String modesSelectedStr  = request.getParameter("modes");
-			String languagesSelectedStr  = request.getParameter("languages");
-			String platformsSelectedStr  = request.getParameter("platforms");
-			String developersSelectedStr  = request.getParameter("developers");
-			
-			if(request.getParameter("reset") != null) {
-				genresSelectedStr = null;
-				modesSelectedStr  = null;
-				languagesSelectedStr  = null;
-				platformsSelectedStr  = null;
-				developersSelectedStr  = null;
-			}
-			
-			String[] genresSelectedTbl;
-			String[] modesSelectedTbl;
-			String[] languagesSelectedTbl;
-			String[] platformsSelectedTbl;
-			String[] developersSelectedTbl;
-			
-			if(genresSelectedStr != null) {
-				genresSelectedTbl = genresSelectedStr.split(",");
-				for(String str:genresSelectedTbl) {
-					prln("genre id str : " + str);
-					genres.add(Integer.parseInt(str));
+				String genresSelectedStr = request.getParameter("genres");
+				String modesSelectedStr  = request.getParameter("modes");
+				String languagesSelectedStr  = request.getParameter("languages");
+				String platformsSelectedStr  = request.getParameter("platforms");
+				String developersSelectedStr  = request.getParameter("developers");
+				
+				if(request.getParameter("reset") != null) {
+					genresSelectedStr = null;
+					modesSelectedStr  = null;
+					languagesSelectedStr  = null;
+					platformsSelectedStr  = null;
+					developersSelectedStr  = null;
 				}
-			}
-			
-			if(modesSelectedStr != null) {
-				modesSelectedTbl = modesSelectedStr.split(",");
-				for(String str:modesSelectedTbl) {
-					modes.add(Integer.parseInt(str));
+				
+				String[] genresSelectedTbl;
+				String[] modesSelectedTbl;
+				String[] languagesSelectedTbl;
+				String[] platformsSelectedTbl;
+				String[] developersSelectedTbl;
+				
+				if(genresSelectedStr != null) {
+					genresSelectedTbl = genresSelectedStr.split(",");
+					for(String str:genresSelectedTbl) {
+						prln("genre id str : " + str);
+						genres.add(Integer.parseInt(str));
+					}
 				}
-			}
-			
-			if(languagesSelectedStr != null) {
-				languagesSelectedTbl = languagesSelectedStr.split(",");
-				for(String str:languagesSelectedTbl) {
-					languages.add(Integer.parseInt(str));
+				
+				if(modesSelectedStr != null) {
+					modesSelectedTbl = modesSelectedStr.split(",");
+					for(String str:modesSelectedTbl) {
+						modes.add(Integer.parseInt(str));
+					}
 				}
-			}
-			
-			if(platformsSelectedStr != null) {
-				platformsSelectedTbl = platformsSelectedStr.split(",");
-				for(String str:platformsSelectedTbl) {
-					platforms.add(Integer.parseInt(str));
+				
+				if(languagesSelectedStr != null) {
+					languagesSelectedTbl = languagesSelectedStr.split(",");
+					for(String str:languagesSelectedTbl) {
+						languages.add(Integer.parseInt(str));
+					}
 				}
-			}
-			
-			if(developersSelectedStr != null) {
-				developersSelectedTbl = developersSelectedStr.split(",");
-				for(String str:developersSelectedTbl) {
-					developers.add(Integer.parseInt(str));
+				
+				if(platformsSelectedStr != null) {
+					platformsSelectedTbl = platformsSelectedStr.split(",");
+					for(String str:platformsSelectedTbl) {
+						platforms.add(Integer.parseInt(str));
+					}
 				}
-			}
+				
+				if(developersSelectedStr != null) {
+					developersSelectedTbl = developersSelectedStr.split(",");
+					for(String str:developersSelectedTbl) {
+						developers.add(Integer.parseInt(str));
+					}
+				}
 
-			if(request.getParameter("page") != null) {
-				page = Integer.parseInt(request.getParameter("page"));
-				if(page > 0) {
-					prln("ICI");
-					gameResults = gamedao.readAll(page, genres, modes, languages, platforms, developers);
-					
+				if(request.getParameter("page") != null) {
+					page = Integer.parseInt(request.getParameter("page"));
+					if(page > 0) {
+						prln("ICI");
+						gameResults = gamedao.readAll(page, genres, modes, languages, platforms, developers);
+						
+					}else {
+						prln("LA");
+						gameResults = gamedao.readAll(1, genres, modes, languages, platforms, developers);
+						
+					}
 				}else {
-					prln("LA");
-					gameResults = gamedao.readAll(1, genres, modes, languages, platforms, developers);
-					
+					prln("LA BAS");
+					for(int i:genres) {
+						prln("valeur de genres_id avant dao : " + i);
+					}
+					gameResults = gamedao.readAll(0, genres, modes, languages, platforms, developers);
 				}
-			}else {
-				prln("LA BAS");
-				for(int i:genres) {
-					prln("valeur de genres_id avant dao : " + i);
+				
+				// Préparation des options pour l'affichage des filtres
+				ArrayList<Genre> genresFilter = new ArrayList<>(genredao.readAll());
+				ArrayList<Mode> modesFilter = new ArrayList<>(modedao.readAll());
+				ArrayList<Language> languagesFilter = new ArrayList<>(languagedao.readAll());
+				ArrayList<Platform> platformsFilter = new ArrayList<>(platformdao.readAll());
+				ArrayList<Developer> developersFilter = new ArrayList<>(developerdao.readAll());
+				
+				// ----------------------------------------
+				
+				request.setAttribute("genres", genresFilter);
+				request.setAttribute("modes", modesFilter);
+				request.setAttribute("languages", languagesFilter);
+				request.setAttribute("platforms", platformsFilter);
+				request.setAttribute("developers", developersFilter);
+				
+				request.setAttribute("genresSelected", genres);
+				request.setAttribute("modesSelected", modes);
+				request.setAttribute("languagesSelected", languages);
+				request.setAttribute("platformsSelected", platforms);
+				request.setAttribute("developersSelected", developers);
+				
+				int gamesInPage = 0;
+				int totalResults = 0;
+				
+				if(gameResults != null) {
+					gamesInPage = gameResults.getTotalResults() > limitPerPage ? limitPerPage : gameResults.getTotalResults();
+					totalResults = gameResults.getTotalResults();
+					request.setAttribute("gamesInPage", gamesInPage);
+					request.setAttribute("gamesList", gameResults.getGames());
+					request.setAttribute("totalGames", totalResults);
 				}
-				gameResults = gamedao.readAll(0, genres, modes, languages, platforms, developers);
-			}
-			
-			// Préparation des options pour l'affichage des filtres
-			ArrayList<Genre> genresFilter = new ArrayList<>(genredao.readAll());
-			ArrayList<Mode> modesFilter = new ArrayList<>(modedao.readAll());
-			ArrayList<Language> languagesFilter = new ArrayList<>(languagedao.readAll());
-			ArrayList<Platform> platformsFilter = new ArrayList<>(platformdao.readAll());
-			ArrayList<Developer> developersFilter = new ArrayList<>(developerdao.readAll());
-			
-			// ----------------------------------------
-			
-			request.setAttribute("genres", genresFilter);
-			request.setAttribute("modes", modesFilter);
-			request.setAttribute("languages", languagesFilter);
-			request.setAttribute("platforms", platformsFilter);
-			request.setAttribute("developers", developersFilter);
-			
-			request.setAttribute("genresSelected", genres);
-			request.setAttribute("modesSelected", modes);
-			request.setAttribute("languagesSelected", languages);
-			request.setAttribute("platformsSelected", platforms);
-			request.setAttribute("developersSelected", developers);
-			
-			int gamesInPage = 0;
-			int totalResults = 0;
-			
-			if(gameResults != null) {
-				gamesInPage = gameResults.getTotalResults() > limitPerPage ? limitPerPage : gameResults.getTotalResults();
-				totalResults = gameResults.getTotalResults();
-				request.setAttribute("gamesInPage", gamesInPage);
-				request.setAttribute("gamesList", gameResults.getGames());
-				request.setAttribute("totalGames", gameResults.getTotalResults());
-			}
 
-			request.setAttribute("page", page);
-			
-			request.setCharacterEncoding("UTF-8");
-			request.setAttribute("pageTitle", "Magasin");
-			request.setAttribute("euro", "€");
-			
-			//Si pas de games dans la liste, alors retour à la première page.
-			if( totalResults == 0) {
-				prln("po de jeu");
-				request.setAttribute("infoMsg", "Les filtres ont tout filtré ! Mettez moins de filtres");
-			}
-			request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
+				request.setAttribute("page", page);
+				
+				request.setCharacterEncoding("UTF-8");
+				request.setAttribute("pageTitle", "Magasin");
+				request.setAttribute("euro", "€");
+				
+				//Si pas de games dans la liste, alors retour à la première page.
+				if( totalResults == 0) {
+					prln("po de jeu");
+					request.setAttribute("infoMsg", "Les filtres ont tout filtré ! Mettez moins de filtres");
+				}
+				
 
-		}catch (NumberFormatException e){
-			prln("Exception de nombre dans la SERVLET");
-			e.printStackTrace();
-			response.sendRedirect("404");
+			}catch (NumberFormatException e){
+				prln("Exception de nombre dans la SERVLET");
+				e.printStackTrace();
+				response.sendRedirect("404");
+			}
+		}catch (Exception e) {
+			request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
 		}
+		request.getRequestDispatcher("WEB-INF/app/store.jsp").forward(request, response);
 
 	}
 

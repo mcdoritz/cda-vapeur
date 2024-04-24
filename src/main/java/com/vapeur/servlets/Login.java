@@ -54,25 +54,31 @@ public class Login extends HttpServlet {
 
 		// Vérification que les champs sont pas null AJOUTER VERIFICATION VALIDATION
 		if (request.getParameter("email") != null && request.getParameter("password") != null) {
-			Database.connect();
-			UserDAO userdao = new UserDAO();
-			User authorizedUser;
 			try {
-				authorizedUser = userdao.login(request.getParameter("email"), request.getParameter("password"));
-				if (authorizedUser != null) {
-					// Si tout est OK création de la session
-					HttpSession session = request.getSession();
-					session.setAttribute("user", authorizedUser);
-					response.sendRedirect("profile");
-				} else {
-					doGet(request, response);
-				}
-			} catch (DAOException e) {
-				request.setAttribute("errorMsg", e.getMessage());
-				e.printStackTrace();
+				Database.connect();
+				UserDAO userdao = new UserDAO();
+				User authorizedUser;
+				try {
+					authorizedUser = userdao.login(request.getParameter("email"), request.getParameter("password"));
+					if (authorizedUser != null) {
+						// Si tout est OK création de la session
+						HttpSession session = request.getSession();
+						session.setAttribute("user", authorizedUser);
+						response.sendRedirect("profile");
+					} else {
+						doGet(request, response);
+					}
+				} catch (DAOException e) {
+					request.setAttribute("errorMsg", e.getMessage());
+					e.printStackTrace();
 
+					request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
+				}
+			}catch (Exception e) {
+				request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
 				request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);
 			}
+			
 
 		} else {
 			request.getRequestDispatcher("WEB-INF/app/login.jsp").forward(request, response);

@@ -6,6 +6,11 @@
 				<div class="woocommerce-message">Shipping costs updated.</div>
 			</div>
 		</c:if>
+		<c:if test="${errorMsg != null}">
+			<p style="color: var(--bs-warning); text-align:center">
+				<c:out value="${errorMsg }" />
+			</p>
+		</c:if>
 		<form action="checkout" method="POST" class="woocommerce-cart-form">
 			<table class="cart_table">
 				<thead>
@@ -42,22 +47,20 @@
 								</span></td>
 								<td data-title="Quantity">
 									<div class="quantity">
-										<button class="quantityChange quantity-minus qty-btn"
-											onClick="updateIt()">
+										<button class="quantityChange quantity-minus qty-btn">
 											<i class="far fa-minus"></i>
 										</button>
 										<input type="number" class="qty-input" min="1" max="10"
 											value="${game.value }" name="quantity"> <input
 											type="hidden" value="${game.key.id }" name="game-id">
 											
-										<button class="quantityChange quantity-plus qty-btn"
-											onClick="updateIt()">
+										<button class="quantityChange quantity-plus qty-btn">
 											<i class="far fa-plus"></i>
 										</button>
 									</div>
 								</td>
 								<td data-title="Total"><span class="amount quantityXprice">
-
+									<fmt:formatNumber value="${game.key.price * game.value }" type="number" pattern="#,##0.00" />
 								</span></td>
 								<td data-title="Remove"><a href="cart?del=${game.key.id }"
 									class="remove"><i class="fal fa-trash-alt"></i></a></td>
@@ -65,7 +68,7 @@
 						</c:forEach>
 						<tr>
 							<td colspan="6" class="actions">
-								<button type="submit" class="th-btn">Mettre &#xE0; jour
+								<button type="submit" class="th-btn" name="submit" type="submit" value="maj">Mettre &#xE0; jour
 									le panier</button> <a href="store" class="th-btn">Continuer le
 									shopping</a>
 							</td>
@@ -91,19 +94,11 @@
 									<td data-title="Shipping and Handling">
 										<ul class="woocommerce-shipping-methods list-unstyled">
 											<li><input type="radio" id="free_shipping"
-												name="shipping_method" class="shipping_method"> <label
-												for="free_shipping">Livraison en 3 mois (GRATUIT)</label></li>
-											<li><input type="radio" id="flat_rate"
-												name="shipping_method" class="shipping_method"
-												checked="checked"> <label for="flat_rate">Livraison
-													en 3 jours (7.99 &#8364;)</label></li>
+												name="shipping_method" class="shipping_method" checked="checked"> <label
+												for="free_shipping">PROMO : gratuit pour l'ECF</label></li>
 										</ul>
-										<p class="woocommerce-shipping-destination">&#199;a
-											co&#251;te d'aller vite !</p>
 									</td>
 								</tr>
-
-
 							</tbody>
 							<tfoot>
 								<tr class="order-total">
@@ -121,16 +116,14 @@
 							<a href="store" class="th-btn">Faire du shopping !</a>
 						</c:if>
 						<c:if test="${NbGamesInCart > 0}">
-							<button class="th-btn">
+							<button class="th-btn" type="submit" name="submit" value="proceed">
 								Valider la commande <i class="fa fa-sign-in" aria-hidden="true"></i>
 							</button>
 						</c:if>
-						
-
 					</div>
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
-<script src="assets/js/cartPrice.js"></script>
+<script src="assets/js/cart.js"></script>
