@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import com.vapeur.beans.GameResults;
 import com.vapeur.beans.User;
 import com.vapeur.config.Database;
+import com.vapeur.dao.CommentDAO;
 import com.vapeur.dao.GameDAO;
 import static com.vapeur.config.Debug.*;
 

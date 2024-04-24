@@ -88,6 +88,30 @@ public class CommentDAO {
         }
     }
     
+    public Comment getScoreByUserAndGameId(int user_id, int game_id) {
+        try {
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT score FROM comments WHERE user_id = ? AND game_id = ?");
+            ps.setInt(1, user_id);
+            ps.setInt(2, game_id);
+
+            ResultSet resultat = ps.executeQuery();
+
+            Comment object = new Comment();
+            
+            while (resultat.next()) {
+                object.setId(resultat.getInt("score"));
+            }
+            
+            String objectInfos = "Comment ID: " + object.getId();
+            bddSays("read", true, object.getId(), objectInfos);
+            return object;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
     public ArrayList<Comment> getByUserId(int user_id) {
         try {
             PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM comments WHERE user_id = ?");

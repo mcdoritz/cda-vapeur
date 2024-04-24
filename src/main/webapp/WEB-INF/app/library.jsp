@@ -32,7 +32,7 @@
 	                            <th scope="col">#</th>
 	                            <th scope="col">Jeux</th>
 	                            <th scope="col">Plateforme</th>
-	                            <th scope="col">Evaluation</th>
+	                            <th scope="col">Ma note</th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>
@@ -41,8 +41,14 @@
 		                            <th scope="row"><c:out value="${i.count }"/></th>
 		                            <td><a href="game?id=${game.id }"><img src="assets/img/tournament/1-1.png" alt="img"><c:out value="${game.title }"/></a></td>
 		                            <td><c:out value="${game.platform.name }"/></td>
-		                            <td><c:out value="${game.usersAvgScore }"/></td>
-		
+		                            <td>
+		                            	<c:if test="${game.comment.score > 0 }">
+		                            		<a href="comment?game_id=${game.id }"><c:out value="${game.comment.score }"/></a>
+	                            		</c:if>
+	                            		<c:if test="${game.comment.score < 0 }">
+		                            		<a href="comment?game_id=${game.id }">NOTER !</a>
+	                            		</c:if>
+		                            </td>
 		                        </tr>
 	                        </c:forEach>
 	                    </tbody>

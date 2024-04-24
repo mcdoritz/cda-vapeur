@@ -140,11 +140,11 @@ public class Checkout extends HttpServlet {
 							}
 
 							session.setAttribute("cart", gamesAndQuantityInCart);
+							response.sendRedirect("cart");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 
-						
 					}
 				}
 			}
@@ -152,10 +152,6 @@ public class Checkout extends HttpServlet {
 			response.sendRedirect("cart");
 		}
 
-		// Méthode : récupérer le panier dans la session.
-		// Récupérer l'ID du jeu et la quantité dans le form
-		// Modifier la quantité dans les objets récupérés de la session.
-		// Maj session.
 	}
 
 }
