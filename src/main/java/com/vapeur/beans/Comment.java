@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 public class Comment implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    private int id;
     private String content;
     private Timestamp uploaded;
     private float score;
@@ -17,22 +16,14 @@ public class Comment implements Serializable {
     public Comment() {
     }
 
-    public Comment(int id, String content, Timestamp uploaded, float score, int userId, String userNickname, int gameId) {
-        setId(id);
+    public Comment(String content, Timestamp uploaded, float score, int userId, String userNickname, int gameId) {
+    	
         setContent(content);
         setUploaded(uploaded);
         setScore(score);
         setUserId(userId);
         setUserNickname(userNickname);
         setGameId(gameId);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getContent() {
@@ -86,7 +77,6 @@ public class Comment implements Serializable {
 	@Override
     public String toString() {
         return "Comment{" +
-                "id=" + id +
                 ", content='" + content + '\'' +
                 ", uploaded=" + uploaded +
                 ", score=" + score +

@@ -197,6 +197,7 @@
 				<c:if test="${game.comments.size() > 0 }">
 					<ul class="comment-list">
 						<c:forEach var="comment" items="${game.comments }">
+						<c:if test="${ not empty comment.content }">
 							<li class="th-comment-item">
 								<div class="th-post-comment">
 									<div class="comment-avater">
@@ -217,6 +218,7 @@
 									</div>
 								</div>
 							</li>
+							</c:if>
 						</c:forEach>
 					</ul>
 				</c:if>

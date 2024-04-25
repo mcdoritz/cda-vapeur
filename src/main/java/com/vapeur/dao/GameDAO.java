@@ -381,7 +381,7 @@ public class GameDAO {
 	public GameResults library(int user_id) {
 		
 		try {
-			PreparedStatement ps = Database.connexion.prepareStatement("SELECT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, COALESCE(comments.score, -1) AS score FROM games LEFT JOIN comments ON games.id = comments.game_id JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, COALESCE(comments.score, -1) AS score FROM games LEFT JOIN comments ON games.id = comments.game_id JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
 			ps.setInt(1, user_id);
 			
 			ResultSet resultat = ps.executeQuery();

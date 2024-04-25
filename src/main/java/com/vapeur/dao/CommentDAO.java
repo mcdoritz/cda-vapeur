@@ -16,8 +16,8 @@ public class CommentDAO {
 
     public void save(Comment object) {
         try {
-            if (object.getId() != 0) {
-                String query = "UPDATE comments SET content = ?, uploaded = ?, score = ?, user_id = ?, game_id = ? WHERE id = ?";
+            if (object.getUserId() != 0 && object.getGameId() != 0) {
+                String query = "UPDATE comments SET content = ?, uploaded = ?, score = ? WHERE user_id = ? AND game_id = ?";
                 
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
                     ps.setString(1, object.getContent());
@@ -25,12 +25,11 @@ public class CommentDAO {
                     ps.setFloat(3, object.getScore());
                     ps.setInt(4, object.getUserId());
                     ps.setInt(5, object.getGameId());
-                    ps.setInt(6, object.getId());
 
                     ps.executeUpdate();
                 }
-                String objectInfos = "Comment ID: " + object.getId();
-                bddSays("update", true, object.getId(), objectInfos);
+                String objectInfos = "Comment ID: " + object.getUserId() + "-" + object.getGameId();
+
             } else {
                 String query = "INSERT INTO comments (content, uploaded, score, user_id, game_id) VALUES (?, ?, ?, ?, ?)";
                 
@@ -48,7 +47,6 @@ public class CommentDAO {
                             String objectInfos = "Comment ID: " + generatedKeys.getInt(1);
                             bddSays("create", true, generatedKeys.getInt(1), objectInfos);
                         } else {
-                            bddSays("create", false, object.getId(), null);
                             throw new DAOException("L'insertion a échoué, aucun ID généré n'a été récupéré.");
                         }
                     }
@@ -59,36 +57,35 @@ public class CommentDAO {
         }
     }
 
-    public Comment getById(int comment_id) {
+    public Comment getById(int user_id, int game_id) {
         try {
-            PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM comments WHERE id = ?");
-            ps.setInt(1, comment_id);
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM comments WHERE user_id = ? AND game_id = ?");
+            ps.setInt(1, user_id);
+            ps.setInt(2, game_id);
 
             ResultSet resultat = ps.executeQuery();
 
             Comment object = new Comment();
             
             while (resultat.next()) {
-                object.setId(resultat.getInt("id"));
+
                 object.setContent(resultat.getString("content"));
                 object.setUploaded(resultat.getTimestamp("uploaded"));
                 object.setScore(resultat.getFloat("score"));
-                object.setUserId(resultat.getInt("user_id"));
-                object.setGameId(resultat.getInt("game_id"));
+                object.setUserId(user_id);
+                object.setGameId(game_id);
             }
             
-            String objectInfos = "Comment ID: " + object.getId();
-            bddSays("read", true, object.getId(), objectInfos);
             return object;
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            bddSays("read", false, comment_id, null);
+
             return null;
         }
     }
     
-    public Comment getScoreByUserAndGameId(int user_id, int game_id) {
+    public Comment getScore(int user_id, int game_id) {
         try {
             PreparedStatement ps = Database.connexion.prepareStatement("SELECT score FROM comments WHERE user_id = ? AND game_id = ?");
             ps.setInt(1, user_id);
@@ -99,11 +96,11 @@ public class CommentDAO {
             Comment object = new Comment();
             
             while (resultat.next()) {
-                object.setId(resultat.getInt("score"));
+                object.setScore(resultat.getInt("score"));
+                object.setGameId(game_id);
+                object.setUserId(user_id);
             }
             
-            String objectInfos = "Comment ID: " + object.getId();
-            bddSays("read", true, object.getId(), objectInfos);
             return object;
 
         } catch (Exception ex) {
@@ -123,7 +120,6 @@ public class CommentDAO {
             ArrayList<Comment> listComments = new ArrayList<>();
             
             while (resultat.next()) {
-                object.setId(resultat.getInt("id"));
                 object.setContent(resultat.getString("content"));
                 object.setUploaded(resultat.getTimestamp("uploaded"));
                 object.setScore(resultat.getFloat("score"));
@@ -133,8 +129,6 @@ public class CommentDAO {
                 listComments.add(object);
             }
             
-            String objectInfos = "Comment de l'user" + user_id + " ID: " + object.getId();
-            bddSays("read", true, object.getId(), objectInfos);
             return listComments;
 
         } catch (Exception ex) {
@@ -146,7 +140,7 @@ public class CommentDAO {
     
     public ArrayList<Comment> getByGameId(int game_id) {
         try {
-            PreparedStatement ps = Database.connexion.prepareStatement("SELECT comments.id AS comment_id, comments.content AS content, comments.uploaded AS uploaded, comments.score AS score, comments.user_id AS user_id, users.nickname AS user_nickname FROM comments JOIN users ON comments.user_id = users.id  WHERE game_id = ? ORDER BY uploaded DESC");
+            PreparedStatement ps = Database.connexion.prepareStatement("SELECT comments.content AS content, comments.uploaded AS uploaded, comments.score AS score, comments.user_id AS user_id, users.nickname AS user_nickname FROM comments JOIN users ON comments.user_id = users.id  WHERE game_id = ? ORDER BY uploaded DESC");
             ps.setInt(1, game_id);
 
             ResultSet resultat = ps.executeQuery();
@@ -156,7 +150,6 @@ public class CommentDAO {
             
             while (resultat.next()) {
             	Comment object = new Comment();
-                object.setId(resultat.getInt("comment_id"));
                 object.setContent(resultat.getString("content"));
                 object.setUploaded(resultat.getTimestamp("uploaded"));
                 object.setScore(resultat.getFloat("score"));
@@ -185,12 +178,11 @@ public class CommentDAO {
             while (resultat.next()) {
                 Comment object = new Comment();
 
-                object.setId(resultat.getInt("id"));
                 object.setContent(resultat.getString("content"));
                 object.setUploaded(resultat.getTimestamp("uploaded"));
                 object.setScore(resultat.getFloat("score"));
                 object.setUserId(resultat.getInt("user_id"));
-                object.setUserId(resultat.getInt("game_id"));
+                object.setGameId(resultat.getInt("game_id"));
 
                 commentsList.add(object);
             }
