@@ -17,7 +17,6 @@ public class CommentDAO {
     public void save(Comment object) {
         try {
             if (getById(object.getUserId(), object.getGameId()) != null) {
-            	prln("Comment existe dans la BDD");
                 String query = "UPDATE comments SET content = ?, uploaded = ?, score = ? WHERE user_id = ? AND game_id = ?";
                 
                 try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
@@ -52,8 +51,8 @@ public class CommentDAO {
                     
                     try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
-                            String objectInfos = "Comment ID: " + generatedKeys.getInt(1);
-                            bddSays("create", true, generatedKeys.getInt(1), objectInfos);
+                            String objectInfos = "Comment ID: " + object.getUserId() + "-" + object.getGameId();
+                            bddSays("create", true, object.getUserId(), objectInfos);
                         } else {
                             throw new DAOException("L'insertion a échoué, aucun ID généré n'a été récupéré.");
                         }
@@ -76,7 +75,6 @@ public class CommentDAO {
             Comment object = new Comment();
             
             while (resultat.next()) {
-
                 object.setContent(resultat.getString("content"));
                 object.setUploaded(resultat.getTimestamp("uploaded"));
                 object.setScore(resultat.getInt("score"));
@@ -84,7 +82,13 @@ public class CommentDAO {
                 object.setGameId(game_id);
             }
             
-            return object;
+            if(object.getContent() != null) {
+            	return object;
+            }else {
+            	return null;
+            }
+            
+            
 
         } catch (Exception ex) {
             ex.printStackTrace();

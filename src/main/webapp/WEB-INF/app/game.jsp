@@ -200,7 +200,7 @@
 								        <%@ include file="forms/commentForm.jsp"%>
 								    </c:when>
 								    <c:otherwise>
-								        <c:out value="Vous avez déjà commenté ce jeu !" />
+								        <c:out value="Vous avez déjà commenté ce jeu ! Vous pouvez éditer votre commentaire depuis votre bibliothèque" />
 								    </c:otherwise>
 								</c:choose>
 						        
@@ -265,9 +265,9 @@
 				<div class="game-title-wrap">
 					<h2 class="page-title text-white mb-0">Ca va vous plaire
 						également :</h2>
-					<p>Suggestions basées sur vos achats précédents</p>
+					<p>Suggestions de jeux similaires</p>
 				</div>
-				<%@ include file="components/carroutext.jsp"%>
+				<%@ include file="components/suggestions.jsp"%>
 
 			</c:if>
 		</div>

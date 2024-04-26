@@ -33,7 +33,7 @@
 							<ul>
 								<li>Adresse de livraison: <span> <c:if
 											test="${sessionScope.user.shippingAddress == null }">
-											Pas d'adresse renseignÃ©e
+											Pas d'adresse renseignée
 										</c:if> <c:if test="${sessionScope.user.shippingAddress != null }">
 											<c:out value="${sessionScope.user.shippingAddress }" />
 										</c:if>

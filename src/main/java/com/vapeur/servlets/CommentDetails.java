@@ -26,58 +26,102 @@ import static com.vapeur.config.Debug.*;
 public class CommentDetails extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public CommentDetails() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	public CommentDetails() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+
+		if (request.getParameter("game_id") != null && request.getParameter("user_id") != null) {
+			int game_id = Integer.valueOf(request.getParameter("game_id"));
+			int user_id = Integer.valueOf(request.getParameter("user_id"));
+			if(game_id != 0 && user_id != 0) {
+				if (session != null) {
+					if (session.getAttribute("user") != null) {
+						User user = (User) session.getAttribute("user");
+						
+						//Vérif que c'est le bon user
+						if(user.getId() == user_id) {
+							try {
+								Database.connect();
+								
+								CommentDAO commentdao = new CommentDAO();
+								
+								Comment comment = commentdao.getById(user_id, game_id);
+								
+								request.setAttribute("comment", comment);
+								
+							} catch (Exception e) {
+								request.setAttribute("errorMsg", e.getMessage());
+							}
+							
+						}else {
+							request.setAttribute("errorMsg", "Erreur, vous essayez d'accéder à un commentaire qui ne vous appartient pas.");
+						}
+						
+						
+						
+					}else {
+						request.setAttribute("errorMsg", "Erreur, veuillez vous reconnecter.");
+						}
+				}else {
+					request.setAttribute("errorMsg", "Erreur, veuillez vous reconnecter.");
+				}
+			}else {
+				request.setAttribute("errorMsg", "Erreur");
+			}
+			
+		} else {
+			request.setAttribute("errorMsg", "Erreur avec l'URL");
+		}
 		
-		if(request.getParameter("score") != null && request.getParameter("content") != null && request.getParameter("id") != null){
-			prln("Suite");
-			if(session != null) {
-				prln("Suite");
-				if(session.getAttribute("user") != null) {
-					prln("Suite");
+		request.setAttribute("pageTitle", "Evaluer");
+		request.getRequestDispatcher("WEB-INF/app/comment.jsp").forward(request, response);
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+
+		if (request.getParameter("score") != null && request.getParameter("content") != null
+				&& request.getParameter("game_id") != null) {
+			if (session != null) {
+				if (session.getAttribute("user") != null) {
 					User user = (User) session.getAttribute("user");
-					
-					
+
 					try {
-						prln("Suite");
 						int score = Integer.valueOf(request.getParameter("score"));
-						int game_id = Integer.valueOf(request.getParameter("id"));
+						int game_id = Integer.valueOf(request.getParameter("game_id"));
 						String content = request.getParameter("content");
 						CommentDAO commentdao = new CommentDAO();
 						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-						Comment comment = new Comment(content, timestamp, score, user.getId(), user.getNickname(), game_id);
+						Comment comment = new Comment(content, timestamp, score, user.getId(), user.getNickname(),
+								game_id);
 						Database.connect();
-						
+
 						commentdao.save(comment);
-						prln("Suite");
 						
+						request.setAttribute("infoMsg", "Commentaire mis à jour !");
+
 					} catch (BeanException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						request.setAttribute("errorMsg", e.getMessage());
 					}
-					
-				}else {
+
+				} else {
 					request.setAttribute("errorMsg", "Erreur, veuillez vous reconnecter.");
 				}
-			}else {
+			} else {
 				request.setAttribute("errorMsg", "Erreur, veuillez vous reconnecter.");
 			}
-		}else {
+		} else {
 			request.setAttribute("errorMsg", "L'évaluation n'est pas complète.");
 		}
-		request.getRequestDispatcher("WEB-INF/app/library.jsp").forward(request, response);
+		request.getRequestDispatcher("WEB-INF/app/comment.jsp").forward(request, response);
 	}
-	
+
 }

@@ -1,6 +1,7 @@
 package com.vapeur.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.vapeur.beans.Game;
 import com.vapeur.beans.GameResults;
+import com.vapeur.beans.Genre;
+import com.vapeur.beans.Mode;
 import com.vapeur.beans.User;
 import com.vapeur.config.Database;
 import com.vapeur.dao.CommentDAO;
@@ -28,7 +32,6 @@ public class Library extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		
-		
 		if(session != null) {
 			if(session.getAttribute("user") != null) {
 				User user = (User) session.getAttribute("user");
@@ -42,12 +45,34 @@ public class Library extends HttpServlet {
 						gameresults = gamedao.library(user.getId());
 						
 						if(gameresults != null) {
+							//Suggestion de jeux du même genre et mode :
+							ArrayList<Integer> genres_id = new ArrayList<>();
+							ArrayList<Integer> modes_id = new ArrayList<>();
+							ArrayList<Integer> gamesNotToShow = new ArrayList<>();
+							
+							for(Game game:gameresults.getGames()) {
+								prln(game.getTitle());
+								for(Genre g:game.getGenres()) {
+									genres_id.add(g.getId());
+								}
+								
+								for(Mode m:game.getModes()) {
+									modes_id.add(m.getId());
+								}
+								gamesNotToShow.add(game.getId());
+							}
+							
+							
+							request.setAttribute("suggestions", gamedao.readSuggestions(gamesNotToShow, genres_id, modes_id));
+							
 							request.setAttribute("gamesList", gameresults.getGames());
 							request.setAttribute("pageTitle", "Bibliothèque");
 						}else {
 							request.setAttribute("infoMsg", "La biliothèque est vide !");
 						}
 					}catch (Exception e) {
+						prln(e.getMessage());
+						e.printStackTrace();
 						request.setAttribute("errorMsg", "La base de donnée est indisponible. Merci de revenir plus tard." );
 					}
 					

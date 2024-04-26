@@ -336,5 +336,5 @@
 	</p>
 </c:if>
 <c:if test="${errorMsg == null}">
-	<%@ include file="components/carroutext.jsp"%>
+	<%@ include file="components/auhasard.jsp"%>
 </c:if>

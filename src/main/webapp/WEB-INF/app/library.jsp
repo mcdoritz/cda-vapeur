@@ -15,6 +15,11 @@
 			<c:out value="${errorMsg }" />
 		</p>
 	</c:if>
+	<c:if test="${infoMsg != null}" >
+		<p style="color: var(--theme-color); text-align:center">
+			<c:out value="${infoMsg }" />
+		</p>
+	</c:if>
 	<c:if test="${gamesList.size() == 0 }" >
 		<p style="color: var(--theme-color); text-align:center">
 			Aucun jeu trouv&#233; !
@@ -42,11 +47,11 @@
 		                            <td><a href="game?id=${game.id }"><img src="assets/img/tournament/1-1.png" alt="img"><c:out value="${game.title }"/></a></td>
 		                            <td><c:out value="${game.platform.name }"/></td>
 		                            <td>
-		                            	<c:if test="${game.comment.score > 0 }">
-		                            		<a href="comment?game_id=${game.id }"><c:out value="${game.comment.score }"/></a>
+		                            	<c:if test="${game.comment.score >= 0 }">
+		                            		<a href="comment?game_id=${game.id }&user_id=${sessionScope.user.id}"><c:out value="${game.comment.score } (éditer)"/></a>
 	                            		</c:if>
 	                            		<c:if test="${game.comment.score < 0 }">
-		                            		<a href="comment?game_id=${game.id }">NOTER !</a>
+		                            		<a href="comment?game_id=${game.id }&user_id=${sessionScope.user.id}">NOTER !</a>
 	                            		</c:if>
 		                            </td>
 		                        </tr>
@@ -54,6 +59,15 @@
 	                    </tbody>
 	                </table>
 	            </div>
+	            <c:if test="${sessionScope.user != null }">
+				<div class="game-title-wrap">
+					<h2 class="page-title text-white mb-0">Ca va vous plaire
+						également :</h2>
+					<p>Suggestions de jeux similaires à vos achats précédents</p>
+				</div>
+				<%@ include file="components/suggestions.jsp"%>
+
+			</c:if>
             </c:if>
         </div>
 	

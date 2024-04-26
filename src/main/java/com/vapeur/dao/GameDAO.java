@@ -378,23 +378,122 @@ public class GameDAO {
 		}
 	}
 	
+	public ArrayList<Game> readSuggestions(ArrayList<Integer> gamesNotToShow, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id) {
+		ArrayList<Game> gamesList = new ArrayList<>();
+		ArrayList<Game> finalGamesList = new ArrayList<>();
+
+		try {
+
+			// Construction de la query ------------------------
+			String query = "SELECT DISTINCT games.id, games.title FROM games ";
+			String queryJoins = "";
+			String queryConditions = " AND ";
+
+			for (int g : gamesNotToShow) {
+				queryConditions += "games.id != ? AND ";
+			}
+			queryConditions = queryConditions.substring(0, queryConditions.length() - 4);
+			queryConditions += " AND (";
+
+			if(genres_id.size() > 0) {
+				queryJoins += " JOIN games_genres ON games_genres.game_id = games.id JOIN genres ON games_genres.genre_id = genres.id ";
+				
+				for (int g : genres_id) {
+					queryConditions += "games_genres.genre_id = ? OR ";
+				}
+			}
+			
+			if(modes_id.size() > 0) {
+				queryJoins += " JOIN games_modes ON games_modes.game_id = games.id JOIN modes ON games_modes.mode_id = modes.id ";
+				
+				for (int m : modes_id) {
+					queryConditions += "games_modes.mode_id = ? OR ";
+				}
+				
+			}
+			queryConditions = queryConditions.substring(0, queryConditions.length() - 3);
+			queryConditions += " ) ";
+			prln(queryConditions);
+
+			query += queryJoins + " WHERE stock > 0" + queryConditions + " ORDER BY RAND()";			
+
+			prln(query);
+
+			// -------------------------------------------------------------
+
+			PreparedStatement ps = Database.connexion.prepareStatement(query);
+			
+			int index = 1;
+			
+			for (int game_id : gamesNotToShow) {
+				ps.setInt(index, game_id);
+				index++;
+			}
+			
+			for (int g : genres_id) {
+				ps.setInt(index, g);
+				index++;
+			}
+			for (int m : modes_id) {
+				ps.setInt(index, m);
+				index++;
+			}
+
+			ResultSet resultat = ps.executeQuery();
+
+
+			while (resultat.next()) {
+				Game object = new Game();
+				object.setId(resultat.getInt("id"));
+				object.setTitle(resultat.getString("title"));
+				gamesList.add(object);
+			}
+			
+			//Supprimer au hasard pour n'en garder que 4
+			Random hasard = new Random();
+			int dé = 0;
+			
+			if(gamesList.size() >= 5) {
+				for(int i = 1 ; i <= 4; i++) {
+					dé = hasard.nextInt(gamesList.size());
+					finalGamesList.add(gamesList.get(dé));
+					gamesList.remove(dé);
+				}
+				return finalGamesList;
+			}else {
+				return gamesList;
+			}
+			
+
+			
+		} catch (Exception ex) {
+			bddSays("readAll", false, 0, null);
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
 	public GameResults library(int user_id) {
 		
 		try {
-			PreparedStatement ps = Database.connexion.prepareStatement("SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, COALESCE(comments.score, -1) AS score FROM games LEFT JOIN comments ON games.id = comments.game_id JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT DISTINCT games.id AS game_id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, COALESCE(comments.score, -1) AS score FROM games LEFT JOIN comments ON games.id = comments.game_id AND comments.user_id = ? JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
 			ps.setInt(1, user_id);
+			ps.setInt(2, user_id);
 			
 			ResultSet resultat = ps.executeQuery();
 			
 			ArrayList<Game> gamesList = new ArrayList<>();
-			
+			GenreDAO genredao = new GenreDAO();
+			ModeDAO modedao = new ModeDAO();
 			
 			PlatformDAO platformdao = new PlatformDAO();
 
 			while (resultat.next()) {
 				Game object = new Game();
 				Comment comment = new Comment();
-				object.setId(resultat.getInt("id"));
+				int game_id = resultat.getInt("game_id");
+				
+				object.setId(game_id);
 				object.setTitle(resultat.getString("title"));
 				object.setPrice(resultat.getFloat("price"));
 				object.setReleaseDate(resultat.getDate("release_date"));
@@ -404,6 +503,12 @@ public class GameDAO {
 				object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
 				comment.setScore(resultat.getInt("score"));
 				object.setComment(comment);
+				
+				ArrayList<Genre> genresList = new ArrayList<>(genredao.readAllByGameId(game_id));
+				object.setGenres(genresList);
+				
+				ArrayList<Mode> modesList = new ArrayList<>(modedao.readAllByGameId(game_id));
+				object.setModes(modesList);
 				gamesList.add(object);
 			}
 			
@@ -655,14 +760,15 @@ public class GameDAO {
 	
 	
 	public void update(int game_id) {
+		prln("update scores of game_id : " + game_id);
 		try {
 			PreparedStatement ps = Database.connexion.prepareStatement("UPDATE games SET total_reviews = ( SELECT COUNT(comments.game_id) FROM comments WHERE comments.game_id = ?);");
 			ps.setInt(1, game_id);
 			ps.executeUpdate();
 			
 			PreparedStatement ps1 = Database.connexion.prepareStatement("UPDATE games SET users_avg_score = (SELECT ROUND(AVG(comments.score),2) FROM comments WHERE comments.game_id = ?);");
-			ps.setInt(1, game_id);
-			ps.executeUpdate();
+			ps1.setInt(1, game_id);
+			ps1.executeUpdate();
 			
 			bddSays("update", true, game_id, null);
 		} catch (Exception ex) {
