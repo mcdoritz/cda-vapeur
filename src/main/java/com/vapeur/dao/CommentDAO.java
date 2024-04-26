@@ -49,14 +49,8 @@ public class CommentDAO {
                     GameDAO gamedao = new GameDAO();
                     gamedao.update(object.getGameId());
                     
-                    try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            String objectInfos = "Comment ID: " + object.getUserId() + "-" + object.getGameId();
-                            bddSays("create", true, object.getUserId(), objectInfos);
-                        } else {
-                            throw new DAOException("L'insertion a échoué, aucun ID généré n'a été récupéré.");
-                        }
-                    }
+                }catch (Exception e) {
+                	e.printStackTrace();
                 }
             }
         } catch (Exception ex) {
@@ -66,6 +60,7 @@ public class CommentDAO {
 
     public Comment getById(int user_id, int game_id) {
         try {
+        	prln("user : " +user_id + " game : " + game_id);
             PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM comments WHERE user_id = ? AND game_id = ?");
             ps.setInt(1, user_id);
             ps.setInt(2, game_id);
@@ -81,10 +76,10 @@ public class CommentDAO {
                 object.setUserId(user_id);
                 object.setGameId(game_id);
             }
-            
             if(object.getContent() != null) {
             	return object;
             }else {
+            	prln("commentdao.getById retourne null");
             	return null;
             }
             

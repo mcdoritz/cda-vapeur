@@ -11,7 +11,7 @@
 					</h2>
 				</div>
 
-				<form action="comment?game_id=${game.id != null ? game.id : comment.gameId }" method="POST">
+				<form action="comment?game_id=${game.id != 0 ? game.id : comment.gameId }" method="POST">
 					<div class="row">
 
 						<div class="col-md-6 form-group style-border">
@@ -48,6 +48,7 @@
 				</form>
 			</div>
 			<div class="col-xl-4 ps-xxl-5">
+			<h2 class="sec-title text-white"><c:out value="${game.title }"/></h2>
 				<img
 					src="https://i.pinimg.com/originals/88/44/eb/8844eb46c5719be6fa2944c2b9a84af5.png"
 					alt="mario" style="max-height: 280px">

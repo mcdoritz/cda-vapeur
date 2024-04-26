@@ -289,9 +289,7 @@ public class GameDAO {
 				}
 				queryConditions += ") ";
 			}
-			
-			
-			
+
 			if(developers_id.size() > 0) {
 				queryConditions += " AND (";
 				index = 0;
@@ -304,11 +302,11 @@ public class GameDAO {
 				}
 				queryConditions += " ) ";
 			}
-			
-			prln(queryConditions);
+			prln("queryjoins : " + queryJoins);
+			prln("queryConditions : " + queryConditions);
 
 			query += queryJoins + " WHERE stock > 0" + queryConditions + " ORDER BY games.title ASC LIMIT ?,?";			
-			String queryCount = "SELECT COUNT(DISTINCT games.id) AS total FROM games " + queryJoins + queryConditions;
+			String queryCount = "SELECT COUNT(DISTINCT games.id) AS total FROM games " + queryJoins + " WHERE stock > 0" + queryConditions;
 			
 			prln(query);
 			prln(queryCount);
@@ -361,9 +359,11 @@ public class GameDAO {
 			int totalResults = 0;
 			
 			// S'il y a autant que 12 résultats dans la recherche, alors voir s'il y en a plus :
-			if(gamesList.size() == limitPerPage) {
+			if(gamesList.size() <= limitPerPage) {
+				prln("gamesList.size <= limitPerpage");
 				totalResults = countAll(queryCount, genres_id, modes_id, languages_id, platforms_id, developers_id);
 			}else {
+				prln("gamesList.size != limitPerpage");
 				totalResults = gamesList.size();
 			}
 
@@ -469,6 +469,30 @@ public class GameDAO {
 		} catch (Exception ex) {
 			bddSays("readAll", false, 0, null);
 			ex.printStackTrace();
+			return null;
+		}
+	}
+	
+	public Boolean isGameInUserLibrary(int game_id, int user_id) {
+		try {
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT COUNT(*) AS count FROM order_details JOIN orders ON order_details.order_id = orders.id WHERE orders.user_id = ? AND game_id = ? ");
+			ps.setInt(1, user_id);
+			ps.setInt(2, game_id);
+			
+			ResultSet resultat = ps.executeQuery();
+			int count = 0;
+			while (resultat.next()) {
+				count = resultat.getInt("count");
+			}
+			
+			if(count > 0) {
+				return true;
+			}else {
+				return false;
+			}
+			
+		}catch (Exception e){
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -629,23 +653,6 @@ public class GameDAO {
 			return null;
 		}
 	}
-	
-	public Boolean isGameInUserLibrary(int user_id) {
-		try {
-
-			PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM games JOIN order_details ON games.id = order_details.game_id JOIN orders ON order_details.order_id = orders.id WHERE orders.user_id = ?;");
-			ps.setInt(1, user_id);
-			ResultSet resultat = ps.executeQuery();
-			Boolean response = false;
-			while (resultat.next()) {
-				response = true;
-			}
-			return response;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
 
 	public int countAll(String query, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
 			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
@@ -653,8 +660,6 @@ public class GameDAO {
 			// Pour la sélection au hasard pour la landing page :
 			if(query == "all") {
 				query =  "SELECT COUNT(*) AS total FROM games WHERE stock > 0";
-			}else {
-				query += "WHERE stock > 0";
 			}
 			
 			prln("countALL QUERY : " + query);

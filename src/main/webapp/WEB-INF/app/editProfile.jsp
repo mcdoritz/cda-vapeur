@@ -27,6 +27,7 @@
 			<br>
 		</div>
 		<div class="container">
+		<!--
 			<div class="row gy-80">
 				<div class="col-xl-12">
 					<div class="widget  ">
@@ -38,6 +39,7 @@
 					</div>
 				</div>
 			</div>
+			  -->
 			<div class="row">
 				<div class="col-xl-12">
 					<c:if test="${errorMsg != null}">
@@ -50,6 +52,7 @@
 							<c:out value="${infoMsg }" />
 						</p>
 					</c:if>
+					<!--
 					<form action="editProfile" method="POST"
 						enctype="multipart/form-data"
 						class="contact-form pb-xl-0 space-bottom" id="avatar-form">
@@ -68,7 +71,7 @@
 							</button>
 						</div>
 					</form>
-
+					-->
 					<form action="editProfile" method="POST"
 						class="contact-form pb-xl-0 space-bottom" id="edit-form">
 
@@ -87,17 +90,23 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="form-group style-border2 col-md-6">
-								<label for="firstname" style="color: white">Prénom</label> <input
-									type="text" class="form-control" name="firstname"
-									id="firstname" placeholder="${sessionScope.user.firstname }" /><i
-									class="fa-solid fa-align-left"></i>
+							<div class="col-md-6">
+								<label for="firstname" style="color: white">Prénom</label> 
+								<div class="form-group style-border2">
+									<input
+										type="text" class="form-control" name="firstname"
+										id="firstname" placeholder="${sessionScope.user.firstname }" /><i
+										class="fa-solid fa-align-left"></i>
+								</div>
 							</div>
-							<div class="form-group style-border2 col-md-6">
-								<label for="lastname" style="color: white">Nom</label> <input
-									type="text" class="form-control" name="lastname" id="lastname"
-									placeholder="${sessionScope.user.lastname }" /><i
-									class="fa-solid fa-align-left"></i>
+							<div class="col-md-6">
+								<label for="lastname" style="color: white">Nom</label> 
+								<div class="form-group style-border2 ">
+									<input
+										type="text" class="form-control" name="lastname" id="lastname"
+										placeholder="${sessionScope.user.lastname }" /><i
+										class="fa-solid fa-align-left"></i>
+								</div>
 							</div>
 						</div>
 						<div class="row">

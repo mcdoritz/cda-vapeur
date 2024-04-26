@@ -105,8 +105,8 @@
 				<aside class="sidebar-area">
 					<div class="widget  ">
 						<div class="widget-game-info">
-							<div class="player-logo">
-								<img src="assets/img/tournament/1-1.png" alt="img">
+							<div class="player-logo" style="overflow:hidden">
+								<img src="assets/img/game/${game.id }.png" alt="img" style="height:100%; width:100%;">
 							</div>
 							<h2 class="sub-title">
 								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
@@ -124,7 +124,7 @@
 									<c:if test="${game.stock > 0 }">
 										<h5 class="download-wrap-title">
 											<c:if test="${game.stock > 0 }">
-												<c:out value=" ${game.stock > 100 ? '100+' : game.stock }" />
+												<c:out value=" ${game.stock > 1000 ? '1000+' : game.stock }" />
 											</c:if>
 										</h5>
 										<span class="download-wrap-text">en stock</span>
@@ -146,6 +146,7 @@
 							</div>
 						</div>
 					</div>
+					<!--  
 					<div class="widget widget_tag_cloud  ">
 						<h3 class="widget_title">Tags</h3>
 						<div class="tagcloud">
@@ -154,6 +155,7 @@
 							</c:forEach>
 						</div>
 					</div>
+					-->
 					<div class="widget widget_tag_cloud  ">
 						<h3 class="widget_title">Genres</h3>
 						<div class="tagcloud">
@@ -196,11 +198,12 @@
 						<c:choose>
 						    <c:when test="${gameInUserLibrary}">
 						    	<c:choose>
-								    <c:when test="${userHasCommented}">
-								        <%@ include file="forms/commentForm.jsp"%>
+								    <c:when test="${userHasCommented == true}">
+								        <c:out value="Vous avez déjà commenté ce jeu ! Vous pouvez éditer votre commentaire depuis votre bibliothèque" />
 								    </c:when>
 								    <c:otherwise>
-								        <c:out value="Vous avez déjà commenté ce jeu ! Vous pouvez éditer votre commentaire depuis votre bibliothèque" />
+								    	<%@ include file="forms/commentForm.jsp"%>
+								        
 								    </c:otherwise>
 								</c:choose>
 						        

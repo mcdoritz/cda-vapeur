@@ -16,7 +16,6 @@ import com.vapeur.beans.Genre;
 import com.vapeur.beans.Mode;
 import com.vapeur.beans.User;
 import com.vapeur.config.Database;
-import com.vapeur.dao.CommentDAO;
 import com.vapeur.dao.GameDAO;
 import static com.vapeur.config.Debug.*;
 

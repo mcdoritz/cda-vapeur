@@ -48,10 +48,10 @@
 		                            <td><c:out value="${game.platform.name }"/></td>
 		                            <td>
 		                            	<c:if test="${game.comment.score >= 0 }">
-		                            		<a href="comment?game_id=${game.id }&user_id=${sessionScope.user.id}"><c:out value="${game.comment.score } (éditer)"/></a>
+		                            		<a href="comment?game_id=${game.id }"><c:out value="${game.comment.score } (éditer)"/></a>
 	                            		</c:if>
 	                            		<c:if test="${game.comment.score < 0 }">
-		                            		<a href="comment?game_id=${game.id }&user_id=${sessionScope.user.id}">NOTER !</a>
+		                            		<a href="comment?game_id=${game.id }">NOTER !</a>
 	                            		</c:if>
 		                            </td>
 		                        </tr>

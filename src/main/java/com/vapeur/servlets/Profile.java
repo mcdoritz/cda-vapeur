@@ -32,7 +32,7 @@ public class Profile extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-
+		Boolean redirect = false;
 		if (session != null) {
 			if (session.getAttribute("user") != null) {
 				User user = new User();
@@ -55,11 +55,17 @@ public class Profile extends HttpServlet {
 				} else {
 					request.setAttribute("errorMsg", "Erreur, merci de vous reconnecter.");
 				}
+			}else {
+				redirect = true;
 			}
 		}
-
-		request.setAttribute("pageTitle", "Profil");
-		request.getRequestDispatcher("WEB-INF/app/profile.jsp").forward(request, response);
+		if(redirect) {
+			response.sendRedirect("login");
+		}else {
+			request.setAttribute("pageTitle", "Profil");
+			request.getRequestDispatcher("WEB-INF/app/profile.jsp").forward(request, response);
+		}
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

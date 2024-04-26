@@ -13,9 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import com.vapeur.beans.BeanException;
 import com.vapeur.beans.Comment;
+import com.vapeur.beans.Game;
 import com.vapeur.beans.User;
 import com.vapeur.config.Database;
 import com.vapeur.dao.CommentDAO;
+import com.vapeur.dao.DAOException;
+import com.vapeur.dao.GameDAO;
 
 import static com.vapeur.config.Debug.*;
 
@@ -34,28 +37,49 @@ public class CommentDetails extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
-		if (request.getParameter("game_id") != null && request.getParameter("user_id") != null) {
+		if (request.getParameter("game_id") != null) {
 			int game_id = Integer.valueOf(request.getParameter("game_id"));
-			int user_id = Integer.valueOf(request.getParameter("user_id"));
-			if(game_id != 0 && user_id != 0) {
+			
+			if(game_id != 0) {
 				if (session != null) {
 					if (session.getAttribute("user") != null) {
 						User user = (User) session.getAttribute("user");
-						
-						//Vérif que c'est le bon user
-						if(user.getId() == user_id) {
+						int user_id = user.getId();
+						//Vérif que c'est le bon user et qu'il possède le jeu
+						if(user_id != 0) {
+							
 							try {
 								Database.connect();
 								
-								CommentDAO commentdao = new CommentDAO();
-								
-								Comment comment = commentdao.getById(user_id, game_id);
-								
-								request.setAttribute("comment", comment);
+								GameDAO gamedao = new GameDAO();
+								//Vérification que l'user a ce jeu
+								if(gamedao.isGameInUserLibrary(game_id, user_id)){
+									CommentDAO commentdao = new CommentDAO();
+									Comment comment = new Comment();
+									Game game = gamedao.getStockAndTitle(game_id);
+									game.setId(game_id);
+									//Vérification s'il a commenté.
+									if(commentdao.getById(user_id, game_id) != null){
+										prln("User a commenté le jeu.");
+										comment = commentdao.getById(user_id, game_id);
+									}else {
+										prln("User N'A PAS commenté le jeu.");
+									}
+									
+									request.setAttribute("game", game);
+									request.setAttribute("comment", comment);
+								}else {
+									String e = "Erreur, vous ne possédez pas ce jeu";
+									request.setAttribute("errorMsg", e);
+									
+								}
 								
 							} catch (Exception e) {
-								request.setAttribute("errorMsg", e.getMessage());
+								e.printStackTrace();
+								request.setAttribute("errorMsg", "Erreur avec la base de données");
 							}
 							
 						}else {
@@ -84,6 +108,8 @@ public class CommentDetails extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
 		if (request.getParameter("score") != null && request.getParameter("content") != null
 				&& request.getParameter("game_id") != null) {
@@ -94,17 +120,22 @@ public class CommentDetails extends HttpServlet {
 					try {
 						int score = Integer.valueOf(request.getParameter("score"));
 						int game_id = Integer.valueOf(request.getParameter("game_id"));
-						String content = request.getParameter("content");
-						CommentDAO commentdao = new CommentDAO();
-						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+						if(game_id != 0) {
+							String content = request.getParameter("content");
+							CommentDAO commentdao = new CommentDAO();
+							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-						Comment comment = new Comment(content, timestamp, score, user.getId(), user.getNickname(),
-								game_id);
-						Database.connect();
+							Comment comment = new Comment(content, timestamp, score, user.getId(), user.getNickname(),
+									game_id);
+							Database.connect();
 
-						commentdao.save(comment);
+							commentdao.save(comment);
+							
+							request.setAttribute("infoMsg", "Commentaire mis à jour !");
+						}else {
+							request.setAttribute("errorMsg", "Erreur de récupération du jeu.");
+						}
 						
-						request.setAttribute("infoMsg", "Commentaire mis à jour !");
 
 					} catch (BeanException e) {
 						// TODO Auto-generated catch block

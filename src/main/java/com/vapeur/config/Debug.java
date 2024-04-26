@@ -2,12 +2,37 @@ package com.vapeur.config;
 
 public class Debug {
 	
+	/*
+	 * Cette propriété active ou désactive la méthode PRLN, ce qui active ou non les messages dans la console.
+	 */
+	private static Boolean prln = true;
+	
 	public static void prln(String message) {
-		System.out.println(message);
+		if(prln) {
+			System.out.println(message);
+		}
+			
 	}
 	
-	public static void pr(String message) {
-		System.out.print(message);
+	public static void prln(int entier) {
+		if(prln) {
+			System.out.println(entier);
+		}
+		
+	}
+	
+	public static void prln(float flottant) {
+		if(prln) {
+			System.out.println(flottant);
+		}
+		
+	}
+	
+	public static void prln(Boolean boulé1) {
+		if(prln) {
+			System.out.println(boulé1);
+		}
+		
 	}
 	
 	public static void bddSays(String crud, Boolean status, int objectId, String objectInfos) {

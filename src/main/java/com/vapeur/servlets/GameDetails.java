@@ -82,14 +82,16 @@ public class GameDetails extends HttpServlet {
 							if(session.getAttribute("user") != null){
 								User user = (User) session.getAttribute("user");
 								int user_id = user.getId();
-								if(gamedao.isGameInUserLibrary(user_id)) {
+								if(gamedao.isGameInUserLibrary(game_id, user_id)) {
 									request.setAttribute("gameInUserLibrary", true);
-									if(commentdao.getById(game_id, user_id) != null){
+									if(commentdao.getById(user_id, game_id) != null){
 										request.setAttribute("userHasCommented", true);
+										prln("servlet Game : le joueur possède le jeu ET a commenté");
+									}else {
+										prln("servlet Game : le joueur possède le jeu mais n'a pas commenté");
 									}
 								}else {
-									prln("Erreur servlet Game : pas trouvé si le joueur possède le jeu ou non");
-									request.setAttribute("errorMsg", "Erreur avec la base de données" );
+									prln("Erreur servlet Game : le joueur ne possède pas le jeu");
 								}
 								
 							}else {

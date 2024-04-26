@@ -4,11 +4,11 @@
 			<div class="game-card style2">
 				<div class="game-card-img">
 					<a href="game?id=${game.id }"> <img
-						src="assets/img/game/2-1.png" alt="${game.title }">
+						src="assets/img/game/${game.id }.png" alt="${game.title }">
 					</a>
-					<div class="game-logo">
-						<a href="game?id=${game.id }"> <img
-							src="assets/img/game/logo2-1.png" alt="game logo">
+					<div class="game-logo" style="overflow:hidden">
+						<a href="store?platforms=${game.platform.id }"><img
+							src="assets/img/platform/logo${game.platform.id }.png" alt="platform logo" style="height:100%; width:100%;">
 						</a>
 					</div>
 					<div

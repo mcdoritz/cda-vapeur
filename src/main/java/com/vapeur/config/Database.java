@@ -3,6 +3,8 @@ package com.vapeur.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import static com.vapeur.config.Debug.prln;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class Database {
@@ -21,7 +23,7 @@ public class Database {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connexion = DriverManager.getConnection(url, admin, adminpw);
-			System.out.println("connection to db.........ok");
+			prln("connection to db.........ok");
 
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());	
