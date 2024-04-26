@@ -184,10 +184,45 @@
 			</div>
 		</div>
 		<div class="widget widget_tag_cloud  ">
+			<div class="th-comment-form ">
+				<div class="form-title">
+					<h3 class="blog-inner-title mb-2">
+						<i class="fa-solid fa-reply"></i> Noter ce jeu !
+					</h3>
+					<p class="form-text">Ici, c'est la communauté de la Vapeur.</p>
+				</div>
+				<c:choose>
+					<c:when test="${sessionScope.user != null}">
+						<c:choose>
+						    <c:when test="${gameInUserLibrary}">
+						    	<c:choose>
+								    <c:when test="${userHasCommented}">
+								        <%@ include file="forms/commentForm.jsp"%>
+								    </c:when>
+								    <c:otherwise>
+								        <c:out value="Vous avez déjà commenté ce jeu !" />
+								    </c:otherwise>
+								</c:choose>
+						        
+						    </c:when>
+						    <c:otherwise>
+						        <c:out value="Vous devez avoir commandé le jeu pour commenter et noter !" />
+						    </c:otherwise>
+						</c:choose>
+						
+					</c:when>
+					<c:otherwise>
+						<c:out value="Vous devez être connecté et avoir commandé le jeu pour commenter !" />
+					</c:otherwise>
+				</c:choose>
+
+			</div>
 			<div class="th-comments-wrap ">
 				<h3 class="blog-inner-title">
-					<i class="far fa-comments"></i> Commentaires des vapeurGameurs (x
+					<i class="far fa-comments"></i>
 					<c:out value="${game.comments.size() }" />
+					commentaires de nos vapeurGameurs (nombre de notes :
+					<c:out value="${totalNotes }" />
 					)
 				</h3>
 				<c:if test="${game.comments.size() == 0 }">
@@ -197,27 +232,30 @@
 				<c:if test="${game.comments.size() > 0 }">
 					<ul class="comment-list">
 						<c:forEach var="comment" items="${game.comments }">
-						<c:if test="${ not empty comment.content }">
-							<li class="th-comment-item">
-								<div class="th-post-comment">
-									<div class="comment-avater">
-										<img src="assets/img/blog/comment-author-1.jpg"
-											alt="Comment Author">
+							<c:if test="${ not empty comment.content }">
+								<li class="th-comment-item">
+									<div class="th-post-comment">
+										<div class="comment-avater">
+											<img src="assets/img/blog/comment-author-1.jpg"
+												alt="Comment Author">
+										</div>
+										<div class="comment-content">
+											<h3 class="name">
+												<span style="color: var(--theme-color)"><c:out
+														value="${comment.userNickname }" /></span> a donné <span
+													class="color-<fmt:formatNumber value="${comment.score}" pattern="###" />"><fmt:formatNumber
+														value="${comment.score }" pattern="###" />/5</span> et a dit :
+											</h3>
+											<span class="commented-on"> <fmt:formatDate
+													value="${comment.uploaded }"
+													pattern="EEEE dd MMMM yyyy HH:mm" />
+											</span>
+											<p class="text">
+												<c:out value="${comment.content }" />
+											</p>
+										</div>
 									</div>
-									<div class="comment-content">
-										<h3 class="name">
-											<span style="color:var(--theme-color)"><c:out value="${comment.userNickname }" /></span> a donné
-											<span class="color-<fmt:formatNumber value="${comment.score}" pattern="###" />"><fmt:formatNumber value="${comment.score }" pattern="###" />/5</span> et a dit :
-										</h3>
-										<span class="commented-on">
-											<fmt:formatDate value="${comment.uploaded }" pattern="EEEE dd MMMM yyyy HH:mm" />
-										</span>
-										<p class="text">
-											<c:out value="${comment.content }" />
-										</p>
-									</div>
-								</div>
-							</li>
+								</li>
 							</c:if>
 						</c:forEach>
 					</ul>
@@ -230,38 +268,7 @@
 					<p>Suggestions basées sur vos achats précédents</p>
 				</div>
 				<%@ include file="components/carroutext.jsp"%>
-				<div class="th-comment-form ">
-					<div class="form-title">
-						<h3 class="blog-inner-title mb-2">
-							<i class="fa-solid fa-reply"></i> Leave a Comment
-						</h3>
-						<p class="form-text">Your email address will not be published.
-							Required fields are marked *</p>
-					</div>
-					<div class="row">
-						<div class="col-md-6 form-group style-border">
-							<input type="text" placeholder="Your Name*" class="form-control">
-							<i class="far fa-user"></i>
-						</div>
-						<div class="col-md-6 form-group style-border">
-							<input type="text" placeholder="Your Email*" class="form-control">
-							<i class="far fa-envelope"></i>
-						</div>
-						<div class="col-12 form-group style-border">
-							<input type="text" placeholder="Website" class="form-control">
-							<i class="far fa-globe"></i>
-						</div>
-						<div class="col-12 form-group style-border">
-							<textarea placeholder="Write a Comment*" class="form-control"></textarea>
-							<i class="far fa-pencil"></i>
-						</div>
-						<div class="col-12 form-group mb-0">
-							<button class="th-btn">
-								SEND MESSAGE <i class="far fa-arrow-right ms-2"></i>
-							</button>
-						</div>
-					</div>
-				</div>
+
 			</c:if>
 		</div>
 	</div>

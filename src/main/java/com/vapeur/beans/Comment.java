@@ -8,7 +8,7 @@ public class Comment implements Serializable {
     
     private String content;
     private Timestamp uploaded;
-    private float score;
+    private int score;
     private int userId;
     private String userNickname;
     private int gameId;
@@ -16,7 +16,7 @@ public class Comment implements Serializable {
     public Comment() {
     }
 
-    public Comment(String content, Timestamp uploaded, float score, int userId, String userNickname, int gameId) {
+    public Comment(String content, Timestamp uploaded, int score, int userId, String userNickname, int gameId) throws BeanException {
     	
         setContent(content);
         setUploaded(uploaded);
@@ -30,8 +30,17 @@ public class Comment implements Serializable {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContent(String content) throws BeanException {
+    	if(content.length() < 6000) {
+    		if(content.length() > 25) {
+    			this.content = content;
+    		}else {
+        		throw new BeanException("L'évaluation est trop courte !");
+        	}
+    	}else {
+    		throw new BeanException("L'évaluation est trop longue !");
+    	}
+        
     }
 
     public Timestamp getUploaded() {
@@ -46,7 +55,7 @@ public class Comment implements Serializable {
         return score;
     }
 
-    public void setScore(float score) {
+    public void setScore(int score) {
         this.score = score;
     }
 

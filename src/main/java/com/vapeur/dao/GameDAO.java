@@ -195,7 +195,7 @@ public class GameDAO {
 				object.setGenres(genresList);
 				object.setLanguages(languagesList);
 				object.setDeveloper(developerdao.getById(resultat.getInt("developer_id")));
-				object.setComments(commentdao.getByGameId(game_id));
+				object.setComments(commentdao.getByGameIdOnlyWithContent(game_id));
 
 			}
 			String objectInfos = object.getTitle();
@@ -524,6 +524,23 @@ public class GameDAO {
 			return null;
 		}
 	}
+	
+	public Boolean isGameInUserLibrary(int user_id) {
+		try {
+
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT * FROM games JOIN order_details ON games.id = order_details.game_id JOIN orders ON order_details.order_id = orders.id WHERE orders.user_id = ?;");
+			ps.setInt(1, user_id);
+			ResultSet resultat = ps.executeQuery();
+			Boolean response = false;
+			while (resultat.next()) {
+				response = true;
+			}
+			return response;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
 
 	public int countAll(String query, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
 			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
@@ -630,6 +647,26 @@ public class GameDAO {
 			bddSays("delete", true, game_id, null);
 		} catch (Exception ex) {
 			bddSays("delete", false, game_id, null);
+			ex.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	public void update(int game_id) {
+		try {
+			PreparedStatement ps = Database.connexion.prepareStatement("UPDATE games SET total_reviews = ( SELECT COUNT(comments.game_id) FROM comments WHERE comments.game_id = ?);");
+			ps.setInt(1, game_id);
+			ps.executeUpdate();
+			
+			PreparedStatement ps1 = Database.connexion.prepareStatement("UPDATE games SET users_avg_score = (SELECT ROUND(AVG(comments.score),2) FROM comments WHERE comments.game_id = ?);");
+			ps.setInt(1, game_id);
+			ps.executeUpdate();
+			
+			bddSays("update", true, game_id, null);
+		} catch (Exception ex) {
+			bddSays("update", false, game_id, null);
 			ex.printStackTrace();
 		}
 	}
