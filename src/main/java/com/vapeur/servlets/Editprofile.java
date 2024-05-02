@@ -188,7 +188,7 @@ public class Editprofile extends HttpServlet {
 						try {
 							userModif.setId(user.getId());
 							userModif.setActive(true);
-							if(userdao.save(userModif)) {
+							if(userdao.save(userModif, false)) {
 								request.setAttribute("infoMsg", "Détails changés !");
 								session.setAttribute("user", userdao.getById(user.getId()));
 							}

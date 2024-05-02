@@ -181,6 +181,12 @@
 							</c:forEach>
 						</div>
 					</div>
+					<div class="widget widget_tag_cloud  ">
+						<h3 class="widget_title">Classification</h3>
+						<div class="tagcloud">
+							<img style="max-width:200px!important"src="assets/img/classifications/${game.classification }.jpg" alt="PEGI-${game.classification }">
+						</div>
+					</div>
 					<div class="widget  ">
 						<div class="widget-game-info">
 							<h2 class="sub-title">

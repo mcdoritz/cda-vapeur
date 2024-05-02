@@ -61,7 +61,7 @@ public class Signup extends HttpServlet {
 						Database.connect();
 						UserDAO userdao = new UserDAO();
 						User newUser = new User(request.getParameter("email"),request.getParameter("nickname"), request.getParameter("password"));
-						if(userdao.save(newUser)) {
+						if(userdao.save(newUser, false)) {
 							request.setAttribute("signupDone", true);
 						};
 

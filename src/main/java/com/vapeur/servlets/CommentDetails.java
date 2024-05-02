@@ -118,7 +118,14 @@ public class CommentDetails extends HttpServlet {
 					User user = (User) session.getAttribute("user");
 
 					try {
-						int score = Integer.valueOf(request.getParameter("score"));
+						//je dois faire comme ça car ça bugguait au premier commentaire si on laissait à 0
+						int score = 0;
+						if(request.getParameter("score").equals("0.0")) {
+							score = 0;
+						}else {
+							score = Integer.valueOf(request.getParameter("score"));
+						}
+						
 						int game_id = Integer.valueOf(request.getParameter("game_id"));
 						if(game_id != 0) {
 							String content = request.getParameter("content");

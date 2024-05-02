@@ -22,7 +22,7 @@
 								class="far fa-user"></i>
 						</div>
 						<div class="slidecontainer">
-							<input type="range" min="0" max="5" value="${comment.score != null ? comment.score : 2 }" class="slider"
+							<input type="range" min="0" max="5" value="${comment.score }" class="slider"
 								id="score" name="score"
 								oninput="rangeValue.innerText = this.value">
 						</div>
