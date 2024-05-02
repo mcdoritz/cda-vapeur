@@ -7,6 +7,11 @@
 						<c:out value="${errorMsg }" />
 					</p>
 				</c:if>
+				<c:if test="${game.archived == true }">
+					<p style="color: var(--bs-warning); text-align: center">
+						Ce jeu est actuellement archivé.
+					</p>
+				</c:if>
 				<div class="page-single game-details-wrap">
 					<div class="page-img mb-50">
 						<img class="w-100" src="assets/img/game/game-s-1-1.png" alt="img">
@@ -109,8 +114,10 @@
 								<img src="assets/img/game/${game.id }.png" alt="img" style="height:100%; width:100%;">
 							</div>
 							<h2 class="sub-title">
-								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
-									<i class="fa-solid fa-cart-shopping"></i></a>
+								<c:if test="${game.archived == false }">
+									<a href="cart?add=${game.id }" class="panier">Au panier !<br>
+										<i class="fa-solid fa-cart-shopping"></i></a>
+								</c:if>
 							</h2>
 							<div class="game-rating-info">
 								<div class="rating-wrap">
@@ -177,8 +184,10 @@
 					<div class="widget  ">
 						<div class="widget-game-info">
 							<h2 class="sub-title">
+							<c:if test="${game.archived == false }">
 								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
 									<i class="fa-solid fa-cart-shopping"></i></a>
+							</c:if>
 							</h2>
 						</div>
 					</div>

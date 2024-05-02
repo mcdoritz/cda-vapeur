@@ -92,7 +92,7 @@
 									<td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${order.date }" /></td>
 									<td><c:out value="${order.name }" /></td>
 									<td><c:out value="${order.totalQuantity }" /></td>
-									<td><c:out value="${order.amount } " />&#8364;</td>
+									<td><fmt:formatNumber value="${order.amount }" type="number" pattern="#,##0.00" />&#8364;</td>
 								</tr>
 							</c:forEach>
 						</tbody>

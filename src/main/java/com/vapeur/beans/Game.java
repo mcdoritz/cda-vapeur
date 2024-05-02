@@ -29,6 +29,9 @@ public class Game implements Serializable {
     private ArrayList<Language> languages;
     private ArrayList<Comment> comments;
     private Comment comment; //Pour affichage du commentaire d'un joueur en particulier
+    private int notApprovedComments; //Comptage des commentaires non approuvés.
+    private ArrayList<GameLanguage> gameLanguages;
+    private Boolean archived;
 
     // Constructeurs
     public Game() {
@@ -74,7 +77,7 @@ public class Game implements Serializable {
     //Complet pour page détail (moins Comment d'un seul joueur)
     public Game(int id, String title, String description, int classification, float price, Date releaseDate, float usersAvgScore, 
     		int totalReviews, boolean controllerSupport, boolean requires3rdPartyAccount, int stock, ArrayList<String> tags, int developerId, Developer developer,
-    		ArrayList<Genre> genres, ArrayList<Mode> modes, int platformId, Platform platform, ArrayList<Video> videos, ArrayList<Language> languages, ArrayList<Comment> comments) {
+    		ArrayList<Genre> genres, ArrayList<Mode> modes, int platformId, Platform platform, ArrayList<Video> videos, ArrayList<Language> languages, ArrayList<Comment> comments, int notApprovedComments, ArrayList<GameLanguage> gameLanguages) {
     	
         setId(id);
         setTitle(title);
@@ -97,6 +100,8 @@ public class Game implements Serializable {
         setVideos(videos);
         setLanguages(languages);
         setComments(comments);
+        setNotApprovedComments(notApprovedComments);
+        setGameLanguages(gameLanguages);
     }
 
     // Getters et setters
@@ -278,6 +283,30 @@ public class Game implements Serializable {
 		this.comment = comment;
 	}
 
+	public int getNotApprovedComments() {
+		return notApprovedComments;
+	}
+
+	public void setNotApprovedComments(int notApprovedComments) {
+		this.notApprovedComments = notApprovedComments;
+	}
+
+	public ArrayList<GameLanguage> getGameLanguages() {
+		return gameLanguages;
+	}
+
+	public void setGameLanguages(ArrayList<GameLanguage> gameLanguages) {
+		this.gameLanguages = gameLanguages;
+	}
+
+	public Boolean getArchived() {
+		return archived;
+	}
+
+	public void setArchived(Boolean archived) {
+		this.archived = archived;
+	}
+
 	@Override
 	public String toString() {
 		return "Game [id=" + id + ", title=" + title + ", description=" + description + ", classification="
@@ -286,9 +315,9 @@ public class Game implements Serializable {
 				+ ", requires3rdPartyAccount=" + requires3rdPartyAccount + ", stock=" + stock + ", tags=" + tags
 				+ ", developerId=" + developerId + ", developer=" + developer + ", genres=" + genres + ", modes="
 				+ modes + ", platformId=" + platformId + ", platform=" + platform + ", videos=" + videos
-				+ ", languages=" + languages + "]";
+				+ ", languages=" + languages + ", comments=" + comments + ", comment=" + comment
+				+ ", notApprovedComments=" + notApprovedComments + ", gameLanguages=" + gameLanguages + ", archived="
+				+ archived + "]";
 	}
-
-	
 
 }

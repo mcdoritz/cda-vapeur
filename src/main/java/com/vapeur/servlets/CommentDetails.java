@@ -126,7 +126,7 @@ public class CommentDetails extends HttpServlet {
 							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
 							Comment comment = new Comment(content, timestamp, score, user.getId(), user.getNickname(),
-									game_id);
+									game_id, false);
 							Database.connect();
 
 							commentdao.save(comment);

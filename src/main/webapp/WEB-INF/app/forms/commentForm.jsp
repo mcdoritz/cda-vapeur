@@ -9,6 +9,8 @@
 					<h2 class="sec-title text-white">
 						Commentaire <span class="text-theme">!</span>
 					</h2>
+					<c:if test="${comment.moderated == true }">Commentaire approuvé. Si vous le modifiez, il devra être de nouveau approuvé.</c:if>
+					<c:if test="${comment.moderated == false }">Le commentaire n'a pas été approuvé pour le moment.</c:if>
 				</div>
 
 				<form action="comment?game_id=${game.id != 0 ? game.id : comment.gameId }" method="POST">

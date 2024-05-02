@@ -27,27 +27,32 @@ public class GameDAO {
 		try {
 			// Préparer les tags array->string
 			String tags = "";
-			ArrayList<String> arrayTags = new ArrayList<>(object.getTags());
-			int i = 0;
-			for (String t : arrayTags) {
-				if (i < arrayTags.size()) {
-					tags += t.toUpperCase() + " ";
-				} else {
-					tags += t.toUpperCase();
-				}
+			if(object.getTags() != null) {
+				
+				ArrayList<String> arrayTags = new ArrayList<>(object.getTags());
+				int i = 0;
+				for (String t : arrayTags) {
+					if (i < arrayTags.size()) {
+						tags += t.toUpperCase() + " ";
+					} else {
+						tags += t.toUpperCase();
+					}
 
-				i++;
+					i++;
+				}
 			}
+			
 
 			if (object.getId() != 0) {
-				String query = "UPDATE games SET title = ?, description = ?, classification = ?, price = ?, release_date = ?, users_avg_score = ?, total_reviews = ?, controller_support = ?, requires_3rd_party_account = ?, stock = ?, tags = ?, developer_id = ?, platform_id = ? WHERE id = ?";
+				String query = "UPDATE games SET title = ?, description = ?, classification = ?, price = ?, release_date = ?, users_avg_score = ?, total_reviews = ?, controller_support = ?, requires_3rd_party_account = ?, stock = ?, tags = ?, developer_id = ?, platform_id = ?, archived = ? WHERE id = ?";
 
-				try (PreparedStatement ps = Database.connexion.prepareStatement(query)) {
+				try {
+					PreparedStatement ps = Database.connexion.prepareStatement(query);
 					ps.setString(1, object.getTitle());
 					ps.setString(2, object.getDescription());
 					ps.setInt(3, object.getClassification());
 					ps.setFloat(4, object.getPrice());
-					ps.setDate(5, new java.sql.Date(object.getReleaseDate().getTime()));
+					ps.setDate(5, object.getReleaseDate());
 					ps.setFloat(6, object.getUsersAvgScore());
 					ps.setInt(7, object.getTotalReviews());
 					ps.setBoolean(8, object.isControllerSupport());
@@ -56,13 +61,43 @@ public class GameDAO {
 					ps.setString(11, tags);
 					ps.setInt(12, object.getDeveloperId());
 					ps.setInt(13, object.getPlatformId());
-					ps.setInt(14, object.getId());
+					ps.setBoolean(14, object.getArchived());
+					ps.setInt(15, object.getId());
+					
+					GenreDAO genredao = new GenreDAO();
+					ModeDAO modedao = new ModeDAO();
+					LanguageDAO languagedao = new LanguageDAO();
+					
+					if(object.getGenres() != null) {
+						genredao.updateLinksBetweenGameAndGenres(object.getId(), object.getGenres());
+					}else {
+						throw new DAOException("Erreur, le tableau des genres du jeu ne contient rien.");
+					}
+					
+					if(object.getModes() != null) {
+						modedao.updateLinksBetweenGameAndModes(object.getId(), object.getModes());
+					}else {
+						throw new DAOException("Erreur, le tableau des modes du jeu ne contient rien.");
+					}
+					
+					if(object.getGameLanguages() != null) {
+						languagedao.updateLinksBetweenGameAndLanguages(object.getId(), object.getGameLanguages());
+					}else {
+						throw new DAOException("Erreur, le tableau des languages du jeu ne contient rien.");
+					}
+					
 					ps.executeUpdate();
+					
+					
+				} catch (Exception e){
+					e.printStackTrace();
 				}
+				
+				
 				String objectInfos = object.getTitle();
 				bddSays("update", true, object.getId(), objectInfos);
 			} else {
-				String query = "INSERT INTO games (title, description, classification, price, release_date, users_avg_score, total_reviews, controller_support, requires_3rd_party_account, stock, tags, developer_id, platform_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String query = "INSERT INTO games (title, description, classification, price, release_date, users_avg_score, total_reviews, controller_support, requires_3rd_party_account, stock, tags, developer_id, platform_id, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				try (PreparedStatement ps = Database.connexion.prepareStatement(query,
 						Statement.RETURN_GENERATED_KEYS)) {
 					ps.setString(1, object.getTitle());
@@ -78,6 +113,7 @@ public class GameDAO {
 					ps.setString(11, tags);
 					ps.setInt(12, object.getDeveloperId());
 					ps.setInt(12, object.getPlatformId());
+					ps.setBoolean(13, object.getArchived());
 					ps.executeUpdate();
 					try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
 						if (generatedKeys.next()) {
@@ -144,13 +180,29 @@ public class GameDAO {
 			ex.printStackTrace();
 		}
 	}
+	
+	public void updateArchive(int game_id, Boolean archived) {
+		try {
+			if (archived != null && game_id != 0) {		
+
+				try (PreparedStatement ps = Database.connexion.prepareStatement("UPDATE games SET archived = ? WHERE id = ?")) {
+					ps.setBoolean(1, archived);
+					ps.setInt(2, game_id);
+					ps.executeUpdate();
+				}
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	// Tout prendre
 	public Game getById(int game_id) {
 		try {
 
 			PreparedStatement ps = Database.connexion.prepareStatement(
-					"SELECT games.id, title, description, classification, price, release_date, users_avg_score, controller_support, requires_3rd_party_account, total_reviews, stock, tags, developer_id, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id  JOIN developers ON games.developer_id = developers.id WHERE games.id = ?;");
+					"SELECT games.id, title, description, classification, price, release_date, users_avg_score, controller_support, requires_3rd_party_account, total_reviews, stock, tags, developer_id, archived, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym FROM games JOIN platforms ON games.platform_id = platforms.id  JOIN developers ON games.developer_id = developers.id WHERE games.id = ?;");
 			ps.setInt(1, game_id);
 			ResultSet resultat = ps.executeQuery();
 			Game object = new Game();
@@ -174,6 +226,7 @@ public class GameDAO {
 				object.setControllerSupport(resultat.getBoolean("controller_support"));
 				object.setRequires3rdPartyAccount(resultat.getBoolean("requires_3rd_party_account"));
 				object.setStock(resultat.getInt("stock"));
+				object.setArchived(resultat.getBoolean("archived"));
 
 				String tags = resultat.getString("tags");
 				String[] arrayTags = tags.split(" ");
@@ -195,7 +248,7 @@ public class GameDAO {
 				object.setGenres(genresList);
 				object.setLanguages(languagesList);
 				object.setDeveloper(developerdao.getById(resultat.getInt("developer_id")));
-				object.setComments(commentdao.getByGameIdOnlyWithContent(game_id));
+				object.setComments(commentdao.getByGameIdOnlyWithContent(game_id, true));
 
 			}
 			String objectInfos = object.getTitle();
@@ -210,8 +263,25 @@ public class GameDAO {
 
 	// Sers à lister les jeux, inutile de tout prendre donc.
 	public GameResults readAll(int page, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
-			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
+			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id, Boolean archived) {
 		ArrayList<Game> gamesList = new ArrayList<>();
+		
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		
+		prln("jeux archived :" + archived);
+		
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
+		prln("***************************************");
 
 		int min;
 		if (page > - 1 && page < 2) {
@@ -314,7 +384,7 @@ public class GameDAO {
 			
 			prln("queryjoins : " + queryJoins);
 			prln("queryConditions : " + queryConditions);
-			query += queryJoins + " WHERE stock > 0" + queryConditions + " ORDER BY games.title ASC ";
+			query += queryJoins + " WHERE stock > 0" + queryConditions + " AND archived = ? ORDER BY games.title ASC ";
 			
 			if(page != -1) {
 				query += " LIMIT ?,?";			
@@ -366,10 +436,15 @@ public class GameDAO {
 			}
 			
 			if(page != -1) {
-				ps.setInt(index, min);
-				ps.setInt(index+1, limitPerPage);
+				ps.setBoolean(index, archived);
+				ps.setInt(index+1, min);
+				ps.setInt(index+2, limitPerPage);
+				
+			}else {
+				ps.setBoolean(index, archived);
 			}
 			
+			prln(ps.toString());
 			ResultSet resultat = ps.executeQuery();
 
 			PlatformDAO platformdao = new PlatformDAO();
@@ -391,7 +466,7 @@ public class GameDAO {
 			// S'il y a autant que 12 résultats dans la recherche, alors voir s'il y en a plus :
 			if(gamesList.size() <= limitPerPage) {
 				prln("gamesList.size <= limitPerpage");
-				totalResults = countAll(queryCount, genres_id, modes_id, languages_id, platforms_id, developers_id);
+				totalResults = countAll(queryCount, genres_id, modes_id, languages_id, platforms_id, developers_id, archived);
 			}else {
 				prln("gamesList.size != limitPerpage");
 				totalResults = gamesList.size();
@@ -407,6 +482,50 @@ public class GameDAO {
 			return null;
 		}
 	}
+	
+	// Sers à lister les jeux, inutile de tout prendre donc.
+			public GameResults adminReadAll(Boolean archived) {
+				
+				try {
+				ArrayList<Game> gamesList = new ArrayList<>();
+				
+				String query = "SELECT DISTINCT games.id, title, price, release_date, users_avg_score, total_reviews, stock, developer_id, platform_id FROM games WHERE archived = ?";
+				
+				PreparedStatement ps = Database.connexion.prepareStatement(query);
+				ps.setBoolean(1, archived);
+					
+				ResultSet resultat = ps.executeQuery();
+
+				PlatformDAO platformdao = new PlatformDAO();
+				DeveloperDAO developerdao = new DeveloperDAO();
+				CommentDAO commentdao = new CommentDAO();
+
+				while (resultat.next()) {
+					Game object = new Game();
+					int game_id = resultat.getInt("id");
+					object.setId(resultat.getInt("id"));
+					object.setTitle(resultat.getString("title"));
+					object.setPrice(resultat.getFloat("price"));
+					object.setReleaseDate(resultat.getDate("release_date"));
+					object.setUsersAvgScore(resultat.getFloat("users_avg_score"));
+					object.setTotalReviews(resultat.getInt("total_reviews"));
+					object.setStock(resultat.getInt("stock"));
+					object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
+					object.setDeveloper(developerdao.getById(resultat.getInt("developer_id")));
+					object.setNotApprovedComments(commentdao.countNotApprovedCommentsById(game_id));
+					gamesList.add(object);
+				}
+
+					GameResults gameresults = new GameResults(gamesList, gamesList.size());
+					prln("gr:" + gameresults.getGames().size());
+					prln("gr:" + gameresults.getTotalResults());
+					return gameresults;
+				} catch (Exception ex) {
+					bddSays("readAll", false, 0, null);
+					ex.printStackTrace();
+					return null;
+				}
+			}
 	
 	public ArrayList<Game> readSuggestions(ArrayList<Integer> gamesNotToShow, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id) {
 		ArrayList<Game> gamesList = new ArrayList<>();
@@ -445,7 +564,7 @@ public class GameDAO {
 			queryConditions += " ) ";
 			prln(queryConditions);
 
-			query += queryJoins + " WHERE stock > 0" + queryConditions + " ORDER BY RAND()";			
+			query += queryJoins + " WHERE stock > 0" + queryConditions + " AND archived = false ORDER BY RAND()";			
 
 			prln(query);
 
@@ -530,7 +649,7 @@ public class GameDAO {
 	public GameResults library(int user_id) {
 		
 		try {
-			PreparedStatement ps = Database.connexion.prepareStatement("SELECT DISTINCT games.id AS game_id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, COALESCE(comments.score, -1) AS score FROM games LEFT JOIN comments ON games.id = comments.game_id AND comments.user_id = ? JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT DISTINCT games.id AS game_id, title, price, release_date, users_avg_score, total_reviews, stock, platforms.id AS platform_id, platforms.name AS platform_name, platforms.acronym AS platform_acronym, COALESCE(comments.score, -1) AS score, comments.moderated AS moderated FROM games LEFT JOIN comments ON games.id = comments.game_id AND comments.user_id = ? JOIN platforms ON games.platform_id = platforms.id WHERE games.id IN (SELECT game_id FROM order_details WHERE order_details.order_id IN (SELECT orders.id FROM orders WHERE user_id = ?))");
 			ps.setInt(1, user_id);
 			ps.setInt(2, user_id);
 			
@@ -556,6 +675,7 @@ public class GameDAO {
 				object.setStock(resultat.getInt("stock"));
 				object.setPlatform(platformdao.getById(resultat.getInt("platform_id")));
 				comment.setScore(resultat.getInt("score"));
+				comment.setModerated(resultat.getBoolean("moderated"));
 				object.setComment(comment);
 				
 				ArrayList<Genre> genresList = new ArrayList<>(genredao.readAllByGameId(game_id));
@@ -669,7 +789,7 @@ public class GameDAO {
 	public Game getNameAndIdById(int id) {
 		try {
 
-			PreparedStatement ps = Database.connexion.prepareStatement("SELECT title FROM games WHERE id = ?;");
+			PreparedStatement ps = Database.connexion.prepareStatement("SELECT title FROM games WHERE id = ? AND archived = false");
 			ps.setInt(1, id);
 			ResultSet resultat = ps.executeQuery();
 			Game object = new Game();
@@ -685,16 +805,18 @@ public class GameDAO {
 	}
 
 	public int countAll(String query, ArrayList<Integer> genres_id, ArrayList<Integer> modes_id,
-			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id) {
+			ArrayList<Integer> languages_id, ArrayList<Integer> platforms_id, ArrayList<Integer> developers_id, Boolean archived) {
 		try {
 			// Pour la sélection au hasard pour la landing page :
 			if(query == "all") {
-				query =  "SELECT COUNT(*) AS total FROM games WHERE stock > 0";
+				query =  "SELECT COUNT(*) AS total FROM games WHERE stock > 0 AND archived = ?";
+			}else {
+				query +=  " AND archived = ?";
 			}
 			
 			prln("countALL QUERY : " + query);
-			PreparedStatement ps = Database.connexion
-					.prepareStatement(query);
+			PreparedStatement ps = Database.connexion.prepareStatement(query);
+			ps.setBoolean(1, archived);
 			
 			int index = 1;
 			
@@ -797,12 +919,14 @@ public class GameDAO {
 	public void update(int game_id) {
 		prln("update scores of game_id : " + game_id);
 		try {
-			PreparedStatement ps = Database.connexion.prepareStatement("UPDATE games SET total_reviews = ( SELECT COUNT(comments.game_id) FROM comments WHERE comments.game_id = ?);");
+			PreparedStatement ps = Database.connexion.prepareStatement("UPDATE games SET total_reviews = ( SELECT COUNT(comments.game_id) FROM comments WHERE comments.game_id = ?) WHERE games.id = ?;");
 			ps.setInt(1, game_id);
+			ps.setInt(2, game_id);
 			ps.executeUpdate();
 			
-			PreparedStatement ps1 = Database.connexion.prepareStatement("UPDATE games SET users_avg_score = (SELECT ROUND(AVG(comments.score),2) FROM comments WHERE comments.game_id = ?);");
+			PreparedStatement ps1 = Database.connexion.prepareStatement("UPDATE games SET users_avg_score = (SELECT ROUND(AVG(comments.score),2) FROM comments WHERE comments.game_id = ?) WHERE games.id = ?;");
 			ps1.setInt(1, game_id);
+			ps1.setInt(2, game_id);
 			ps1.executeUpdate();
 			
 			bddSays("update", true, game_id, null);
@@ -827,7 +951,7 @@ public class GameDAO {
 			ArrayList<Object> list = new ArrayList<>();
 
 			// Game
-			list.add(getNameAndIdById(dé.nextInt(countAll("all", null, null, null, null, null) - 1) + 1));
+			list.add(getNameAndIdById(dé.nextInt(countAll("all", null, null, null, null, null, false) - 1) + 1));
 
 			// Genre
 			list.add(genredao.getNameAndIdById(dé.nextInt(genredao.countAll() - 1) + 1));

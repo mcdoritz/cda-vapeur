@@ -12,11 +12,12 @@ public class Comment implements Serializable {
     private int userId;
     private String userNickname;
     private int gameId;
+    private Boolean moderated;
 
     public Comment() {
     }
 
-    public Comment(String content, Timestamp uploaded, int score, int userId, String userNickname, int gameId) throws BeanException {
+    public Comment(String content, Timestamp uploaded, int score, int userId, String userNickname, int gameId, Boolean moderated) throws BeanException {
     	
         setContent(content);
         setUploaded(uploaded);
@@ -24,6 +25,7 @@ public class Comment implements Serializable {
         setUserId(userId);
         setUserNickname(userNickname);
         setGameId(gameId);
+        setModerated(moderated);
     }
 
     public String getContent() {
@@ -35,7 +37,12 @@ public class Comment implements Serializable {
     		if(content.length() > 25) {
     			this.content = content;
     		}else {
-        		throw new BeanException("L'évaluation est trop courte !");
+    			if(content.length() != 0) {
+    				throw new BeanException("L'évaluation est trop courte !");
+    			}else {
+    				this.content = content;
+    			}
+        		
         	}
     	}else {
     		throw new BeanException("L'évaluation est trop longue !");
@@ -81,6 +88,14 @@ public class Comment implements Serializable {
 
 	public void setUserNickname(String userNickname) {
 		this.userNickname = userNickname;
+	}
+	
+	public Boolean getModerated() {
+		return moderated;
+	}
+
+	public void setModerated(Boolean moderated) {
+		this.moderated = moderated;
 	}
 
 	@Override

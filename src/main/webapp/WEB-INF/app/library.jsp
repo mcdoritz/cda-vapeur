@@ -49,6 +49,9 @@
 		                            <td>
 		                            	<c:if test="${game.comment.score >= 0 }">
 		                            		<a href="comment?game_id=${game.id }"><c:out value="${game.comment.score } (éditer)"/></a>
+		                            		<c:if test="${game.comment.score >= 0 }">
+		                            			<c:if test="${game.comment.moderated == false }"><br>Pas encore approuvé</c:if>
+		                            		</c:if>
 	                            		</c:if>
 	                            		<c:if test="${game.comment.score < 0 }">
 		                            		<a href="comment?game_id=${game.id }">NOTER !</a>
