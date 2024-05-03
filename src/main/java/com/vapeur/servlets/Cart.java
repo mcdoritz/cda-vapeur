@@ -92,7 +92,7 @@ public class Cart extends HttpServlet {
 
 					GameDAO gamedao = new GameDAO();
 					Game gameToAdd = gamedao.getById(id);
-					if (gameToAdd.getTitle() != null && gameToAdd.getArchived() == false) {
+					if (gameToAdd.getTitle() != null && gameToAdd.getStatus() == 2) {
 						gamesAndQuantityInCart.put(gameToAdd, 1);
 						session.setAttribute("cart", gamesAndQuantityInCart);
 

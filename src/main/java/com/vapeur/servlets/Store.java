@@ -131,11 +131,11 @@ public class Store extends HttpServlet {
 					page = Integer.parseInt(request.getParameter("page"));
 					if(page > 0) {
 						prln("ICI");
-						gameResults = gamedao.readAll(page, genres, modes, languages, platforms, developers, false);
+						gameResults = gamedao.readAll(page, genres, modes, languages, platforms, developers, (byte) 2);
 						
 					}else {
 						prln("LA");
-						gameResults = gamedao.readAll(1, genres, modes, languages, platforms, developers, false);
+						gameResults = gamedao.readAll(1, genres, modes, languages, platforms, developers, (byte) 2);
 						
 					}
 				}else {
@@ -143,7 +143,7 @@ public class Store extends HttpServlet {
 					for(int i:genres) {
 						prln("valeur de genres_id avant dao : " + i);
 					}
-					gameResults = gamedao.readAll(0, genres, modes, languages, platforms, developers, false);
+					gameResults = gamedao.readAll(0, genres, modes, languages, platforms, developers, (byte) 2);
 				}
 				
 				// Préparation des options pour l'affichage des filtres
