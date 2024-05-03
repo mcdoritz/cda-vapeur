@@ -88,11 +88,11 @@
 						<tbody>
 							<c:forEach var="order" items="${ordersList }" varStatus="i">
 								<tr>
-									<th scope="row"><c:out value="${order.id }" /></th>
-									<td><fmt:formatDate pattern = "dd-MM-yyyy" value = "${order.date }" /></td>
-									<td><c:out value="${order.name }" /></td>
-									<td><c:out value="${order.totalQuantity }" /></td>
-									<td><fmt:formatNumber value="${order.amount }" type="number" pattern="#,##0.00" />&#8364;</td>
+									<th scope="row"><a href="orderDetails?user_id=${user.id }&order_id=${order.id}"><c:out value="${order.id }" /></a></th>
+									<td><a href="order?user_id=${sessionScope.user.id }&order_id=${order.id}"><fmt:formatDate pattern = "dd-MM-yyyy" value = "${order.date }" /></a></td>
+									<td><a href="order?user_id=${sessionScope.user.id }&order_id=${order.id}"><c:out value="${order.name }" /></a></td>
+									<td><a href="order?user_id=${sessionScope.user.id }&order_id=${order.id}"><c:out value="${order.totalQuantity }" /></a></td>
+									<td><a href="order?user_id=${sessionScope.user.id }&order_id=${order.id}"><fmt:formatNumber value="${order.amount }" type="number" pattern="#,##0.00" />&#8364;</a></td>
 								</tr>
 							</c:forEach>
 						</tbody>
