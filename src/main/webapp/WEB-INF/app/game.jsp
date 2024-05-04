@@ -7,9 +7,9 @@
 						<c:out value="${errorMsg }" />
 					</p>
 				</c:if>
-				<c:if test="${game.archived == true }">
+				<c:if test="${game.status == 0 && game.status == 1}">
 					<p style="color: var(--bs-warning); text-align: center">
-						Ce jeu est actuellement archivé.
+						Ce jeu n'est actuellement pas en vente.
 					</p>
 				</c:if>
 				<div class="page-single game-details-wrap">
@@ -114,7 +114,7 @@
 								<img src="assets/img/game/${game.id }.png" alt="img" style="height:100%; width:100%;">
 							</div>
 							<h2 class="sub-title">
-								<c:if test="${game.archived == false }">
+								<c:if test="${game.status == 2 }">
 									<a href="cart?add=${game.id }" class="panier">Au panier !<br>
 										<i class="fa-solid fa-cart-shopping"></i></a>
 								</c:if>
@@ -190,7 +190,7 @@
 					<div class="widget  ">
 						<div class="widget-game-info">
 							<h2 class="sub-title">
-							<c:if test="${game.archived == false }">
+							<c:if test="${game.status == 2 }">
 								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
 									<i class="fa-solid fa-cart-shopping"></i></a>
 							</c:if>
@@ -288,6 +288,11 @@
 				<%@ include file="components/suggestions.jsp"%>
 
 			</c:if>
+			<p>Images</p>
+			<img src="http://localhost:8081/VapeurBackOffice/assets/images/games/test.jpg" alt="MORIN">
+			<c:forEach items="${images }" var="image">
+				<img src="${image }" alt="${image }">
+			</c:forEach>
 		</div>
 	</div>
 

@@ -1,7 +1,14 @@
 package com.vapeur.servlets;
 
+import static com.vapeur.config.Debug.prln;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,10 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static com.vapeur.config.Debug.*;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import com.google.gson.Gson;
 import com.vapeur.beans.Game;
-import com.vapeur.beans.GameResults;
 import com.vapeur.beans.Genre;
 import com.vapeur.beans.Mode;
 import com.vapeur.beans.User;
@@ -37,9 +47,10 @@ public class GameDetails extends HttpServlet {
     }
 
 	/**
+	 * @throws ServletException 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		@SuppressWarnings("unused")
 		HttpSession session = request.getSession(false);
 		int totalNotes = 0;
@@ -59,6 +70,88 @@ public class GameDetails extends HttpServlet {
 						request.setAttribute("game", game);
 						CommentDAO commentdao = new CommentDAO();
 						totalNotes = commentdao.countCommentsById(game_id);
+						
+						String directoryPath = "/assets/images/games/" + game.getId(); // Remplacez ceci par le chemin absolu de votre dossier d'images
+						File directory = new File(directoryPath);
+						ArrayList<String> images = new ArrayList<>();
+						if (directory.isDirectory()) {
+						    File[] files = directory.listFiles();
+						    for (File file : files) {
+						    	images.add(file.getName());
+
+						    }
+						} else {
+						    System.out.println("Le chemin spécifié n'est pas un répertoire.");
+						}
+						
+						
+						
+						//Récupérer les images
+
+				        try {
+				        	// *********************************************************************************************
+				        	// *********************************************************************************************
+				        	// *********************************************************************************************
+				        	// *********************************************************************************************
+
+				        	//Note pour ZAK : le code ci-dessous est certainement bien dégueulasse. Je te remercie de me faire un retour dessus.
+				        	
+				        	// *********************************************************************************************
+				        	// *********************************************************************************************
+				        	// *********************************************************************************************
+				        	// *********************************************************************************************
+
+				            //Vérifier que le serveur est accessible ainsi que le dossier du jeu
+				        	
+			            	// URL distant de backoffice
+				        	String distantURL = "http://localhost:8081/VapeurBackOffice/assets/images/games/"+game.getId()+"/";
+				            URL urlTest = new URL(distantURL);
+				            
+				            HttpURLConnection connection = (HttpURLConnection) urlTest.openConnection();
+	
+				            connection.setRequestMethod("HEAD");
+				            
+				            int responseCode = connection.getResponseCode();
+				            
+				            if(responseCode >= 200 && responseCode < 300) {
+				            	prln("CODE 200");
+				            	
+				                // Récupérer le contenu HTML de la page
+				                Document doc = Jsoup.connect(distantURL).get();
+
+				                // Sélectionner tous les liens dans la page
+				                Elements links = doc.select("a[href]");
+
+				                List<String> imageUrls = new ArrayList<>();
+
+				                // Parcourir les liens pour récupérer les URLs des images
+				                for (Element link : links) {
+				                    String href = link.attr("href");
+				                    // Vérifier si le lien pointe vers une image (pas forcément utile mais bon)
+				                    if (href.endsWith(".jpg") || href.endsWith(".jpeg") || href.endsWith(".png") || href.endsWith(".gif")) {
+				                        // Construire l'URL complète de l'image
+				                        String imageUrl = distantURL + href.substring(href.lastIndexOf("/"));
+				                        // Ajouter l'URL à la liste
+				                        imageUrls.add(imageUrl);
+				                    }
+				                }
+				                
+				                for(String str:imageUrls) {
+				                	prln(str);
+				                }
+				                
+				                request.setAttribute("images", imageUrls);
+
+				            }else {
+				            	request.setAttribute("errorMsg", "Attention, pas d'image trouvée pour ce jeu");
+				            	prln("PAS CODE 200");
+				            }
+				            
+				        } catch (Exception e) {
+				            e.printStackTrace();
+				        }
+
+
 						
 						//Suggestion de jeux du même genre et mode :
 						ArrayList<Integer> genres_id = new ArrayList<>();
