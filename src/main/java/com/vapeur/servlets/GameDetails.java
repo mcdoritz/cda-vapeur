@@ -95,6 +95,7 @@ public class GameDetails extends HttpServlet {
 				        	// *********************************************************************************************
 
 				        	//Note pour ZAK : le code ci-dessous est certainement bien dégueulasse. Je te remercie de me faire un retour dessus.
+				        	// Le code permet de récupérer des images au nom inconnu
 				        	
 				        	// *********************************************************************************************
 				        	// *********************************************************************************************
@@ -139,8 +140,52 @@ public class GameDetails extends HttpServlet {
 				                for(String str:imageUrls) {
 				                	prln(str);
 				                }
-				                
+
 				                request.setAttribute("images", imageUrls);
+
+				            }else {
+				            	request.setAttribute("errorMsg", "Attention, pas d'image trouvée pour ce jeu");
+				            	prln("PAS CODE 200");
+				            }
+				            
+				            
+				         // URL distant de backoffice LOGO DU JEU
+				        	String distantURLlogo = "http://localhost:8081/VapeurBackOffice/assets/images/games/"+game.getId()+"/logo";
+				            URL urlTestlogo = new URL(distantURLlogo);
+				            
+				            HttpURLConnection connection2 = (HttpURLConnection) urlTestlogo.openConnection();
+	
+				            connection2.setRequestMethod("HEAD");
+				            
+				            int responseCode2 = connection2.getResponseCode();
+				            
+				            if(responseCode2 >= 200 && responseCode2 < 300) {
+				            	prln("CODE 200");
+				            	
+				                // Récupérer le contenu HTML de la page
+				                Document doc = Jsoup.connect(distantURLlogo).get();
+
+				                // Sélectionner tous les liens dans la page
+				                Elements links = doc.select("a[href]");
+
+				               String logoUrl = "";
+
+				                // Parcourir les liens pour récupérer les URLs des images
+				                for (Element link : links) {
+				                    String href = link.attr("href");
+				                    // Vérifier si le lien pointe vers une image (pas forcément utile mais bon)
+				                    if (href.endsWith(".jpg") || href.endsWith(".jpeg") || href.endsWith(".png") || href.endsWith(".gif") || href.endsWith(".webp")) {
+				                        // Construire l'URL complète de l'image
+				                        String imageUrl = distantURLlogo + href.substring(href.lastIndexOf("/"));
+				                        prln(distantURLlogo);
+				                        // Ajouter l'URL à la liste
+				                        logoUrl = imageUrl;
+				                    }
+				                }
+				                
+				                prln(logoUrl);
+
+				                request.setAttribute("logo", logoUrl);
 
 				            }else {
 				            	request.setAttribute("errorMsg", "Attention, pas d'image trouvée pour ce jeu");

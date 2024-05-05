@@ -8,13 +8,48 @@
 					</p>
 				</c:if>
 				<c:if test="${game.status == 0 && game.status == 1}">
-					<p style="color: var(--bs-warning); text-align: center">
-						Ce jeu n'est actuellement pas en vente.
-					</p>
+					<p style="color: var(--bs-warning); text-align: center">Ce jeu
+						n'est actuellement pas en vente.</p>
 				</c:if>
 				<div class="page-single game-details-wrap">
 					<div class="page-img mb-50">
-						<img class="w-100" src="assets/img/game/game-s-1-1.png" alt="img">
+						<section id="main-carousel" class="splide"
+							aria-label="The carousel with thumbnails. Selecting a thumbnail will change the Beautiful Gallery carousel.">
+							<div class="splide__track">
+								<ul class="splide__list">
+								<c:forEach items="${game.videos }" var="video">
+										<li class="splide__slide"><iframe style="height: 100%;max-height:500px;object-fit: cover;"
+											src="${video.url }"
+											title="YouTube video player" frameborder="0"
+											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+											referrerpolicy="strict-origin-when-cross-origin"
+											allowfullscreen></iframe></li>
+									</c:forEach>
+								
+									<c:forEach items="${images }" var="image">
+										<li class="splide__slide"><img src="${image }"
+											alt="${image }" style="height: 100%;max-height:500px;object-fit: cover;">
+									</c:forEach>
+									
+								</ul>
+							</div>
+						</section>
+						<section id="thumbnail-carousel" class="splide"
+							aria-label="The carousel with thumbnails. Selecting a thumbnail will change the Beautiful Gallery carousel.">
+							<div class="splide__track">
+								<ul class="splide__list">
+									<c:forEach items="${game.videos }" var="video">
+										<li class="splide__slide"><img src="assets/img/gallery/video.png"
+											alt="VIDEO"></li>
+									</c:forEach>
+									<c:forEach items="${images }" var="image">
+										<li class="splide__slide"><img src="${image }"
+											alt="${image }"></li>
+									</c:forEach>
+									
+								</ul>
+							</div>
+						</section>
 					</div>
 					<div class="page-content">
 						<div class="game-title-wrap">
@@ -110,8 +145,8 @@
 				<aside class="sidebar-area">
 					<div class="widget  ">
 						<div class="widget-game-info">
-							<div class="player-logo" style="overflow:hidden">
-								<img src="assets/img/game/${game.id }.png" alt="img" style="height:100%; width:100%;">
+							<div class="player-logo" style="overflow: hidden">
+								<img src="${logo }" alt="${game.title }" style="height: 100%; width: 100%;">
 							</div>
 							<h2 class="sub-title">
 								<c:if test="${game.status == 2 }">
@@ -184,16 +219,18 @@
 					<div class="widget widget_tag_cloud  ">
 						<h3 class="widget_title">Classification</h3>
 						<div class="tagcloud">
-							<img style="max-width:200px!important"src="assets/img/classifications/${game.classification }.jpg" alt="PEGI-${game.classification }">
+							<img style="max-width: 200px !important"
+								src="assets/img/classifications/${game.classification }.jpg"
+								alt="PEGI-${game.classification }">
 						</div>
 					</div>
 					<div class="widget  ">
 						<div class="widget-game-info">
 							<h2 class="sub-title">
-							<c:if test="${game.status == 2 }">
-								<a href="cart?add=${game.id }" class="panier">Au panier !<br>
-									<i class="fa-solid fa-cart-shopping"></i></a>
-							</c:if>
+								<c:if test="${game.status == 2 }">
+									<a href="cart?add=${game.id }" class="panier">Au panier !<br>
+										<i class="fa-solid fa-cart-shopping"></i></a>
+								</c:if>
 							</h2>
 						</div>
 					</div>
@@ -211,26 +248,29 @@
 				<c:choose>
 					<c:when test="${sessionScope.user != null}">
 						<c:choose>
-						    <c:when test="${gameInUserLibrary}">
-						    	<c:choose>
-								    <c:when test="${userHasCommented == true}">
-								        <c:out value="Vous avez déjà commenté ce jeu ! Vous pouvez éditer votre commentaire depuis votre bibliothèque" />
-								    </c:when>
-								    <c:otherwise>
-								    	<%@ include file="forms/commentForm.jsp"%>
-								        
-								    </c:otherwise>
+							<c:when test="${gameInUserLibrary}">
+								<c:choose>
+									<c:when test="${userHasCommented == true}">
+										<c:out
+											value="Vous avez déjà commenté ce jeu ! Vous pouvez éditer votre commentaire depuis votre bibliothèque" />
+									</c:when>
+									<c:otherwise>
+										<%@ include file="forms/commentForm.jsp"%>
+
+									</c:otherwise>
 								</c:choose>
-						        
-						    </c:when>
-						    <c:otherwise>
-						        <c:out value="Vous devez avoir commandé le jeu pour commenter et noter !" />
-						    </c:otherwise>
+
+							</c:when>
+							<c:otherwise>
+								<c:out
+									value="Vous devez avoir commandé le jeu pour commenter et noter !" />
+							</c:otherwise>
 						</c:choose>
-						
+
 					</c:when>
 					<c:otherwise>
-						<c:out value="Vous devez être connecté et avoir commandé le jeu pour commenter !" />
+						<c:out
+							value="Vous devez être connecté et avoir commandé le jeu pour commenter !" />
 					</c:otherwise>
 				</c:choose>
 
@@ -254,7 +294,7 @@
 								<li class="th-comment-item">
 									<div class="th-post-comment">
 										<div class="comment-avater">
-											<img src="assets/img/blog/comment-author-1.jpg"
+											<img src="assets/img/client/user.png"
 												alt="Comment Author">
 										</div>
 										<div class="comment-content">
@@ -288,12 +328,42 @@
 				<%@ include file="components/suggestions.jsp"%>
 
 			</c:if>
-			<p>Images</p>
-			<img src="http://localhost:8081/VapeurBackOffice/assets/images/games/test.jpg" alt="MORIN">
-			<c:forEach items="${images }" var="image">
-				<img src="${image }" alt="${image }">
-			</c:forEach>
 		</div>
 	</div>
 
 </section>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var main = new Splide('#main-carousel', {
+			type : 'fade',
+			rewind : true,
+			pagination : false,
+			arrows : false,
+		});
+
+		var thumbnails = new Splide('#thumbnail-carousel', {
+			fixedWidth : 300,
+			fixedHeight : 150,
+			gap : 10,
+			rewind : true,
+			pagination : false,
+			isNavigation : true,
+			breakpoints : {
+				600 : {
+					fixedWidth : 60,
+					fixedHeight : 44,
+				},
+			},
+		});
+
+		main.sync(thumbnails);
+		main.mount();
+		thumbnails.mount();
+	});
+</script>
+<style>
+.splide__slide img {
+	width: 100%;
+	height: auto;
+}
+</style>

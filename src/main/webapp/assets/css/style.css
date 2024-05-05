@@ -88,9 +88,9 @@ Version: 1.0.0
 /*------------------- 1.2. Function -------------------*/
 /*------------------- 1.3. Variable-------------------*/
 :root {
-  --theme-color: #45F882;
-  --theme-color2: #FFBE18;
-  --theme-color3: #6240CF;
+  --theme-color:#e63063;
+  --theme-color2: #f7b592;
+  --theme-color3: #10719e;
   --title-color: #0B0E13;
   --body-color: #969EB2;
   --smoke-color: #F5F7FA;

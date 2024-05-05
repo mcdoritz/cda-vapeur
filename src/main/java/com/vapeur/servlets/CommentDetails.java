@@ -123,7 +123,7 @@ public class CommentDetails extends HttpServlet {
 						if(request.getParameter("score").equals("0.0")) {
 							score = 0;
 						}else {
-							score = Integer.valueOf(request.getParameter("score"));
+							score = Integer.valueOf(request.getParameter("score").substring(0, request.getParameter("score").indexOf(".")));
 						}
 						
 						int game_id = Integer.valueOf(request.getParameter("game_id"));

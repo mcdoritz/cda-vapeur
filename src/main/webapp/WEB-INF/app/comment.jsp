@@ -6,6 +6,7 @@
 <c:if test="${infoMsg != null}">
 	<p style="color: var(--theme-color); text-align:center">
 		<c:out value="${infoMsg }" />
+		<a href="library">Ma bibliothèque</a>
 	</p>
 </c:if>
 <c:if test="${comment != null }">

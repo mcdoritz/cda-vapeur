@@ -6,7 +6,7 @@
 					<div class="widget  ">
 						<div class="widget-game-info">
 							<div class="player-logo">
-								<img src="assets/img/tournament/1-1.png" alt="img">
+								<img src="assets/img/client/user.png" alt="img">
 							</div>
 						</div>
 					</div>

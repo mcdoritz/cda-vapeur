@@ -7,18 +7,17 @@
         </div>
         <div class="widget-area">
             <div class="container">
-                <div class="row justify-content-between">
-                    <div class="col-md-6 col-xl-auto">
+                <div class="row center-content">
+                    <div class="col-md-12 col-xl-auto">
                         <div class="widget footer-widget">
-                            <div class="th-widget-about">
+                            <div class="th-widget-about" style="max-width:unset!important">
                                 <div class="about-logo">
-                                    <a href="index.html">
-                                        <span data-mask-src="assets/img/logo.svg" class="logo-mask"></span>
-                                        <img src="assets/img/logo.svg" alt="Bame">
-                                    </a>
+                                    <a href="landing"><img src="assets/img/logo_vapeur.png" alt="Vapeur"  style="max-width:150px;"></a>
                                 </div>
-                                <p class="about-text"> Beyond esports tournaments, include a broader calendar of gaming events, conferences, and conventions.</p>
-                                <h3 class="widget_title">Follow <span class="text-theme">With Us:</span></h3>
+                                <p class="about-text"> Que vous soyez un guerrier intrépide, un stratège astucieux ou un aventurier en quête de découvertes, VAPEUR a tout ce qu'il vous faut pour assouvir votre soif de jeu. Dans ce monde trépidant de VAPEUR, l'aventure ne prend jamais fin. Que vous soyez un joueur chevronné ou un novice intrépide, notre plateforme est votre portail vers un univers infini de divertissement. Explorez, découvrez, et laissez-vous emporter par la magie des jeux vidéo.
+
+Nous sommes fiers de vous offrir non seulement une sélection incomparable de jeux, mais aussi une expérience client exceptionnelle. Notre équipe est dévouée à vous fournir un service de qualité, des conseils avisés et des offres exclusives pour rendre votre expérience de jeu encore plus mémorable.</p>
+                                <h3 class="widget_title">Suivez la <span class="text-theme">VAPEUR</span> :</h3>
                                 <div class="th-widget-contact">
                                     <div class="th-social style-mask">
                                         <a class="facebook" href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
@@ -35,53 +34,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-xl-auto">
-                        <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Useful Link</h3>
-                            <div class="menu-all-pages-container">
-                                <ul class="menu">
-                                    <li><a href="blog.html"><i class="far fa-angle-right"></i>Gaming</a></li>
-                                    <li><a href="blog.html"><i class="far fa-angle-right"></i>Products</a></li>
-                                    <li><a href="blog.html"><i class="far fa-angle-right"></i>All NFTs</a></li>
-                                    <li><a href="blog.html"><i class="far fa-angle-right"></i>Domain Name</a></li>
-                                    <li><a href="blog.html"><i class="far fa-angle-right"></i>Social Network</a></li>
-                                    <li><a href="blog.html"><i class="far fa-angle-right"></i>Collectibles</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xl-auto">
-                        <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Supports</h3>
-                            <div class="menu-all-pages-container">
-                                <ul class="menu">
-                                    <li><a href="contact.html"><i class="far fa-angle-right"></i> Help & Support</a></li>
-                                    <li><a href="contact.html"><i class="far fa-angle-right"></i> Live Auctions</a></li>
-                                    <li><a href="contact.html"><i class="far fa-angle-right"></i> 24/7 Supports</a></li>
-                                    <li><a href="contact.html"><i class="far fa-angle-right"></i> Item Details</a></li>
-                                    <li><a href="contact.html"><i class="far fa-angle-right"></i> Setting & Privacy</a></li>
-                                    <li><a href="contact.html"><i class="far fa-angle-right"></i> Our News</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xl-auto">
-                        <div class="widget newsletter-widget footer-widget">
-                            <h3 class="widget_title">Newsletter</h3>
-                            <p class="footer-text">Subscribe to our newsletter to get our
-                                latest update & news consenter</p>
-                            <form class="newsletter-form">
-                                <div class="form-group">
-                                    <input class="form-control" type="email" placeholder="Email Address" required="">
-                                    <button type="submit" class="th-btn"><i class="fas fa-paper-plane"></i></button>
-                                </div>
-                                <div class="btn-wrap">
-                                    <a href="#"><img src="assets/img/normal/footer-apple-btn.png" alt="img"></a>
-                                    <a href="#"><img src="assets/img/normal/footer-playstore-btn.png" alt="img"></a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
 
                 </div>
             </div>
@@ -91,7 +43,7 @@
                 <div class="row align-items-center justify-content-center">
                     <div class="col-lg-6">
                         <p class="copyright-text bg-repeat" data-bg-src="assets/img/bg/jiji-bg.png">
-                            <i class="fal fa-copyright"></i> Copyright 2024 <a href="index.html">Bame.</a> All Rights Reserved.
+                            <i class="fal fa-copyright"></i> ECF CDA 2024 <a href="https://www.floriandorizon.fr">Florian DORIZON.</a> Bonne nuit.
                         </p>
                     </div>
                 </div>
