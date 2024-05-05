@@ -65,6 +65,7 @@ public class Editprofile extends HttpServlet {
 		prln(request.getParameter("email"));
 		
 		if (session != null) {
+			Boolean modifMdp = false;
 			prln("servlet editProfil letsgo.....");
 			if (session.getAttribute("user") != null) {
 				prln("servlet editProfil letsgo...");
@@ -105,7 +106,7 @@ public class Editprofile extends HttpServlet {
 						request.setAttribute("errorMsg", "Mot de passe actuel incorrect.");
 					} else {
 						
-
+						
 						// Pseudo
 						try {
 							userModif.setNickname(user.getNickname());
@@ -155,7 +156,7 @@ public class Editprofile extends HttpServlet {
 						} else {
 							userModif.setLastname(user.getLastname());
 						}
-
+						
 						// Password
 						if (request.getParameter("new-password") != "") {
 							if (request.getParameter("confirm-new-password") != "") {
@@ -163,6 +164,7 @@ public class Editprofile extends HttpServlet {
 										.equals(request.getParameter("confirm-new-password"))) {
 									userModif.setPassword(request.getParameter("new-password"));
 									modif = true;
+									modifMdp = true;
 								} else {
 									request.setAttribute("errorMsg",
 											"Le nouveau mot de passe et sa confirmation sont différents.");
@@ -188,7 +190,7 @@ public class Editprofile extends HttpServlet {
 						try {
 							userModif.setId(user.getId());
 							userModif.setActive(true);
-							if(userdao.save(userModif, false)) {
+							if(userdao.save(userModif, modifMdp)) {
 								request.setAttribute("infoMsg", "Détails changés !");
 								session.setAttribute("user", userdao.getById(user.getId()));
 							}

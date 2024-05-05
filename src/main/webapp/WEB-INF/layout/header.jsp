@@ -64,31 +64,6 @@
 		</div>
 	</div>
 </div>
-<div class="color-scheme-wrap active">
-	<button class="switchIcon">
-		<i class="fa-solid fa-palette"></i>
-	</button>
-	<h4 class="color-scheme-wrap-title">
-		<i class="far fa-palette"></i> Color Switcher
-	</h4>
-	<div class="color-switch-btns">
-		<button data-color="#6240CF">
-			<i class="fa-solid fa-droplet"></i>
-		</button>
-		<button data-color="#FFBE18">
-			<i class="fa-solid fa-droplet"></i>
-		</button>
-		<button data-color="#24FFF2">
-			<i class="fa-solid fa-droplet"></i>
-		</button>
-		<button data-color="#45F882">
-			<i class="fa-solid fa-droplet"></i>
-		</button>
-		<button data-color="#FF7E02">
-			<i class="fa-solid fa-droplet"></i>
-		</button>
-	</div>
-</div>
 
 <header class="th-header header-layout1">
 	<div class="sticky-wrapper">
