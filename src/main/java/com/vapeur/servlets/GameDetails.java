@@ -71,19 +71,20 @@ public class GameDetails extends HttpServlet {
 						CommentDAO commentdao = new CommentDAO();
 						totalNotes = commentdao.countCommentsById(game_id);
 						
-						String directoryPath = "/assets/images/games/" + game.getId(); // Remplacez ceci par le chemin absolu de votre dossier d'images
+						String directoryPath = "/assets/img/games/" + game.getId() + "/";
 						File directory = new File(directoryPath);
 						ArrayList<String> images = new ArrayList<>();
 						if (directory.isDirectory()) {
 						    File[] files = directory.listFiles();
 						    for (File file : files) {
+						    	prln("FrontOffice : image trouvée pour " + game.getId() + " : " + file);
 						    	images.add(file.getName());
 
 						    }
 						} else {
-						    System.out.println("Le chemin spécifié n'est pas un répertoire.");
+						    System.out.println("Le chemin spécifié n'est pas un répertoire : " + directoryPath);
 						}
-						
+						request.setAttribute("images", images);
 						
 						
 						//Récupérer les images
@@ -137,14 +138,20 @@ public class GameDetails extends HttpServlet {
 				                    }
 				                }
 				                
-				                for(String str:imageUrls) {
-				                	prln(str);
+				                if(imageUrls.size() > 0) {
+				                	for(String str:imageUrls) {
+					                	prln(str);
+					                }
+				                }else {
+				                	prln("imageUrls tout petit");
+				                	request.setAttribute("errorMsg", "Attention, pas d'image trouvée pour ce jeu");
 				                }
+				                
 
 				                request.setAttribute("images", imageUrls);
 
 				            }else {
-				            	request.setAttribute("errorMsg", "Attention, pas d'image trouvée pour ce jeu");
+				            	
 				            	prln("PAS CODE 200");
 				            }
 				            
@@ -183,12 +190,13 @@ public class GameDetails extends HttpServlet {
 				                    }
 				                }
 				                
+				                
 				                prln(logoUrl);
 
 				                request.setAttribute("logo", logoUrl);
 
 				            }else {
-				            	request.setAttribute("errorMsg", "Attention, pas d'image trouvée pour ce jeu");
+				            	
 				            	prln("PAS CODE 200");
 				            }
 				            

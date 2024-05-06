@@ -45,7 +45,7 @@ public class Store extends HttpServlet {
 	private PlatformDAO platformdao = new PlatformDAO();
 	private DeveloperDAO developerdao = new DeveloperDAO();
 	
-	private int page = 0;
+	private int page = 1;
 	private int limitPerPage = 12;
 
     public Store() {
@@ -143,7 +143,7 @@ public class Store extends HttpServlet {
 					for(int i:genres) {
 						prln("valeur de genres_id avant dao : " + i);
 					}
-					gameResults = gamedao.readAll(0, genres, modes, languages, platforms, developers, (byte) 2);
+					gameResults = gamedao.readAll(page, genres, modes, languages, platforms, developers, (byte) 2);
 				}
 				
 				// Préparation des options pour l'affichage des filtres
