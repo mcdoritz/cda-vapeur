@@ -1,6 +1,6 @@
 package com.vapeur.servlets;
 
-import static com.vapeur.config.Debug.prln;
+import static com.vapeur.config.Debug.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +53,7 @@ public class GameDetails extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		@SuppressWarnings("unused")
 		HttpSession session = request.getSession(false);
+		request.setAttribute("url", backOfficeUrl());
 		int totalNotes = 0;
 		String gameTitle = "";
 		
@@ -106,7 +107,7 @@ public class GameDetails extends HttpServlet {
 				            //Vérifier que le serveur est accessible ainsi que le dossier du jeu
 				        	
 			            	// URL distant de backoffice
-				        	String distantURL = "http://localhost:8081/VapeurBackOffice/assets/images/games/"+game.getId()+"/";
+				        	String distantURL = backOfficeUrl() + "/VapeurBackOffice/assets/images/games/"+game.getId()+"/";
 				            URL urlTest = new URL(distantURL);
 				            
 				            HttpURLConnection connection = (HttpURLConnection) urlTest.openConnection();
@@ -157,7 +158,7 @@ public class GameDetails extends HttpServlet {
 				            
 				            
 				         // URL distant de backoffice LOGO DU JEU
-				        	String distantURLlogo = "http://localhost:8081/VapeurBackOffice/assets/images/games/"+game.getId()+"/logo";
+				        	String distantURLlogo = backOfficeUrl() + "/VapeurBackOffice/assets/images/games/"+game.getId()+"/logo";
 				            URL urlTestlogo = new URL(distantURLlogo);
 				            
 				            HttpURLConnection connection2 = (HttpURLConnection) urlTestlogo.openConnection();

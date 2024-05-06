@@ -37,6 +37,7 @@ public class CommentDetails extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setAttribute("url", backOfficeUrl());
 		request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
@@ -123,7 +124,12 @@ public class CommentDetails extends HttpServlet {
 						if(request.getParameter("score").equals("0.0")) {
 							score = 0;
 						}else {
-							score = Integer.valueOf(request.getParameter("score").substring(0, request.getParameter("score").indexOf(".")));
+							if(request.getParameter("score").indexOf(".") != -1) {
+								score = Integer.valueOf(request.getParameter("score").substring(0,request.getParameter("score").indexOf(".") ));
+							}else {
+								score = Integer.valueOf(request.getParameter("score"));
+							}
+							
 						}
 						
 						int game_id = Integer.valueOf(request.getParameter("game_id"));

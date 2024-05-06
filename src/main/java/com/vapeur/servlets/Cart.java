@@ -1,6 +1,6 @@
 package com.vapeur.servlets;
 
-import static com.vapeur.config.Debug.prln;
+import static com.vapeur.config.Debug.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +31,8 @@ public class Cart extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		request.setAttribute("url", backOfficeUrl());
 
 		HttpSession session = request.getSession(false);
 		prln("Servlet Cart");

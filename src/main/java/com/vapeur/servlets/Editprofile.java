@@ -1,5 +1,7 @@
 package com.vapeur.servlets;
 
+import static com.vapeur.config.Debug.backOfficeUrl;
+import static com.vapeur.config.Debug.deploy;
 import static com.vapeur.config.Debug.prln;
 
 import java.io.File;
@@ -38,6 +40,7 @@ public class Editprofile extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	HttpSession session = request.getSession(false);
+	request.setAttribute("url", backOfficeUrl());
 		
 		if (session != null) {
 			if (session.getAttribute("user") != null) {

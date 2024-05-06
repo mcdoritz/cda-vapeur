@@ -32,6 +32,7 @@ public class Profile extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setAttribute("url", backOfficeUrl());
 		Boolean redirect = false;
 		if (session != null) {
 			if (session.getAttribute("user") != null) {

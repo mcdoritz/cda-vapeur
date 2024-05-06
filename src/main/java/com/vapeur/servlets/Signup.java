@@ -1,5 +1,6 @@
 package com.vapeur.servlets;
 
+import static com.vapeur.config.Debug.deploy;
 import static com.vapeur.config.Debug.prln;
 
 import java.io.IOException;
@@ -28,6 +29,9 @@ public class Signup extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession(false);
+		if(deploy) {
+			request.setAttribute("deploy", deploy);
+		}
 		if (session.getAttribute("user") == null) {
 			prln("signup : pas d'user loggué");
 			request.setAttribute("pageTitle", "Inscription");

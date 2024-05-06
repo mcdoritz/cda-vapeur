@@ -44,7 +44,7 @@
 	                    	<c:forEach var="game" items="${gamesList }" varStatus="i">
 		                        <tr>
 		                            <th scope="row"><c:out value="${i.count }"/></th>
-		                            <td><a href="game?id=${game.id }"><img src="assets/img/tournament/1-1.png" alt="img"><c:out value="${game.title }"/></a></td>
+		                            <td><a href="game?id=${game.id }"><img src="${url }/VapeurBackOffice/assets/images/games/${game.id }/logo/logo.jpg" alt="img"><c:out value="${game.title }"/></a></td>
 		                            <td><c:out value="${game.platform.name }"/></td>
 		                            <td>
 		                            	<c:if test="${game.comment.score >= 0 }">

@@ -21,6 +21,7 @@ public class Error404 extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setAttribute("url", backOfficeUrl());
 		
 		prln("Servlet erreur 404");
 		request.setCharacterEncoding("UTF-8");

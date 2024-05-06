@@ -34,7 +34,7 @@
 						<c:forEach var="game" items="${sessionScope.cart }" varStatus="i">
 							<tr class="cart_item">
 								<td data-title="Product"><a href="game?id=${game.key.id }"> <img
-						src="http://localhost:8081/VapeurBackOffice/assets/images/games/${game.key.id }/logo/logo.jpg" alt="${game.key.title }" style="max-width:80px;max-height:80px">
+						src="${url }/VapeurBackOffice/assets/images/games/${game.key.id }/logo/logo.jpg" alt="${game.key.title }" style="max-width:80px;max-height:80px">
 					</a>
 								</td>
 								<td data-title="Name" style="text-align: left;"><a

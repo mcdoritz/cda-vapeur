@@ -5,31 +5,39 @@ public class Debug {
 	/*
 	 * Cette propriété active ou désactive la méthode PRLN, ce qui active ou non les messages dans la console.
 	 */
-	private static Boolean prln = true;
+	public static Boolean deploy = false;
+	
+	public static String backOfficeUrl() {
+		if(deploy) {
+			return "http://192.168.1.60:8081";
+		}else {
+			return "http://localhost:8081";
+		}
+	}
 	
 	public static void prln(String message) {
-		if(prln) {
+		if(!deploy) {
 			System.out.println(message);
 		}
 			
 	}
 	
 	public static void prln(int entier) {
-		if(prln) {
+		if(!deploy) {
 			System.out.println(entier);
 		}
 		
 	}
 	
 	public static void prln(float flottant) {
-		if(prln) {
+		if(!deploy) {
 			System.out.println(flottant);
 		}
 		
 	}
 	
 	public static void prln(Boolean boulé1) {
-		if(prln) {
+		if(!deploy) {
 			System.out.println(boulé1);
 		}
 		

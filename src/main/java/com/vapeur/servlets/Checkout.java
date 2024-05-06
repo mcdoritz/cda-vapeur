@@ -1,5 +1,7 @@
 package com.vapeur.servlets;
 
+import static com.vapeur.config.Debug.backOfficeUrl;
+import static com.vapeur.config.Debug.deploy;
 import static com.vapeur.config.Debug.prln;
 
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class Checkout extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setAttribute("url", backOfficeUrl());
 		prln("doPost Checkout");
 		// Vérifier qu'on vient bien du formulaire cart, et de toute façon on a besoin
 		// des infos :

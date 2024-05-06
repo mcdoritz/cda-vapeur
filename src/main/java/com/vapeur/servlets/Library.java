@@ -30,6 +30,7 @@ public class Library extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		request.setAttribute("url", backOfficeUrl());
 		
 		if(session != null) {
 			if(session.getAttribute("user") != null) {

@@ -4,7 +4,7 @@
 			<div class="game-card style2">
 				<div class="game-card-img">
 					<a href="game?id=${game.id }"> <img
-						src="http://localhost:8081/VapeurBackOffice/assets/images/games/${game.id }/logo/logo.jpg" alt="${game.title }">
+						src="${url }/VapeurBackOffice/assets/images/games/${game.id }/logo/logo.jpg" alt="${game.title }">
 					</a>
 					<div class="game-logo" style="overflow:hidden">
 						<a href="store?platforms=${game.platform.id }"><img
