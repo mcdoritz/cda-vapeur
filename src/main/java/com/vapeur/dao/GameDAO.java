@@ -598,7 +598,7 @@ public class GameDAO {
 			queryConditions += " ) ";
 			prln(queryConditions);
 
-			query += queryJoins + " WHERE stock > 0" + queryConditions + " AND status = false ORDER BY RAND()";			
+			query += queryJoins + " WHERE stock > 0" + queryConditions + " AND status = 2 ORDER BY RAND()";			
 
 			prln(query);
 
